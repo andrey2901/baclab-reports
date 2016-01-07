@@ -1,0 +1,1 @@
+typeset -r JAVA_HOME=
