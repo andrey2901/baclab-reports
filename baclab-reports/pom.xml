@@ -40,6 +40,25 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/scripts</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.scriptSourceDirectory}</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
 				<artifactId>replacer</artifactId>
 				<version>1.5.3</version>
@@ -52,16 +71,12 @@
 					</execution>
 				</executions>
 				<configuration>
-					<ignoreMissingFile>true</ignoreMissingFile>
-					<file>${project.build.scriptSourceDirectory}/baclab-reports.cmd</file>
-					<outputFile>
-						${project.build.directory}/scripts/baclab-reports.cmd
-					</outputFile>
+					<filesToInclude>${project.build.directory}/scripts/baclab-reports.*</filesToInclude>
 					<regex>false</regex>
 					<replacements>
 						<replacement>
 							<token>baclab-reports-*-version.jar</token>
-							<value>baclab-reports-${version}.jar</value>
+							<value>baclab-reports-${project.version}.jar</value>
 						</replacement>
 					</replacements>
 				</configuration>

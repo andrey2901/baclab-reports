@@ -14,16 +14,6 @@
 		<!-- Copies scripts to the root directory of zip package from the src/main/scripts 
 			directory -->
 		<fileSet>
-			<directory>${project.build.scriptSourceDirectory}</directory>
-			<outputDirectory></outputDirectory>
-			<includes>
-				<include>*.*</include>
-			</includes>
-			<excludes>
-				<exclude>baclab-reports.cmd</exclude>
-			</excludes>
-		</fileSet>
-		<fileSet>
 			<directory>${project.build.directory}/scripts</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
