@@ -31,7 +31,7 @@ public class Launcher
    public ReloadableResourceBundleMessageSource messageSource()
    {
       ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-      messageSource.setBasename("classpath:lang");
+      messageSource.setBasename("classpath:lang/lang");
       messageSource.setCacheSeconds(3600);
       return messageSource;
    }
