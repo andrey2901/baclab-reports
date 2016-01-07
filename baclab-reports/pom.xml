@@ -40,6 +40,33 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<ignoreMissingFile>true</ignoreMissingFile>
+					<file>${project.build.scriptSourceDirectory}/baclab-reports.cmd</file>
+					<outputFile>
+						${project.build.directory}/scripts/baclab-reports.cmd
+					</outputFile>
+					<regex>false</regex>
+					<replacements>
+						<replacement>
+							<token>baclab-reports-*-version.jar</token>
+							<value>baclab-reports-${version}.jar</value>
+						</replacement>
+					</replacements>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptors>
