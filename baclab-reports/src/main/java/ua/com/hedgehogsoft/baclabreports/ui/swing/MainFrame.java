@@ -23,18 +23,27 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 public class MainFrame
 {
    private static final Logger logger = Logger.getLogger(MainFrame.class);
-   private @Autowired MessageByLocaleService messageByLocaleService;
    private @Autowired ProductStorageTable table;
-   private static final String TITLE = "mainframe.title";
-   private static final String EXIT_BUTTON_NAME = "button.exit.label";
-   private static final String INCOMING_BUTTON_NAME = "button.incoming.label";
-   private static final String OUTCOMING_BUTTON_NAME = "button.outcoming.label";
-   private static final String REPORTS_BUTTON_NAME = "button.reports.label";
+   private String title;
+   private String incomingButtonLabel;
+   private String outcomingButtonLabel;
+   private String reportsButtonLabel;
+   private String exitButtonLabel;
+
+   @Autowired
+   public MainFrame(MessageByLocaleService messageByLocaleService)
+   {
+      title = messageByLocaleService.getMessage("mainframe.title");
+      incomingButtonLabel = messageByLocaleService.getMessage("button.incoming.label");
+      outcomingButtonLabel = messageByLocaleService.getMessage("button.outcoming.label");
+      reportsButtonLabel = messageByLocaleService.getMessage("button.reports.label");
+      exitButtonLabel = messageByLocaleService.getMessage("button.exit.label");
+   }
 
    @PostConstruct
    public void init()
    {
-      JFrame mainFrame = new JFrame(messageByLocaleService.getMessage(TITLE));
+      JFrame mainFrame = new JFrame(title);
       mainFrame.setLayout(new BorderLayout());
       mainFrame.addWindowListener(new WindowAdapter()
       {
@@ -43,11 +52,11 @@ public class MainFrame
             close();
          }
       });
-      JButton incomingButton = new JButton(messageByLocaleService.getMessage(INCOMING_BUTTON_NAME));
+      JButton incomingButton = new JButton(incomingButtonLabel);
       incomingButton.addActionListener(null);
-      JButton outcomingButton = new JButton(messageByLocaleService.getMessage(OUTCOMING_BUTTON_NAME));
+      JButton outcomingButton = new JButton(outcomingButtonLabel);
       outcomingButton.addActionListener(null);
-      JButton reportsButton = new JButton(messageByLocaleService.getMessage(REPORTS_BUTTON_NAME));
+      JButton reportsButton = new JButton(reportsButtonLabel);
       reportsButton.addActionListener(new ActionListener()
       {
          @Override
@@ -56,7 +65,7 @@ public class MainFrame
             // new ReportsFrame();
          }
       });
-      JButton exitButton = new JButton(messageByLocaleService.getMessage(EXIT_BUTTON_NAME));
+      JButton exitButton = new JButton(exitButtonLabel);
       exitButton.addActionListener(l -> close());
       JPanel comingButtonPanel = new JPanel();
       comingButtonPanel.add(incomingButton, BorderLayout.WEST);
