@@ -6,6 +6,6 @@ public class ProductRepositoryTest extends CrudRepositoryTest<Product>
 {
    public ProductRepositoryTest()
    {
-      fullFileName = "product.json";
+      fullFileName = "products.json";
    }
 }
