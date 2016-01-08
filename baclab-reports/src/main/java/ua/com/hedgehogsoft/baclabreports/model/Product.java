@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "PRODUCTS", uniqueConstraints = {@UniqueConstraint(columnNames = "NAME"),
                                                @UniqueConstraint(columnNames = "PRICE"),
@@ -69,6 +71,7 @@ public class Product implements ModelEntity<Long>
       return false;
    }
 
+   @JsonIgnore
    public Double getTotalPrice()
    {
       return new BigDecimal(price * amount).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
