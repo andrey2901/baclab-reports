@@ -36,7 +36,7 @@ CREATE TABLE incomings
 (
 	id int not null auto_increment,
 	amount double not null,
-	incoming_date date not null,
+	date date not null,
 	product_id int not null,
 	PRIMARY KEY (id),
 	FOREIGN KEY (product_id) REFERENCES products(id)
@@ -46,7 +46,7 @@ CREATE TABLE outcomings
 (
 	id int not null auto_increment,
 	amount double not null,
-	outcoming_date date not null,
+	date date not null,
 	product_id int not null,
 	PRIMARY KEY (id),
 	FOREIGN KEY (product_id) REFERENCES products(id)
