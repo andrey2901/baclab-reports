@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotEquals;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -21,10 +22,11 @@ public class UnitRepositoryTest extends CrudRepositoryTest<Unit>
       assertNotEquals(0, units.size());
    }
 
+   @Ignore("Use when you need to write json file")
    @Test
    public void writeJson() throws JsonGenerationException, JsonMappingException, IOException
    {
       List<Unit> units = (List<Unit>) repository.findAll();
-      jsonFileWriter.writeToJsonFile("C:\\units.json", units);
+      jsonFileWriter.writeToJsonFile("units.json", units);
    }
 }
