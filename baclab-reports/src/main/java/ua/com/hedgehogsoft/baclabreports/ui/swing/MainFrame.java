@@ -17,12 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 
 @Component
 public class MainFrame
 {
    private static final Logger logger = Logger.getLogger(MainFrame.class);
    private @Autowired MessageByLocaleService messageByLocaleService;
+   private @Autowired ProductStorageTable table;
    private static final String TITLE = "mainframe.title";
    private static final String EXIT_BUTTON_NAME = "button.exit.label";
    private static final String INCOMING_BUTTON_NAME = "button.incoming.label";
@@ -65,19 +67,19 @@ public class MainFrame
       JPanel buttonsPanel = new JPanel(new BorderLayout());
       buttonsPanel.add(comingButtonPanel, BorderLayout.NORTH);
       buttonsPanel.add(functionalButtonPanel, BorderLayout.SOUTH);
-      JScrollPane scrollPane = new JScrollPane(null);
+      JScrollPane scrollPane = new JScrollPane(table);
       mainFrame.add(scrollPane, BorderLayout.CENTER);
       mainFrame.add(buttonsPanel, BorderLayout.SOUTH);
       mainFrame.setSize(1000, 700);
       mainFrame.setResizable(true);
       mainFrame.setLocationRelativeTo(null);
       mainFrame.setVisible(true);
-      logger.info("baclab-reports was started.");
+      logger.info("baclab-reports was started");
    }
 
    private void close()
    {
-      logger.info("baclab-reports was finished.");
+      logger.info("baclab-reports was finished");
       System.exit(0);
    }
 }
