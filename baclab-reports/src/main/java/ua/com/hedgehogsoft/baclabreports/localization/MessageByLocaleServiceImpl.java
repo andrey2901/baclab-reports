@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageByLocaleServiceImpl implements MessageByLocaleService
 {
-   @Autowired private MessageSource messageSource;
+   private @Autowired MessageSource messageSource;
 
    @Override
    public String getMessage(String code)
