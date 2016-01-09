@@ -4,14 +4,18 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -41,6 +45,12 @@ public class IncomingsFrame
    private String dateNameLabel;
    private String incomingButtonName;
    private String closeButtonLabel;
+   private String popupErrorLabel;
+   private String productEmptyErrorMessage;
+   private String unitEmptyErrorMessage;
+   private String priceEmptyErrorMessage;
+   private String amountEmptyErrorMessage;
+   private String dateEmptyErrorMessage;
 
    private @Autowired DatePicker datePicker;
    private @Autowired UnitRepository unitRepository;
@@ -69,6 +79,12 @@ public class IncomingsFrame
       dateNameLabel = messageByLocaleService.getMessage("frame.incoming.date.label");
       incomingButtonName = messageByLocaleService.getMessage("button.debit.label");
       closeButtonLabel = messageByLocaleService.getMessage("button.close.label");
+      popupErrorLabel = messageByLocaleService.getMessage("message.popup.error.label");
+      productEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.product.empty.text");
+      unitEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.unit.empty.text");
+      priceEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.price.empty.text");
+      amountEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.amount.empty.text");
+      dateEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.date.empty.text");
    }
 
    public void init()
@@ -94,7 +110,7 @@ public class IncomingsFrame
       incomingPanel.add(new JLabel(productNameLabel), position(0, 0));
       incomingNameComboBox = new JComboBox<String>();
       incomingNameComboBox.setEditable(true);
-      List<String> names = productRepository.getUniqueProductNames();
+      List<String> names = productRepository.getUniqueProductNamesOrderedByName();
       if (!names.isEmpty())
       {
          for (String name : names)
@@ -130,8 +146,57 @@ public class IncomingsFrame
       incomingPanel.add(incomingSourceComboBox, position(1, 4));
       incomingPanel.add(new JLabel(dateNameLabel), position(0, 5));
       incomingPanel.add(datePickerImpl, position(1, 5));
-      incomingUnitComboBox.addActionListener(null);
-      incomingNameComboBox.addActionListener(null);
+      incomingUnitComboBox.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            if (!(((String) incomingNameComboBox.getSelectedItem()) == null
+                  || ((String) incomingNameComboBox.getSelectedItem()).isEmpty()))
+            {
+               incomingCostComboBox.removeAllItems();
+               String productName = (String) incomingNameComboBox.getSelectedItem();
+               String unitName = (String) incomingUnitComboBox.getSelectedItem();
+               List<Double> prices = productRepository.getUniquePricesByProductNameAndUnitName(productName, unitName);
+               if (!prices.isEmpty())
+               {
+                  for (Double price : prices)
+                  {
+                     incomingCostComboBox.addItem(Double.toString(price));
+                  }
+               }
+            }
+         }
+      });
+      incomingNameComboBox.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            String productName = (String) incomingNameComboBox.getSelectedItem();
+            List<String> unitNamesForProduct = productRepository.getUniqueUnitNamesByProductName(productName);
+            /*
+             * The next part of code resort unit combo box in order to be units
+             * for this product at first and all others lately.
+             */
+            List<Unit> persistedUnits = unitRepository.findAll();
+            List<String> unitNames = new ArrayList<>();
+            for (Unit unit : persistedUnits)
+            {
+               unitNames.add(unit.getName());
+            }
+            unitNames.removeAll(unitNamesForProduct);
+            incomingUnitComboBox.removeAllItems();
+            for (String unit : unitNamesForProduct)
+            {
+               incomingUnitComboBox.addItem(unit);
+            }
+            for (String unit : unitNames)
+            {
+               incomingUnitComboBox.addItem(unit);
+            }
+         }
+      });
       incomingsFrame.add(incomingPanel, BorderLayout.CENTER);
       incomingsFrame.add(buttonsPanel, BorderLayout.SOUTH);
       incomingsFrame.setSize(700, 225);
@@ -140,6 +205,39 @@ public class IncomingsFrame
       incomingsFrame.setLocationRelativeTo(null);
       incomingsFrame.setVisible(true);
       logger.info("IncomingsFrame was started.");
+   }
+
+   private boolean checkInputData()
+   {
+      boolean result = true;
+
+      if (incomingNameComboBox.getSelectedItem() == null || ((String) incomingNameComboBox.getSelectedItem()).isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, productEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         result = false;
+      }
+      if (incomingUnitComboBox.getSelectedItem() == null || ((String) incomingUnitComboBox.getSelectedItem()).isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, unitEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         result = false;
+      }
+      if (incomingCostComboBox.getSelectedItem() == null || ((String) incomingCostComboBox.getSelectedItem()).isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, priceEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         result = false;
+      }
+      if (incomingAmountTextField.getText() == null || incomingAmountTextField.getText().isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, amountEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         result = false;
+      }
+      if (datePickerImpl.getJFormattedTextField().getText() == null
+            || datePickerImpl.getJFormattedTextField().getText().isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, dateEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         result = false;
+      }
+      return result;
    }
 
    private GridBagConstraints position(int x, int y)
