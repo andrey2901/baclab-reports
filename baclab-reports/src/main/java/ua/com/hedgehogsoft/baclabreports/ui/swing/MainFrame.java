@@ -23,12 +23,13 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 public class MainFrame
 {
    private static final Logger logger = Logger.getLogger(MainFrame.class);
-   private @Autowired ProductStorageTable table;
    private String title;
    private String incomingButtonLabel;
    private String outcomingButtonLabel;
    private String reportsButtonLabel;
    private String exitButtonLabel;
+   private @Autowired ProductStorageTable table;
+   private @Autowired IncomingsFrame incomingsFrame;
 
    @Autowired
    public MainFrame(MessageByLocaleService messageByLocaleService)
@@ -53,7 +54,7 @@ public class MainFrame
          }
       });
       JButton incomingButton = new JButton(incomingButtonLabel);
-      incomingButton.addActionListener(null);
+      incomingButton.addActionListener(l -> incomingsFrame.init());
       JButton outcomingButton = new JButton(outcomingButtonLabel);
       outcomingButton.addActionListener(null);
       JButton reportsButton = new JButton(reportsButtonLabel);

@@ -17,17 +17,16 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
-
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
+import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
 
 @org.springframework.stereotype.Component
 public class ProductStorageTable extends AbstractTable
 {
    private static final long serialVersionUID = 1L;
-   private @Autowired CrudRepository<Product, Long> repository;
+   private @Autowired ProductRepository productRepository;
 
    @Autowired
    public ProductStorageTable(MessageByLocaleService messageByLocaleService)
@@ -38,7 +37,7 @@ public class ProductStorageTable extends AbstractTable
    @PostConstruct
    public JTable init()
    {
-      List<Product> products = (List<Product>) repository.findAll();
+      List<Product> products = (List<Product>) productRepository.findAll();
       ProductStoreTableModel model = new ProductStoreTableModel(products.size(), sequentialHeaderName,
             productHeaderName, unitHeaderName, priceHeaderName, amountHeaderName, summationHeaderName,
             sourceHeaderName);
