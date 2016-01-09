@@ -8,8 +8,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
-
+import org.springframework.data.jpa.repository.JpaRepository;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -20,7 +19,7 @@ import ua.com.hedgehogsoft.baclabreports.persistence.json.JsonFileWriter;
 public abstract class CrudRepositoryTest<T extends ModelEntity<Long>> extends DefaultTest
 {
    @Autowired
-   private CrudRepository<T, Long> repository;
+   private JpaRepository<T, Long> repository;
 
    @Autowired
    private JsonFileWriter<T> jsonFileWriter;
