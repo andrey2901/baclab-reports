@@ -13,22 +13,22 @@ import ua.com.hedgehogsoft.baclabreports.model.Product;
 @Transactional(readOnly = true)
 public interface ProductRepository extends JpaRepository<Product, Long>
 {
-   @Query("SELECT DISTINCT p.name FROM Product p ORDER BY name ASC")
+   @Query("SELECT DISTINCT p.name FROM Product p ORDER BY p.name ASC")
    List<String> getUniqueProductNamesOrderedByName();
 
-   @Query("SELECT DISTINCT p.name FROM Product p WHERE p.source.name = ?1 ORDER BY name ASC")
+   @Query("SELECT DISTINCT p.name FROM Product p WHERE p.source.name = ?1 ORDER BY p.name ASC")
    List<String> getUniqueProductNamesBySource(String sourceName);
 
-   @Query("SELECT DISTINCT p.unit.name FROM Product p WHERE p.name = ?1 ORDER BY name ASC")
+   @Query("SELECT DISTINCT p.unit.name FROM Product p WHERE p.name = ?1 ORDER BY p.unit.name ASC")
    List<String> getUniqueUnitNamesByProductName(String productName);
 
-   @Query("SELECT DISTINCT p.unit.name FROM Product p WHERE p.name = ?1 AND p.source.name = ?2 ORDER BY name ASC")
+   @Query("SELECT DISTINCT p.unit.name FROM Product p WHERE p.name = ?1 AND p.source.name = ?2 ORDER BY p.unit.name ASC")
    List<String> getUniqueUnitNamesByProductNameAndSourceName(String productName, String sourceName);
 
-   @Query("SELECT DISTINCT p.price FROM Product p WHERE p.name = ?1 AND p.unit.name = ?2 ORDER BY price ASC")
+   @Query("SELECT DISTINCT p.price FROM Product p WHERE p.name = ?1 AND p.unit.name = ?2 ORDER BY p.price ASC")
    List<Double> getUniquePricesByProductNameAndUnitName(String productName, String unitName);
 
-   @Query("SELECT DISTINCT p.price FROM Product p WHERE p.name = ?1 AND p.source.name = ?2 AND p.unit.name = ?3 ORDER BY price ASC")
+   @Query("SELECT DISTINCT p.price FROM Product p WHERE p.name = ?1 AND p.source.name = ?2 AND p.unit.name = ?3 ORDER BY p.price ASC")
    List<Double> getUniquePricesByProductNameAndSourceNameAndUnitName(String productName,
                                                                      String sourceName,
                                                                      String unitName);

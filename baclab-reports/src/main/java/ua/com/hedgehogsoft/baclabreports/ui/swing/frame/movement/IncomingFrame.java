@@ -1,4 +1,4 @@
-package ua.com.hedgehogsoft.baclabreports.ui.swing;
+package ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
