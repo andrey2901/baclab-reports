@@ -29,7 +29,8 @@ public class MainFrame
    private String reportsButtonLabel;
    private String exitButtonLabel;
    private @Autowired ProductStorageTable table;
-   private @Autowired IncomingsFrame incomingsFrame;
+   private @Autowired IncomingFrame incomingsFrame;
+   private @Autowired OutcomingFrame outcomingsFrame;
 
    @Autowired
    public MainFrame(MessageByLocaleService messageByLocaleService)
@@ -56,7 +57,7 @@ public class MainFrame
       JButton incomingButton = new JButton(incomingButtonLabel);
       incomingButton.addActionListener(l -> incomingsFrame.init());
       JButton outcomingButton = new JButton(outcomingButtonLabel);
-      outcomingButton.addActionListener(null);
+      outcomingButton.addActionListener(l -> outcomingsFrame.init());
       JButton reportsButton = new JButton(reportsButtonLabel);
       reportsButton.addActionListener(new ActionListener()
       {

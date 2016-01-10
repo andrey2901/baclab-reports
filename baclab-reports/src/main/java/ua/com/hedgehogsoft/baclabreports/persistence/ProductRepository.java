@@ -10,22 +10,35 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 
+@Transactional(readOnly = true)
 public interface ProductRepository extends JpaRepository<Product, Long>
 {
-   @Transactional(readOnly = true)
    @Query("SELECT DISTINCT p.name FROM Product p ORDER BY name ASC")
    List<String> getUniqueProductNamesOrderedByName();
 
-   @Transactional(readOnly = true)
-   @Query("SELECT DISTINCT p.unit.name FROM Product p WHERE p.name = ?1")
+   @Query("SELECT DISTINCT p.name FROM Product p WHERE p.source.name = ?1 ORDER BY name ASC")
+   List<String> getUniqueProductNamesBySource(String sourceName);
+
+   @Query("SELECT DISTINCT p.unit.name FROM Product p WHERE p.name = ?1 ORDER BY name ASC")
    List<String> getUniqueUnitNamesByProductName(String productName);
 
-   @Transactional(readOnly = true)
-   @Query("SELECT DISTINCT p.price FROM Product p WHERE p.name = :productName AND p.unit.name = :unitName")
-   List<Double> getUniquePricesByProductNameAndUnitName(@Param("productName") String productName,
-                                                        @Param("unitName") String unitName);
+   @Query("SELECT DISTINCT p.unit.name FROM Product p WHERE p.name = ?1 AND p.source.name = ?2 ORDER BY name ASC")
+   List<String> getUniqueUnitNamesByProductNameAndSourceName(String productName, String sourceName);
 
-   @Transactional(readOnly = true)
+   @Query("SELECT DISTINCT p.price FROM Product p WHERE p.name = ?1 AND p.unit.name = ?2 ORDER BY price ASC")
+   List<Double> getUniquePricesByProductNameAndUnitName(String productName, String unitName);
+
+   @Query("SELECT DISTINCT p.price FROM Product p WHERE p.name = ?1 AND p.source.name = ?2 AND p.unit.name = ?3 ORDER BY price ASC")
+   List<Double> getUniquePricesByProductNameAndSourceNameAndUnitName(String productName,
+                                                                     String sourceName,
+                                                                     String unitName);
+
+   @Query("SELECT p.amount FROM Product p WHERE p.name = ?1 AND p.source.name = ?2 AND p.unit.name = ?3 AND p.price = ?4")
+   Double getAmountByProductNameAndSourceNameAndUnitNameAndPrice(String productName,
+                                                                 String sourceName,
+                                                                 String unitName,
+                                                                 double price);
+
    @Query("SELECT p FROM Product p WHERE p.name = ?1 AND p.price = ?2 AND p.source.id = ?3 AND p.unit.id = ?4")
    Product getProductByNameAndPriceAndSourceAndUnit(String name, Double price, Long sourceID, Long unitID);
 

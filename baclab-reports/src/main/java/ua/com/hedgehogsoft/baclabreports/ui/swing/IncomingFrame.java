@@ -41,9 +41,9 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
 
 @Component
-public class IncomingsFrame
+public class IncomingFrame
 {
-   private static final Logger logger = Logger.getLogger(IncomingsFrame.class);
+   private static final Logger logger = Logger.getLogger(IncomingFrame.class);
    private String title;
    private String productNameLabel;
    private String unitNameLabel;
@@ -51,7 +51,7 @@ public class IncomingsFrame
    private String amountNameLabel;
    private String sourceNameLabel;
    private String dateNameLabel;
-   private String incomingButtonName;
+   private String incomingButtonLabel;
    private String closeButtonLabel;
    private String popupErrorLabel;
    private String productEmptyErrorMessage;
@@ -80,16 +80,16 @@ public class IncomingsFrame
    private List<Unit> units;
 
    @Autowired
-   public IncomingsFrame(MessageByLocaleService messageByLocaleService)
+   public IncomingFrame(MessageByLocaleService messageByLocaleService)
    {
       title = messageByLocaleService.getMessage("frame.incoming.title");
-      productNameLabel = messageByLocaleService.getMessage("frame.incoming.product.label");
-      unitNameLabel = messageByLocaleService.getMessage("frame.incoming.unit.label");
-      priceNameLabel = messageByLocaleService.getMessage("frame.incoming.price.label");
-      amountNameLabel = messageByLocaleService.getMessage("frame.incoming.amount.label");
-      sourceNameLabel = messageByLocaleService.getMessage("frame.incoming.source.label");
-      dateNameLabel = messageByLocaleService.getMessage("frame.incoming.date.label");
-      incomingButtonName = messageByLocaleService.getMessage("button.debit.label");
+      productNameLabel = messageByLocaleService.getMessage("message.popup.inform.product.label");
+      unitNameLabel = messageByLocaleService.getMessage("message.popup.inform.unit.label");
+      priceNameLabel = messageByLocaleService.getMessage("message.popup.inform.price.label");
+      amountNameLabel = messageByLocaleService.getMessage("message.popup.inform.amount.label");
+      sourceNameLabel = messageByLocaleService.getMessage("message.popup.inform.source.label");
+      dateNameLabel = messageByLocaleService.getMessage("message.popup.inform.date.label");
+      incomingButtonLabel = messageByLocaleService.getMessage("button.debit.label");
       closeButtonLabel = messageByLocaleService.getMessage("button.close.label");
       popupErrorLabel = messageByLocaleService.getMessage("message.popup.error.label");
       productEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.product.empty.text");
@@ -97,7 +97,7 @@ public class IncomingsFrame
       priceEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.price.empty.text");
       amountEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.amount.empty.text");
       dateEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.date.empty.text");
-      totalPriceInformMessage = messageByLocaleService.getMessage("frame.incoming.summation.label");
+      totalPriceInformMessage = messageByLocaleService.getMessage("message.popup.inform.summation.label");
       incomingInformLabel = messageByLocaleService.getMessage("message.popup.inform.incoming.label");
    }
 
@@ -105,17 +105,17 @@ public class IncomingsFrame
    {
       datePickerImpl = datePicker.getDatePicker();
       units = (List<Unit>) unitRepository.findAll();
-      JFrame incomingsFrame = new JFrame(title);
-      incomingsFrame.addWindowListener(new WindowAdapter()
+      JFrame incomingFrame = new JFrame(title);
+      incomingFrame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            close(incomingsFrame);
+            close(incomingFrame);
          }
       });
       closeButton = new JButton(closeButtonLabel);
-      closeButton.addActionListener(l -> close(incomingsFrame));
-      incomingButton = new JButton(incomingButtonName);
+      closeButton.addActionListener(l -> close(incomingFrame));
+      incomingButton = new JButton(incomingButtonLabel);
       incomingButton.addActionListener(new ActionListener()
       {
          @Override
@@ -188,7 +188,7 @@ public class IncomingsFrame
                   panel.add(new JLabel(Double.toString(product.getTotalPrice())));
                   JOptionPane.showMessageDialog(null, panel, incomingInformLabel, JOptionPane.INFORMATION_MESSAGE);
                }
-               close(incomingsFrame);
+               close(incomingFrame);
             }
          }
       });
@@ -286,13 +286,13 @@ public class IncomingsFrame
             }
          }
       });
-      incomingsFrame.add(incomingPanel, BorderLayout.CENTER);
-      incomingsFrame.add(buttonsPanel, BorderLayout.SOUTH);
-      incomingsFrame.setSize(700, 225);
-      incomingsFrame.setMinimumSize(new Dimension(375, 225));
-      incomingsFrame.setResizable(true);
-      incomingsFrame.setLocationRelativeTo(null);
-      incomingsFrame.setVisible(true);
+      incomingFrame.add(incomingPanel, BorderLayout.CENTER);
+      incomingFrame.add(buttonsPanel, BorderLayout.SOUTH);
+      incomingFrame.setSize(700, 225);
+      incomingFrame.setMinimumSize(new Dimension(375, 225));
+      incomingFrame.setResizable(true);
+      incomingFrame.setLocationRelativeTo(null);
+      incomingFrame.setVisible(true);
       logger.info("IncomingsFrame was started.");
    }
 
