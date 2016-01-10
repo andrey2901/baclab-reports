@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -17,7 +16,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -37,6 +35,7 @@ import ua.com.hedgehogsoft.baclabreports.persistence.SourceRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.UnitRepository;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup.IncomingPopupMessager;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
 
@@ -53,14 +52,6 @@ public class IncomingFrame
    private String dateNameLabel;
    private String incomingButtonLabel;
    private String closeButtonLabel;
-   private String popupErrorLabel;
-   private String productEmptyErrorMessage;
-   private String unitEmptyErrorMessage;
-   private String priceEmptyErrorMessage;
-   private String amountEmptyErrorMessage;
-   private String dateEmptyErrorMessage;
-   private String totalPriceInformMessage;
-   private String incomingInformLabel;
 
    private @Autowired DatePicker datePicker;
    private @Autowired UnitRepository unitRepository;
@@ -68,6 +59,7 @@ public class IncomingFrame
    private @Autowired ProductRepository productRepository;
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired ProductStorageTable productStorageTable;
+   private @Autowired IncomingPopupMessager incomingPopupMessager;
 
    private JDatePickerImpl datePickerImpl;
    private JButton closeButton;
@@ -91,14 +83,6 @@ public class IncomingFrame
       dateNameLabel = messageByLocaleService.getMessage("message.popup.inform.date.label");
       incomingButtonLabel = messageByLocaleService.getMessage("button.debit.label");
       closeButtonLabel = messageByLocaleService.getMessage("button.close.label");
-      popupErrorLabel = messageByLocaleService.getMessage("message.popup.error.label");
-      productEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.product.empty.text");
-      unitEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.unit.empty.text");
-      priceEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.price.empty.text");
-      amountEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.amount.empty.text");
-      dateEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.date.empty.text");
-      totalPriceInformMessage = messageByLocaleService.getMessage("message.popup.inform.summation.label");
-      incomingInformLabel = messageByLocaleService.getMessage("message.popup.inform.incoming.label");
    }
 
    public void init()
@@ -173,20 +157,7 @@ public class IncomingFrame
                   incoming.setDate(date);
                   incomingRepository.save(incoming);
                   logger.info("Incomings were performed.");
-                  JPanel panel = new JPanel(new GridLayout(6, 2));
-                  panel.add(new JLabel(productNameLabel + " "));
-                  panel.add(new JLabel(product.getName()));
-                  panel.add(new JLabel(amountNameLabel));
-                  panel.add(new JLabel(Double.toString(product.getAmount())));
-                  panel.add(new JLabel(unitNameLabel));
-                  panel.add(new JLabel(product.getUnit().getName()));
-                  panel.add(new JLabel(priceNameLabel));
-                  panel.add(new JLabel(Double.toString(product.getPrice())));
-                  panel.add(new JLabel(sourceNameLabel));
-                  panel.add(new JLabel(product.getSource().getName()));
-                  panel.add(new JLabel(totalPriceInformMessage));
-                  panel.add(new JLabel(Double.toString(product.getTotalPrice())));
-                  JOptionPane.showMessageDialog(null, panel, incomingInformLabel, JOptionPane.INFORMATION_MESSAGE);
+                  incomingPopupMessager.infoPopup(product);
                }
                close(incomingFrame);
             }
@@ -302,28 +273,28 @@ public class IncomingFrame
 
       if (incomingNameComboBox.getSelectedItem() == null || ((String) incomingNameComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, productEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         incomingPopupMessager.productEmpty();
          result = false;
       }
       if (incomingUnitComboBox.getSelectedItem() == null || ((String) incomingUnitComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, unitEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         incomingPopupMessager.unitEmpty();
          result = false;
       }
       if (incomingCostComboBox.getSelectedItem() == null || ((String) incomingCostComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, priceEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         incomingPopupMessager.priceEmpty();
          result = false;
       }
       if (incomingAmountTextField.getText() == null || incomingAmountTextField.getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, amountEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         incomingPopupMessager.amountEmpty();
          result = false;
       }
       if (datePickerImpl.getJFormattedTextField().getText() == null
             || datePickerImpl.getJFormattedTextField().getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, dateEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         incomingPopupMessager.dateEmpty();
          result = false;
       }
       return result;

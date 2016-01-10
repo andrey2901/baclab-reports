@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -15,7 +14,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -34,6 +32,7 @@ import ua.com.hedgehogsoft.baclabreports.persistence.SourceRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.UnitRepository;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup.OutcomingPopupMessager;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
 
@@ -48,19 +47,8 @@ public class OutcomingFrame
    private String amountNameLabel;
    private String sourceNameLabel;
    private String dateNameLabel;
-   private String totalPriceInformMessage;
    private String outcomingButtonLabel;
    private String closeButtonLabel;
-   private String outcomingInformLabel;
-   private String popupErrorLabel;
-   private String amountInsufficientOnDateErrorMessage;
-   private String amountInsufficientErrorMessage;
-
-   private String productEmptyErrorMessage;
-   private String unitEmptyErrorMessage;
-   private String priceEmptyErrorMessage;
-   private String amountEmptyErrorMessage;
-   private String dateEmptyErrorMessage;
 
    private @Autowired DatePicker datePicker;
    private @Autowired UnitRepository unitRepository;
@@ -68,6 +56,7 @@ public class OutcomingFrame
    private @Autowired ProductRepository productRepository;
    private @Autowired ProductStorageTable productStorageTable;
    private @Autowired OutcomingRepository outcomingRepository;
+   private @Autowired OutcomingPopupMessager outcomingPopupMessager;
 
    private JDatePickerImpl datePickerImpl;
    private JButton closeButton;
@@ -88,20 +77,8 @@ public class OutcomingFrame
       amountNameLabel = messageByLocaleService.getMessage("message.popup.inform.amount.label");
       sourceNameLabel = messageByLocaleService.getMessage("message.popup.inform.source.label");
       dateNameLabel = messageByLocaleService.getMessage("message.popup.inform.date.label");
-      totalPriceInformMessage = messageByLocaleService.getMessage("message.popup.inform.summation.label");
       outcomingButtonLabel = messageByLocaleService.getMessage("button.credit.label");
       closeButtonLabel = messageByLocaleService.getMessage("button.close.label");
-      outcomingInformLabel = messageByLocaleService.getMessage("message.popup.inform.outcoming.label");
-      popupErrorLabel = messageByLocaleService.getMessage("message.popup.error.label");
-      amountInsufficientOnDateErrorMessage = messageByLocaleService
-            .getMessage("message.popup.error.amount.insufficient.on.date.text");
-      amountInsufficientErrorMessage = messageByLocaleService
-            .getMessage("message.popup.error.amount.insufficient.text");
-      productEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.product.empty.text");
-      unitEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.unit.empty.text");
-      priceEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.price.empty.text");
-      amountEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.amount.empty.text");
-      dateEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.date.empty.text");
    }
 
    public void init()
@@ -177,22 +154,7 @@ public class OutcomingFrame
 
                            logger.info("Outcomings were performed.");
 
-                           JPanel panel = new JPanel(new GridLayout(6, 2));
-                           panel.add(new JLabel(productNameLabel + " "));
-                           panel.add(new JLabel(product.getName()));
-                           panel.add(new JLabel(amountNameLabel));
-                           panel.add(new JLabel(Double.toString(product.getAmount())));
-                           panel.add(new JLabel(unitNameLabel));
-                           panel.add(new JLabel(product.getUnit().getName()));
-                           panel.add(new JLabel(priceNameLabel));
-                           panel.add(new JLabel(Double.toString(product.getPrice())));
-                           panel.add(new JLabel(sourceNameLabel));
-                           panel.add(new JLabel(product.getSource().getName()));
-                           panel.add(new JLabel(totalPriceInformMessage));
-                           panel.add(new JLabel(Double.toString(product.getTotalPrice())));
-
-                           JOptionPane.showMessageDialog(null, panel, outcomingInformLabel,
-                                 JOptionPane.INFORMATION_MESSAGE);
+                           outcomingPopupMessager.infoPopup(product);
 
                            close(outcomingFrame);
                         }
@@ -200,14 +162,12 @@ public class OutcomingFrame
                   }
                   else
                   {
-                     JOptionPane.showMessageDialog(null, amountInsufficientOnDateErrorMessage, popupErrorLabel,
-                           JOptionPane.ERROR_MESSAGE);
+                     outcomingPopupMessager.amountInsufficientOnDate();
                   }
                }
                else
                {
-                  JOptionPane.showMessageDialog(null, amountInsufficientErrorMessage, popupErrorLabel,
-                        JOptionPane.ERROR_MESSAGE);
+                  outcomingPopupMessager.amountInsufficient();
                }
                close(outcomingFrame);
             }
@@ -376,30 +336,30 @@ public class OutcomingFrame
       if (outcomingNameComboBox.getSelectedItem() == null
             || ((String) outcomingNameComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, productEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         outcomingPopupMessager.productEmpty();
          result = false;
       }
       if (outcomingUnitComboBox.getSelectedItem() == null
             || ((String) outcomingUnitComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, unitEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         outcomingPopupMessager.unitEmpty();
          result = false;
       }
       if (outcomingCostComboBox.getSelectedItem() == null
             || ((String) outcomingCostComboBox.getSelectedItem()).isEmpty())
       {
-         JOptionPane.showMessageDialog(null, priceEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         outcomingPopupMessager.priceEmpty();
          result = false;
       }
       if (outcomingAmountTextField.getText() == null || outcomingAmountTextField.getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, amountEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         outcomingPopupMessager.amountEmpty();
          result = false;
       }
       if (datePickerImpl.getJFormattedTextField().getText() == null
             || datePickerImpl.getJFormattedTextField().getText().isEmpty())
       {
-         JOptionPane.showMessageDialog(null, dateEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         outcomingPopupMessager.dateEmpty();
          result = false;
       }
       return result;
@@ -438,45 +398,50 @@ public class OutcomingFrame
     */
    private boolean isReversible(Product existedProduct, double outcomingAmount, String date)
    {
-//      Calendar cal = Calendar.getInstance();
-//      cal.set(Calendar.HOUR_OF_DAY, 0);
-//      cal.set(Calendar.MINUTE, 0);
-//      cal.set(Calendar.SECOND, 0);
-//      cal.set(Calendar.MILLISECOND, 0);
-//
-//      Date today = cal.getTime();
-//
-//      DateLabelFormatter formatter = new DateLabelFormatter();
-//
-//      Date destinationDate = (Date) formatter.stringToValue(date);
-//
-//      while (destinationDate.before(today))
-//      {
-//         double incomingsSum = new Connection().getIncomingsSumFromDate(existedProduct.getId(),
-//               formatter.dateToString(destinationDate));
-//
-//         double outcomingsSum = new Connection().getOutcomingsSumFromDate(existedProduct.getId(),
-//               formatter.dateToString(destinationDate));
-//
-//         double remainsAmount = existedProduct.getAmount() + outcomingsSum - incomingsSum;
-//
-//         double incomingSumOnDate = new Connection().getIncomingSumOnDate(existedProduct.getId(),
-//               formatter.dateToString(destinationDate));
-//
-//         double outcomingSumOnDate = new Connection().getOutcomingSumOnDate(existedProduct.getId(),
-//               formatter.dateToString(destinationDate));
-//
-//         remainsAmount = remainsAmount + incomingSumOnDate - outcomingSumOnDate;
-//
-//         if (remainsAmount < outcomingAmount)
-//         {
-//            return false;
-//         }
-//
-//         cal.setTime(destinationDate);
-//         cal.add(Calendar.DATE, 1);
-//         destinationDate = cal.getTime();
-//      }
+      // Calendar cal = Calendar.getInstance();
+      // cal.set(Calendar.HOUR_OF_DAY, 0);
+      // cal.set(Calendar.MINUTE, 0);
+      // cal.set(Calendar.SECOND, 0);
+      // cal.set(Calendar.MILLISECOND, 0);
+      //
+      // Date today = cal.getTime();
+      //
+      // DateLabelFormatter formatter = new DateLabelFormatter();
+      //
+      // Date destinationDate = (Date) formatter.stringToValue(date);
+      //
+      // while (destinationDate.before(today))
+      // {
+      // double incomingsSum = new
+      // Connection().getIncomingsSumFromDate(existedProduct.getId(),
+      // formatter.dateToString(destinationDate));
+      //
+      // double outcomingsSum = new
+      // Connection().getOutcomingsSumFromDate(existedProduct.getId(),
+      // formatter.dateToString(destinationDate));
+      //
+      // double remainsAmount = existedProduct.getAmount() + outcomingsSum -
+      // incomingsSum;
+      //
+      // double incomingSumOnDate = new
+      // Connection().getIncomingSumOnDate(existedProduct.getId(),
+      // formatter.dateToString(destinationDate));
+      //
+      // double outcomingSumOnDate = new
+      // Connection().getOutcomingSumOnDate(existedProduct.getId(),
+      // formatter.dateToString(destinationDate));
+      //
+      // remainsAmount = remainsAmount + incomingSumOnDate - outcomingSumOnDate;
+      //
+      // if (remainsAmount < outcomingAmount)
+      // {
+      // return false;
+      // }
+      //
+      // cal.setTime(destinationDate);
+      // cal.add(Calendar.DATE, 1);
+      // destinationDate = cal.getTime();
+      // }
 
       return true;
    }
