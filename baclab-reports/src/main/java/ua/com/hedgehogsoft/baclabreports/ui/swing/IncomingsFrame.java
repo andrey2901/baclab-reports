@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -25,12 +27,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
+import ua.com.hedgehogsoft.baclabreports.model.Incoming;
+import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
 import ua.com.hedgehogsoft.baclabreports.model.Unit;
+import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.SourceRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.UnitRepository;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
 
 @Component
 public class IncomingsFrame
@@ -51,11 +59,15 @@ public class IncomingsFrame
    private String priceEmptyErrorMessage;
    private String amountEmptyErrorMessage;
    private String dateEmptyErrorMessage;
+   private String totalPriceInformMessage;
+   private String incomingInformLabel;
 
    private @Autowired DatePicker datePicker;
    private @Autowired UnitRepository unitRepository;
    private @Autowired SourceRepository sourceRepository;
    private @Autowired ProductRepository productRepository;
+   private @Autowired IncomingRepository incomingRepository;
+   private @Autowired ProductStorageTable productStorageTable;
 
    private JDatePickerImpl datePickerImpl;
    private JButton closeButton;
@@ -85,6 +97,8 @@ public class IncomingsFrame
       priceEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.price.empty.text");
       amountEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.amount.empty.text");
       dateEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.date.empty.text");
+      totalPriceInformMessage = messageByLocaleService.getMessage("frame.incoming.summation.label");
+      incomingInformLabel = messageByLocaleService.getMessage("message.popup.inform.incoming.label");
    }
 
    public void init()
@@ -102,7 +116,82 @@ public class IncomingsFrame
       closeButton = new JButton(closeButtonLabel);
       closeButton.addActionListener(l -> close(incomingsFrame));
       incomingButton = new JButton(incomingButtonName);
-      incomingButton.addActionListener(null);
+      incomingButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            if (checkInputData())
+            {
+               if (!checkUnitByName((String) incomingUnitComboBox.getSelectedItem()))
+               {
+                  Unit unit = new Unit();
+                  unit.setName((String) incomingUnitComboBox.getSelectedItem());
+                  unit = unitRepository.save(unit);
+                  if (unit.getId() != null)
+                  {
+                     units.add(unit);
+                  }
+               }
+               Product product = new Product();
+               product.setName((String) incomingNameComboBox.getSelectedItem());
+               product.setPrice(Double.valueOf(((String) incomingCostComboBox.getSelectedItem()).replace(",", ".")));
+               product.setAmount(Double.valueOf(incomingAmountTextField.getText().replace(",", ".")));
+               product.setSource(sourceRepository.findByName((String) incomingSourceComboBox.getSelectedItem()));
+               product.setUnit(unitRepository.findByName((String) incomingUnitComboBox.getSelectedItem()));
+               Product existedProduct = productRepository.getProductByNameAndPriceAndSourceAndUnit(product.getName(),
+                     product.getPrice(), product.getSource().getId(), product.getUnit().getId());
+               boolean wasUpdated = false;
+               if (existedProduct == null)
+               {
+                  existedProduct = productRepository.save(product);
+                  if (existedProduct != null)
+                  {
+                     ProductStoreTableModel model = (ProductStoreTableModel) productStorageTable.getModel();
+                     model.addProduct(product);
+                     wasUpdated = true;
+                  }
+               }
+               else
+               {
+                  existedProduct.setAmount(product.getAmount() + existedProduct.getAmount());
+                  if (productRepository.updateAmount(existedProduct.getId(), existedProduct.getAmount()) != 0)
+                  {
+                     ProductStoreTableModel model = (ProductStoreTableModel) productStorageTable.getModel();
+                     model.updateProduct(existedProduct);
+                     wasUpdated = true;
+                  }
+               }
+
+               if (wasUpdated)
+               {
+                  Incoming incoming = new Incoming();
+                  incoming.setProduct(existedProduct);
+                  incoming.setAmount(product.getAmount());
+                  DateLabelFormatter formatter = new DateLabelFormatter();
+                  Date date = (Date) formatter.stringToValue(datePickerImpl.getJFormattedTextField().getText());
+                  incoming.setDate(date);
+                  incomingRepository.save(incoming);
+                  logger.info("Incomings were performed.");
+                  JPanel panel = new JPanel(new GridLayout(6, 2));
+                  panel.add(new JLabel(productNameLabel + " "));
+                  panel.add(new JLabel(product.getName()));
+                  panel.add(new JLabel(amountNameLabel));
+                  panel.add(new JLabel(Double.toString(product.getAmount())));
+                  panel.add(new JLabel(unitNameLabel));
+                  panel.add(new JLabel(product.getUnit().getName()));
+                  panel.add(new JLabel(priceNameLabel));
+                  panel.add(new JLabel(Double.toString(product.getPrice())));
+                  panel.add(new JLabel(sourceNameLabel));
+                  panel.add(new JLabel(product.getSource().getName()));
+                  panel.add(new JLabel(totalPriceInformMessage));
+                  panel.add(new JLabel(Double.toString(product.getTotalPrice())));
+                  JOptionPane.showMessageDialog(null, panel, incomingInformLabel, JOptionPane.INFORMATION_MESSAGE);
+               }
+               close(incomingsFrame);
+            }
+         }
+      });
       JPanel buttonsPanel = new JPanel();
       buttonsPanel.add(incomingButton);
       buttonsPanel.add(closeButton);
@@ -238,6 +327,17 @@ public class IncomingsFrame
          result = false;
       }
       return result;
+   }
+
+   private boolean checkUnitByName(String name)
+   {
+      for (Unit unit : units)
+      {
+         if (unit.getName().equals(name))
+            return true;
+      }
+
+      return false;
    }
 
    private GridBagConstraints position(int x, int y)
