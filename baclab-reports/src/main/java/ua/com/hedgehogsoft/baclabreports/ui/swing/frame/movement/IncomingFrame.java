@@ -2,7 +2,6 @@ package ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,18 +39,11 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
 
 @Component
-public class IncomingFrame
+public class IncomingFrame extends MovementFrame
 {
    private static final Logger logger = Logger.getLogger(IncomingFrame.class);
    private String title;
-   private String productNameLabel;
-   private String unitNameLabel;
-   private String priceNameLabel;
-   private String amountNameLabel;
-   private String sourceNameLabel;
-   private String dateNameLabel;
    private String incomingButtonLabel;
-   private String closeButtonLabel;
 
    private @Autowired DatePicker datePicker;
    private @Autowired UnitRepository unitRepository;
@@ -74,15 +66,9 @@ public class IncomingFrame
    @Autowired
    public IncomingFrame(MessageByLocaleService messageByLocaleService)
    {
+      super(messageByLocaleService);
       title = messageByLocaleService.getMessage("frame.incoming.title");
-      productNameLabel = messageByLocaleService.getMessage("message.popup.inform.product.label");
-      unitNameLabel = messageByLocaleService.getMessage("message.popup.inform.unit.label");
-      priceNameLabel = messageByLocaleService.getMessage("message.popup.inform.price.label");
-      amountNameLabel = messageByLocaleService.getMessage("message.popup.inform.amount.label");
-      sourceNameLabel = messageByLocaleService.getMessage("message.popup.inform.source.label");
-      dateNameLabel = messageByLocaleService.getMessage("message.popup.inform.date.label");
       incomingButtonLabel = messageByLocaleService.getMessage("button.debit.label");
-      closeButtonLabel = messageByLocaleService.getMessage("button.close.label");
    }
 
    public void init()
@@ -309,27 +295,6 @@ public class IncomingFrame
       }
 
       return false;
-   }
-
-   private GridBagConstraints position(int x, int y)
-   {
-      GridBagConstraints c = new GridBagConstraints();
-      c.fill = GridBagConstraints.HORIZONTAL;
-      switch (x)
-      {
-         case 0:
-            c.gridx = 0;
-            c.weightx = 0;
-            c.gridwidth = 1;
-            break;
-         case 1:
-            c.gridx = 1;
-            c.weightx = 10;
-            c.gridwidth = 3;
-            break;
-      }
-      c.gridy = y;
-      return c;
    }
 
    private void close(JFrame frame)
