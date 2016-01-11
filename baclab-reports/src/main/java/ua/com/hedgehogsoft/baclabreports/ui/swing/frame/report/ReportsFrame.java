@@ -26,7 +26,6 @@ public class ReportsFrame extends Frame
    private String outcomingsReportButtonLabel;
    private String closeButtonLabel;
 
-   private JFrame reportsFrame;
    private JButton remainsReportButton;
    private JButton actReportButton;
    private JButton finalReportButton;
@@ -48,8 +47,8 @@ public class ReportsFrame extends Frame
 
    public void init()
    {
-      reportsFrame = new JFrame(title);
-      reportsFrame.addWindowListener(new WindowAdapter()
+      frame = new JFrame(title);
+      frame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
@@ -95,22 +94,22 @@ public class ReportsFrame extends Frame
 
       buttonsPanel.add(closeButton);
 
-      reportsFrame.add(buttonsPanel, BorderLayout.CENTER);
+      frame.add(buttonsPanel, BorderLayout.CENTER);
 
-      reportsFrame.pack();
+      frame.pack();
 
-      reportsFrame.setResizable(false);
+      frame.setResizable(false);
 
-      reportsFrame.setLocationRelativeTo(null);
+      frame.setLocationRelativeTo(null);
 
-      reportsFrame.setVisible(true);
+      frame.setVisible(true);
 
       logger.info("ReportsFrame was started.");
    }
 
-   private void close()
+   @Override
+   protected Logger getLogger()
    {
-      reportsFrame.dispose();
-      logger.info("ReportsFrame was closed.");
+      return logger;
    }
 }

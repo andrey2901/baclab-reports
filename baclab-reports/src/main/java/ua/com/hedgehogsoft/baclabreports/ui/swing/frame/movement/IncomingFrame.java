@@ -35,12 +35,11 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableM
 public class IncomingFrame extends MovementFrame
 {
    private static final Logger logger = Logger.getLogger(IncomingFrame.class);
-   private String incomingButtonLabel;
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired IncomingPopupMessager incomingPopupMessager;
-   private JFrame incomingFrame;
-   private JButton closeButton;
+   private String incomingButtonLabel;
    private JButton incomingButton;
+   private JButton closeButton;
    private List<Unit> units;
 
    protected void localize()
@@ -54,8 +53,8 @@ public class IncomingFrame extends MovementFrame
    {
       datePickerImpl = datePicker.getDatePicker();
       units = (List<Unit>) unitRepository.findAll();
-      incomingFrame = new JFrame(title);
-      incomingFrame.addWindowListener(new WindowAdapter()
+      frame = new JFrame(title);
+      frame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
@@ -222,13 +221,13 @@ public class IncomingFrame extends MovementFrame
             }
          }
       });
-      incomingFrame.add(incomingPanel, BorderLayout.CENTER);
-      incomingFrame.add(buttonsPanel, BorderLayout.SOUTH);
-      incomingFrame.setSize(700, 225);
-      incomingFrame.setMinimumSize(new Dimension(375, 225));
-      incomingFrame.setResizable(true);
-      incomingFrame.setLocationRelativeTo(null);
-      incomingFrame.setVisible(true);
+      frame.add(incomingPanel, BorderLayout.CENTER);
+      frame.add(buttonsPanel, BorderLayout.SOUTH);
+      frame.setSize(700, 225);
+      frame.setMinimumSize(new Dimension(375, 225));
+      frame.setResizable(true);
+      frame.setLocationRelativeTo(null);
+      frame.setVisible(true);
       logger.info("IncomingsFrame was started.");
    }
 
@@ -243,9 +242,9 @@ public class IncomingFrame extends MovementFrame
       return false;
    }
 
-   private void close()
+   @Override
+   protected Logger getLogger()
    {
-      incomingFrame.dispose();
-      logger.info("IncomingsFrame was closed.");
+      return logger;
    }
 }

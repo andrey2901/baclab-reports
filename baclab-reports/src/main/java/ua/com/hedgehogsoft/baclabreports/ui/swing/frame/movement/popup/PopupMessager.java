@@ -1,10 +1,13 @@
 package ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup;
 
+import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 
-import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.Frame;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class PopupMessager extends Frame
+import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
+
+public abstract class PopupMessager
 {
    protected String productNameLabel;
    protected String unitNameLabel;
@@ -21,6 +24,9 @@ public abstract class PopupMessager extends Frame
    protected String amountEmptyErrorMessage;
    protected String dateEmptyErrorMessage;
 
+   protected @Autowired MessageByLocaleService messageByLocaleService;
+
+   @PostConstruct
    protected void localize()
    {
       productNameLabel = messageByLocaleService.getMessage("message.popup.info.product.label");

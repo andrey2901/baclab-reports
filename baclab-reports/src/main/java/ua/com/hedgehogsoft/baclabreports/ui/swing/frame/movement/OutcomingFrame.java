@@ -34,14 +34,12 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableM
 public class OutcomingFrame extends MovementFrame
 {
    private static final Logger logger = Logger.getLogger(OutcomingFrame.class);
-   private String outcomingButtonLabel;
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired OutcomingRepository outcomingRepository;
    private @Autowired OutcomingPopupMessager outcomingPopupMessager;
-   private JFrame outcomingFrame;
-   private JButton closeButton;
+   private String outcomingButtonLabel;
    private JButton outcomingButton;
-   private JComboBox<String> unitComboBox;
+   private JButton closeButton;
 
    protected void localize()
    {
@@ -54,9 +52,9 @@ public class OutcomingFrame extends MovementFrame
    {
       datePickerImpl = datePicker.getDatePicker();
 
-      outcomingFrame = new JFrame(title);
+      frame = new JFrame(title);
 
-      outcomingFrame.addWindowListener(new WindowAdapter()
+      frame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
@@ -273,27 +271,21 @@ public class OutcomingFrame extends MovementFrame
 
       sourceComboBox.setSelectedIndex(0);
 
-      outcomingFrame.add(outcomingPanel, BorderLayout.CENTER);
+      frame.add(outcomingPanel, BorderLayout.CENTER);
 
-      outcomingFrame.add(buttonsPanel, BorderLayout.SOUTH);
+      frame.add(buttonsPanel, BorderLayout.SOUTH);
 
-      outcomingFrame.setSize(700, 225);
+      frame.setSize(700, 225);
 
-      outcomingFrame.setMinimumSize(new Dimension(375, 225));
+      frame.setMinimumSize(new Dimension(375, 225));
 
-      outcomingFrame.setResizable(true);
+      frame.setResizable(true);
 
-      outcomingFrame.setLocationRelativeTo(null);
+      frame.setLocationRelativeTo(null);
 
-      outcomingFrame.setVisible(true);
+      frame.setVisible(true);
 
       logger.info("OutcomingsFrame was started.");
-   }
-
-   private void close()
-   {
-      outcomingFrame.dispose();
-      logger.info("OutcomingsFrame was closed.");
    }
 
    /*
@@ -341,5 +333,11 @@ public class OutcomingFrame extends MovementFrame
       }
 
       return true;
+   }
+
+   @Override
+   protected Logger getLogger()
+   {
+      return logger;
    }
 }
