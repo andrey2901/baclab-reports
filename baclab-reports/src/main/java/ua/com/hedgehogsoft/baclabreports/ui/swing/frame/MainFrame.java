@@ -1,8 +1,6 @@
 package ua.com.hedgehogsoft.baclabreports.ui.swing.frame;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Component;
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.IncomingFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.OutcomingFrame;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportsFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 
 @Component
@@ -33,6 +32,7 @@ public class MainFrame
    private @Autowired ProductStorageTable table;
    private @Autowired IncomingFrame incomingFrame;
    private @Autowired OutcomingFrame outcomingFrame;
+   private @Autowired ReportsFrame reportsFrame;
 
    @Autowired
    public MainFrame(MessageByLocaleService messageByLocaleService)
@@ -61,14 +61,7 @@ public class MainFrame
       JButton outcomingButton = new JButton(outcomingButtonLabel);
       outcomingButton.addActionListener(l -> outcomingFrame.init());
       JButton reportsButton = new JButton(reportsButtonLabel);
-      reportsButton.addActionListener(new ActionListener()
-      {
-         @Override
-         public void actionPerformed(ActionEvent e)
-         {
-            // new ReportsFrame();
-         }
-      });
+      reportsButton.addActionListener(l -> reportsFrame.init());
       JButton exitButton = new JButton(exitButtonLabel);
       exitButton.addActionListener(l -> close());
       JPanel comingButtonPanel = new JPanel();

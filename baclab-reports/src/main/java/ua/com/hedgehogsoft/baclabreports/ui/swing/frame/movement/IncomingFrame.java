@@ -35,12 +35,10 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableM
 public class IncomingFrame extends MovementFrame
 {
    private static final Logger logger = Logger.getLogger(IncomingFrame.class);
-   private String title;
    private String incomingButtonLabel;
-
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired IncomingPopupMessager incomingPopupMessager;
-
+   private JFrame incomingFrame;
    private JButton closeButton;
    private JButton incomingButton;
    private List<Unit> units;
@@ -56,16 +54,16 @@ public class IncomingFrame extends MovementFrame
    {
       datePickerImpl = datePicker.getDatePicker();
       units = (List<Unit>) unitRepository.findAll();
-      JFrame incomingFrame = new JFrame(title);
+      incomingFrame = new JFrame(title);
       incomingFrame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            close(incomingFrame);
+            close();
          }
       });
       closeButton = new JButton(closeButtonLabel);
-      closeButton.addActionListener(l -> close(incomingFrame));
+      closeButton.addActionListener(l -> close());
       incomingButton = new JButton(incomingButtonLabel);
       incomingButton.addActionListener(new ActionListener()
       {
@@ -126,7 +124,7 @@ public class IncomingFrame extends MovementFrame
                   logger.info("Incomings were performed.");
                   incomingPopupMessager.infoPopup(product);
                }
-               close(incomingFrame);
+               close();
             }
          }
       });
@@ -245,9 +243,9 @@ public class IncomingFrame extends MovementFrame
       return false;
    }
 
-   private void close(JFrame frame)
+   private void close()
    {
-      frame.dispose();
+      incomingFrame.dispose();
       logger.info("IncomingsFrame was closed.");
    }
 }

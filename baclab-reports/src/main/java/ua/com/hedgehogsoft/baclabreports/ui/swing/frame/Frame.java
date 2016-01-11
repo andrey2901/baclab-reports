@@ -8,6 +8,7 @@ import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 
 public abstract class Frame
 {
+   protected String title;
    protected @Autowired MessageByLocaleService messageByLocaleService;
 
    @PostConstruct

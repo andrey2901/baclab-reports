@@ -34,13 +34,11 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableM
 public class OutcomingFrame extends MovementFrame
 {
    private static final Logger logger = Logger.getLogger(OutcomingFrame.class);
-   private String title;
    private String outcomingButtonLabel;
-
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired OutcomingRepository outcomingRepository;
    private @Autowired OutcomingPopupMessager outcomingPopupMessager;
-
+   private JFrame outcomingFrame;
    private JButton closeButton;
    private JButton outcomingButton;
    private JComboBox<String> unitComboBox;
@@ -56,26 +54,19 @@ public class OutcomingFrame extends MovementFrame
    {
       datePickerImpl = datePicker.getDatePicker();
 
-      JFrame outcomingFrame = new JFrame(title);
+      outcomingFrame = new JFrame(title);
 
       outcomingFrame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            close(outcomingFrame);
+            close();
          }
       });
 
       closeButton = new JButton(closeButtonLabel);
 
-      closeButton.addActionListener(new ActionListener()
-      {
-         @Override
-         public void actionPerformed(ActionEvent e)
-         {
-            close(outcomingFrame);
-         }
-      });
+      closeButton.addActionListener(l -> close());
 
       outcomingButton = new JButton(outcomingButtonLabel);
 
@@ -127,7 +118,7 @@ public class OutcomingFrame extends MovementFrame
 
                            outcomingPopupMessager.infoPopup(product);
 
-                           close(outcomingFrame);
+                           close();
                         }
                      }
                   }
@@ -140,7 +131,7 @@ public class OutcomingFrame extends MovementFrame
                {
                   outcomingPopupMessager.amountInsufficient();
                }
-               close(outcomingFrame);
+               close();
             }
          }
       });
@@ -151,7 +142,6 @@ public class OutcomingFrame extends MovementFrame
 
       buttonsPanel.add(closeButton);
 
-      /*--------------------------------------------------------------*/
       JPanel outcomingPanel = new JPanel(new GridBagLayout());
 
       sourceComboBox = new JComboBox<String>();
@@ -300,9 +290,9 @@ public class OutcomingFrame extends MovementFrame
       logger.info("OutcomingsFrame was started.");
    }
 
-   private void close(JFrame frame)
+   private void close()
    {
-      frame.dispose();
+      outcomingFrame.dispose();
       logger.info("OutcomingsFrame was closed.");
    }
 
