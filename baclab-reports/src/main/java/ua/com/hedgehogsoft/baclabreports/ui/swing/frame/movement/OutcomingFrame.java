@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JButton;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 import ua.com.hedgehogsoft.baclabreports.model.Outcoming;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
+import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup.OutcomingPopupMessager;
@@ -35,6 +37,7 @@ public class OutcomingFrame extends MovementFrame
    private String title;
    private String outcomingButtonLabel;
 
+   private @Autowired IncomingRepository incomingRepository;
    private @Autowired OutcomingRepository outcomingRepository;
    private @Autowired OutcomingPopupMessager outcomingPopupMessager;
 
@@ -309,50 +312,43 @@ public class OutcomingFrame extends MovementFrame
     */
    private boolean isReversible(Product existedProduct, double outcomingAmount, String date)
    {
-      // Calendar cal = Calendar.getInstance();
-      // cal.set(Calendar.HOUR_OF_DAY, 0);
-      // cal.set(Calendar.MINUTE, 0);
-      // cal.set(Calendar.SECOND, 0);
-      // cal.set(Calendar.MILLISECOND, 0);
-      //
-      // Date today = cal.getTime();
-      //
-      // DateLabelFormatter formatter = new DateLabelFormatter();
-      //
-      // Date destinationDate = (Date) formatter.stringToValue(date);
-      //
-      // while (destinationDate.before(today))
-      // {
-      // double incomingsSum = new
-      // Connection().getIncomingsSumFromDate(existedProduct.getId(),
-      // formatter.dateToString(destinationDate));
-      //
-      // double outcomingsSum = new
-      // Connection().getOutcomingsSumFromDate(existedProduct.getId(),
-      // formatter.dateToString(destinationDate));
-      //
-      // double remainsAmount = existedProduct.getAmount() + outcomingsSum -
-      // incomingsSum;
-      //
-      // double incomingSumOnDate = new
-      // Connection().getIncomingSumOnDate(existedProduct.getId(),
-      // formatter.dateToString(destinationDate));
-      //
-      // double outcomingSumOnDate = new
-      // Connection().getOutcomingSumOnDate(existedProduct.getId(),
-      // formatter.dateToString(destinationDate));
-      //
-      // remainsAmount = remainsAmount + incomingSumOnDate - outcomingSumOnDate;
-      //
-      // if (remainsAmount < outcomingAmount)
-      // {
-      // return false;
-      // }
-      //
-      // cal.setTime(destinationDate);
-      // cal.add(Calendar.DATE, 1);
-      // destinationDate = cal.getTime();
-      // }
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.HOUR_OF_DAY, 0);
+      cal.set(Calendar.MINUTE, 0);
+      cal.set(Calendar.SECOND, 0);
+      cal.set(Calendar.MILLISECOND, 0);
+
+      Date today = cal.getTime();
+
+      DateLabelFormatter formatter = new DateLabelFormatter();
+
+      Date destinationDate = (Date) formatter.stringToValue(date);
+
+      while (destinationDate.before(today))
+      {
+         long productID = existedProduct.getId();
+
+         double incomingsSum = incomingRepository.getIncomingsSumFromDate(productID, destinationDate);
+
+         double outcomingsSum = outcomingRepository.getOutcomingsSumFromDate(productID, destinationDate);
+
+         double remainsAmount = existedProduct.getAmount() + outcomingsSum - incomingsSum;
+
+         double incomingsSumOnDate = incomingRepository.getIncomingsSumOnDate(productID, destinationDate);
+
+         double outcomingsSumOnDate = outcomingRepository.getOutcomingsSumOnDate(productID, destinationDate);
+
+         remainsAmount = remainsAmount + incomingsSumOnDate - outcomingsSumOnDate;
+
+         if (remainsAmount < outcomingAmount)
+         {
+            return false;
+         }
+
+         cal.setTime(destinationDate);
+         cal.add(Calendar.DATE, 1);
+         destinationDate = cal.getTime();
+      }
 
       return true;
    }

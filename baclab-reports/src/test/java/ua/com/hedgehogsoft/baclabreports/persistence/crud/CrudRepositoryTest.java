@@ -18,12 +18,8 @@ import ua.com.hedgehogsoft.baclabreports.persistence.json.JsonFileWriter;
 
 public abstract class CrudRepositoryTest<T extends ModelEntity<Long>> extends DefaultTest
 {
-   @Autowired
-   private JpaRepository<T, Long> repository;
-
-   @Autowired
-   private JsonFileWriter<T> jsonFileWriter;
-
+   private @Autowired JpaRepository<T, Long> repository;
+   private @Autowired JsonFileWriter<T> jsonFileWriter;
    protected String fullFileName;
 
    @Test
