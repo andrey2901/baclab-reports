@@ -23,13 +23,13 @@ public abstract class PopupMessager extends Frame
 
    protected void localize()
    {
-      productNameLabel = messageByLocaleService.getMessage("message.popup.inform.product.label");
-      unitNameLabel = messageByLocaleService.getMessage("message.popup.inform.unit.label");
-      priceNameLabel = messageByLocaleService.getMessage("message.popup.inform.price.label");
-      amountNameLabel = messageByLocaleService.getMessage("message.popup.inform.amount.label");
-      sourceNameLabel = messageByLocaleService.getMessage("message.popup.inform.source.label");
-      dateNameLabel = messageByLocaleService.getMessage("message.popup.inform.date.label");
-      totalPriceLabel = messageByLocaleService.getMessage("message.popup.inform.summation.label");
+      productNameLabel = messageByLocaleService.getMessage("message.popup.info.product.label");
+      unitNameLabel = messageByLocaleService.getMessage("message.popup.info.unit.label");
+      priceNameLabel = messageByLocaleService.getMessage("message.popup.info.price.label");
+      amountNameLabel = messageByLocaleService.getMessage("message.popup.info.amount.label");
+      sourceNameLabel = messageByLocaleService.getMessage("message.popup.info.source.label");
+      dateNameLabel = messageByLocaleService.getMessage("message.popup.info.date.label");
+      totalPriceLabel = messageByLocaleService.getMessage("message.popup.info.summation.label");
 
       popupErrorLabel = messageByLocaleService.getMessage("message.popup.error.label");
       productEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.product.empty.text");

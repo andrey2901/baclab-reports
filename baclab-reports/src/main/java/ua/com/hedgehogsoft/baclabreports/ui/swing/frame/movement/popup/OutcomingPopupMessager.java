@@ -20,7 +20,7 @@ public class OutcomingPopupMessager extends PopupMessager
    protected void localize()
    {
       super.localize();
-      outcomingInfoLabel = messageByLocaleService.getMessage("message.popup.inform.outcoming.label");
+      outcomingInfoLabel = messageByLocaleService.getMessage("message.popup.info.outcoming.label");
       amountInsufficientOnDateErrorMessage = messageByLocaleService
             .getMessage("message.popup.error.amount.insufficient.on.date.text");
       amountInsufficientErrorMessage = messageByLocaleService

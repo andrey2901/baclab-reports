@@ -41,12 +41,12 @@ public abstract class MovementFrame extends Frame
 
    protected void localize()
    {
-      productNameLabel = messageByLocaleService.getMessage("message.popup.inform.product.label");
-      unitNameLabel = messageByLocaleService.getMessage("message.popup.inform.unit.label");
-      priceNameLabel = messageByLocaleService.getMessage("message.popup.inform.price.label");
-      amountNameLabel = messageByLocaleService.getMessage("message.popup.inform.amount.label");
-      sourceNameLabel = messageByLocaleService.getMessage("message.popup.inform.source.label");
-      dateNameLabel = messageByLocaleService.getMessage("message.popup.inform.date.label");
+      productNameLabel = messageByLocaleService.getMessage("frame.product.label");
+      unitNameLabel = messageByLocaleService.getMessage("frame.unit.label");
+      priceNameLabel = messageByLocaleService.getMessage("frame.price.label");
+      amountNameLabel = messageByLocaleService.getMessage("frame.amount.label");
+      sourceNameLabel = messageByLocaleService.getMessage("frame.source.label");
+      dateNameLabel = messageByLocaleService.getMessage("frame.date.label");
       closeButtonLabel = messageByLocaleService.getMessage("button.close.label");
    }
 

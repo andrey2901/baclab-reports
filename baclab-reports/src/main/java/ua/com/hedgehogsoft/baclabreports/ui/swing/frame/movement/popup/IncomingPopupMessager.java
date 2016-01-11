@@ -18,7 +18,7 @@ public class IncomingPopupMessager extends PopupMessager
    protected void localize()
    {
       super.localize();
-      incomingInfoLabel = messageByLocaleService.getMessage("message.popup.inform.incoming.label");
+      incomingInfoLabel = messageByLocaleService.getMessage("message.popup.info.incoming.label");
    }
 
    public void infoPopup(Product product)
