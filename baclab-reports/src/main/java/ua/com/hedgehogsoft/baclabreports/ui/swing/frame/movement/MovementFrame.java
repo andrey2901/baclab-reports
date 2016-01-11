@@ -2,8 +2,14 @@ package ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement;
 
 import java.awt.GridBagConstraints;
 
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+
+import org.jdatepicker.impl.JDatePickerImpl;
+
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.Frame;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup.PopupMessager;
 
 public abstract class MovementFrame extends Frame
 {
@@ -14,6 +20,13 @@ public abstract class MovementFrame extends Frame
    protected String sourceNameLabel;
    protected String dateNameLabel;
    protected String closeButtonLabel;
+
+   protected JComboBox<String> nameComboBox;
+   protected JComboBox<String> costComboBox;
+   protected JComboBox<String> sourceComboBox;
+   protected JComboBox<String> unitComboBox;
+   protected JTextField amountTextField;
+   protected JDatePickerImpl datePickerImpl;
 
    protected MovementFrame(MessageByLocaleService messageByLocaleService)
    {
@@ -46,5 +59,38 @@ public abstract class MovementFrame extends Frame
       }
       constraints.gridy = y;
       return constraints;
+   }
+
+   protected boolean checkInputData(PopupMessager messenger)
+   {
+      boolean result = true;
+
+      if (nameComboBox.getSelectedItem() == null || ((String) nameComboBox.getSelectedItem()).isEmpty())
+      {
+         messenger.productEmpty();
+         result = false;
+      }
+      if (unitComboBox.getSelectedItem() == null || ((String) unitComboBox.getSelectedItem()).isEmpty())
+      {
+         messenger.unitEmpty();
+         result = false;
+      }
+      if (costComboBox.getSelectedItem() == null || ((String) costComboBox.getSelectedItem()).isEmpty())
+      {
+         messenger.priceEmpty();
+         result = false;
+      }
+      if (amountTextField.getText() == null || amountTextField.getText().isEmpty())
+      {
+         messenger.amountEmpty();
+         result = false;
+      }
+      if (datePickerImpl.getJFormattedTextField().getText() == null
+            || datePickerImpl.getJFormattedTextField().getText().isEmpty())
+      {
+         messenger.dateEmpty();
+         result = false;
+      }
+      return result;
    }
 }

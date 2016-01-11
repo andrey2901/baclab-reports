@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
-import org.jdatepicker.impl.JDatePickerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -53,14 +52,8 @@ public class IncomingFrame extends MovementFrame
    private @Autowired ProductStorageTable productStorageTable;
    private @Autowired IncomingPopupMessager incomingPopupMessager;
 
-   private JDatePickerImpl datePickerImpl;
    private JButton closeButton;
    private JButton incomingButton;
-   private JComboBox<String> incomingNameComboBox;
-   private JComboBox<String> incomingCostComboBox;
-   private JTextField incomingAmountTextField;
-   private JComboBox<String> incomingSourceComboBox;
-   private JComboBox<String> incomingUnitComboBox;
    private List<Unit> units;
 
    @Autowired
@@ -91,12 +84,12 @@ public class IncomingFrame extends MovementFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            if (checkInputData())
+            if (checkInputData(incomingPopupMessager))
             {
-               if (!checkUnitByName((String) incomingUnitComboBox.getSelectedItem()))
+               if (!checkUnitByName((String) unitComboBox.getSelectedItem()))
                {
                   Unit unit = new Unit();
-                  unit.setName((String) incomingUnitComboBox.getSelectedItem());
+                  unit.setName((String) unitComboBox.getSelectedItem());
                   unit = unitRepository.save(unit);
                   if (unit.getId() != null)
                   {
@@ -104,11 +97,11 @@ public class IncomingFrame extends MovementFrame
                   }
                }
                Product product = new Product();
-               product.setName((String) incomingNameComboBox.getSelectedItem());
-               product.setPrice(Double.valueOf(((String) incomingCostComboBox.getSelectedItem()).replace(",", ".")));
-               product.setAmount(Double.valueOf(incomingAmountTextField.getText().replace(",", ".")));
-               product.setSource(sourceRepository.findByName((String) incomingSourceComboBox.getSelectedItem()));
-               product.setUnit(unitRepository.findByName((String) incomingUnitComboBox.getSelectedItem()));
+               product.setName((String) nameComboBox.getSelectedItem());
+               product.setPrice(Double.valueOf(((String) costComboBox.getSelectedItem()).replace(",", ".")));
+               product.setAmount(Double.valueOf(amountTextField.getText().replace(",", ".")));
+               product.setSource(sourceRepository.findByName((String) sourceComboBox.getSelectedItem()));
+               product.setUnit(unitRepository.findByName((String) unitComboBox.getSelectedItem()));
                Product existedProduct = productRepository.getProductByNameAndPriceAndSourceAndUnit(product.getName(),
                      product.getPrice(), product.getSource().getId(), product.getUnit().getId());
                boolean wasUpdated = false;
@@ -154,72 +147,72 @@ public class IncomingFrame extends MovementFrame
       buttonsPanel.add(closeButton);
       JPanel incomingPanel = new JPanel(new GridBagLayout());
       incomingPanel.add(new JLabel(productNameLabel), position(0, 0));
-      incomingNameComboBox = new JComboBox<String>();
-      incomingNameComboBox.setEditable(true);
+      nameComboBox = new JComboBox<String>();
+      nameComboBox.setEditable(true);
       List<String> names = productRepository.getUniqueProductNamesOrderedByName();
       if (!names.isEmpty())
       {
          for (String name : names)
          {
-            incomingNameComboBox.addItem(name);
+            nameComboBox.addItem(name);
          }
       }
-      incomingNameComboBox.setSelectedItem("");
-      incomingPanel.add(incomingNameComboBox, position(1, 0));
+      nameComboBox.setSelectedItem("");
+      incomingPanel.add(nameComboBox, position(1, 0));
       incomingPanel.add(new JLabel(unitNameLabel), position(0, 1));
-      incomingUnitComboBox = new JComboBox<String>();
-      incomingUnitComboBox.setEditable(true);
-      incomingPanel.add(incomingUnitComboBox, position(1, 1));
+      unitComboBox = new JComboBox<String>();
+      unitComboBox.setEditable(true);
+      incomingPanel.add(unitComboBox, position(1, 1));
       for (Unit unit : units)
       {
-         incomingUnitComboBox.addItem(unit.getName());
+         unitComboBox.addItem(unit.getName());
       }
-      incomingUnitComboBox.setSelectedItem("");
+      unitComboBox.setSelectedItem("");
       incomingPanel.add(new JLabel(priceNameLabel), position(0, 2));
-      incomingCostComboBox = new JComboBox<String>();
-      incomingCostComboBox.setEditable(true);
-      incomingPanel.add(incomingCostComboBox, position(1, 2));
+      costComboBox = new JComboBox<String>();
+      costComboBox.setEditable(true);
+      incomingPanel.add(costComboBox, position(1, 2));
       incomingPanel.add(new JLabel(amountNameLabel), position(0, 3));
-      incomingAmountTextField = new JTextField();
-      incomingPanel.add(incomingAmountTextField, position(1, 3));
-      incomingSourceComboBox = new JComboBox<String>();
+      amountTextField = new JTextField();
+      incomingPanel.add(amountTextField, position(1, 3));
+      sourceComboBox = new JComboBox<String>();
       for (Source source : sourceRepository.findAll())
       {
-         incomingSourceComboBox.addItem(source.getName());
+         sourceComboBox.addItem(source.getName());
       }
-      incomingSourceComboBox.setSelectedIndex(incomingSourceComboBox.getItemCount() - 1);
+      sourceComboBox.setSelectedIndex(sourceComboBox.getItemCount() - 1);
       incomingPanel.add(new JLabel(sourceNameLabel), position(0, 4));
-      incomingPanel.add(incomingSourceComboBox, position(1, 4));
+      incomingPanel.add(sourceComboBox, position(1, 4));
       incomingPanel.add(new JLabel(dateNameLabel), position(0, 5));
       incomingPanel.add(datePickerImpl, position(1, 5));
-      incomingUnitComboBox.addActionListener(new ActionListener()
+      unitComboBox.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            if (!(((String) incomingNameComboBox.getSelectedItem()) == null
-                  || ((String) incomingNameComboBox.getSelectedItem()).isEmpty()))
+            if (!(((String) nameComboBox.getSelectedItem()) == null
+                  || ((String) nameComboBox.getSelectedItem()).isEmpty()))
             {
-               incomingCostComboBox.removeAllItems();
-               String productName = (String) incomingNameComboBox.getSelectedItem();
-               String unitName = (String) incomingUnitComboBox.getSelectedItem();
+               costComboBox.removeAllItems();
+               String productName = (String) nameComboBox.getSelectedItem();
+               String unitName = (String) unitComboBox.getSelectedItem();
                List<Double> prices = productRepository.getUniquePricesByProductNameAndUnitName(productName, unitName);
                if (!prices.isEmpty())
                {
                   for (Double price : prices)
                   {
-                     incomingCostComboBox.addItem(Double.toString(price));
+                     costComboBox.addItem(Double.toString(price));
                   }
                }
             }
          }
       });
-      incomingNameComboBox.addActionListener(new ActionListener()
+      nameComboBox.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            String productName = (String) incomingNameComboBox.getSelectedItem();
+            String productName = (String) nameComboBox.getSelectedItem();
             List<String> unitNamesForProduct = productRepository.getUniqueUnitNamesByProductName(productName);
             /*
              * The next part of code resort unit combo box in order to be units
@@ -232,14 +225,14 @@ public class IncomingFrame extends MovementFrame
                unitNames.add(unit.getName());
             }
             unitNames.removeAll(unitNamesForProduct);
-            incomingUnitComboBox.removeAllItems();
+            unitComboBox.removeAllItems();
             for (String unit : unitNamesForProduct)
             {
-               incomingUnitComboBox.addItem(unit);
+               unitComboBox.addItem(unit);
             }
             for (String unit : unitNames)
             {
-               incomingUnitComboBox.addItem(unit);
+               unitComboBox.addItem(unit);
             }
          }
       });
@@ -251,39 +244,6 @@ public class IncomingFrame extends MovementFrame
       incomingFrame.setLocationRelativeTo(null);
       incomingFrame.setVisible(true);
       logger.info("IncomingsFrame was started.");
-   }
-
-   private boolean checkInputData()
-   {
-      boolean result = true;
-
-      if (incomingNameComboBox.getSelectedItem() == null || ((String) incomingNameComboBox.getSelectedItem()).isEmpty())
-      {
-         incomingPopupMessager.productEmpty();
-         result = false;
-      }
-      if (incomingUnitComboBox.getSelectedItem() == null || ((String) incomingUnitComboBox.getSelectedItem()).isEmpty())
-      {
-         incomingPopupMessager.unitEmpty();
-         result = false;
-      }
-      if (incomingCostComboBox.getSelectedItem() == null || ((String) incomingCostComboBox.getSelectedItem()).isEmpty())
-      {
-         incomingPopupMessager.priceEmpty();
-         result = false;
-      }
-      if (incomingAmountTextField.getText() == null || incomingAmountTextField.getText().isEmpty())
-      {
-         incomingPopupMessager.amountEmpty();
-         result = false;
-      }
-      if (datePickerImpl.getJFormattedTextField().getText() == null
-            || datePickerImpl.getJFormattedTextField().getText().isEmpty())
-      {
-         incomingPopupMessager.dateEmpty();
-         result = false;
-      }
-      return result;
    }
 
    private boolean checkUnitByName(String name)
