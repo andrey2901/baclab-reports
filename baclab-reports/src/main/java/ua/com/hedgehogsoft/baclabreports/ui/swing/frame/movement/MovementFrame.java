@@ -6,10 +6,16 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import org.jdatepicker.impl.JDatePickerImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
+import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
+import ua.com.hedgehogsoft.baclabreports.persistence.SourceRepository;
+import ua.com.hedgehogsoft.baclabreports.persistence.UnitRepository;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.Frame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup.PopupMessager;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 
 public abstract class MovementFrame extends Frame
 {
@@ -27,6 +33,12 @@ public abstract class MovementFrame extends Frame
    protected JComboBox<String> unitComboBox;
    protected JTextField amountTextField;
    protected JDatePickerImpl datePickerImpl;
+   
+   protected @Autowired DatePicker datePicker;
+   protected @Autowired UnitRepository unitRepository;
+   protected @Autowired SourceRepository sourceRepository;
+   protected @Autowired ProductRepository productRepository;
+   protected @Autowired ProductStorageTable productStorageTable;
 
    protected MovementFrame(MessageByLocaleService messageByLocaleService)
    {

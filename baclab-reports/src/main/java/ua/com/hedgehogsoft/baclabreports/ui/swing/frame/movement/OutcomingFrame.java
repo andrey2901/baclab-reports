@@ -25,13 +25,8 @@ import ua.com.hedgehogsoft.baclabreports.model.Outcoming;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
 import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
-import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
-import ua.com.hedgehogsoft.baclabreports.persistence.SourceRepository;
-import ua.com.hedgehogsoft.baclabreports.persistence.UnitRepository;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup.OutcomingPopupMessager;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
 
 @Component
@@ -41,11 +36,6 @@ public class OutcomingFrame extends MovementFrame
    private String title;
    private String outcomingButtonLabel;
 
-   private @Autowired DatePicker datePicker;
-   private @Autowired UnitRepository unitRepository;
-   private @Autowired SourceRepository sourceRepository;
-   private @Autowired ProductRepository productRepository;
-   private @Autowired ProductStorageTable productStorageTable;
    private @Autowired OutcomingRepository outcomingRepository;
    private @Autowired OutcomingPopupMessager outcomingPopupMessager;
 
