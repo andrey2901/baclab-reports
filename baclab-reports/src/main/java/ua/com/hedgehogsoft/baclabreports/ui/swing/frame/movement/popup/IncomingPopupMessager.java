@@ -6,10 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 
 @Component
@@ -17,10 +15,9 @@ public class IncomingPopupMessager extends PopupMessager
 {
    private String incomingInfoLabel;
 
-   @Autowired
-   public IncomingPopupMessager(MessageByLocaleService messageByLocaleService)
+   protected void localize()
    {
-      super(messageByLocaleService);
+      super.localize();
       incomingInfoLabel = messageByLocaleService.getMessage("message.popup.inform.incoming.label");
    }
 

@@ -6,10 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 
 @Component
@@ -19,13 +17,14 @@ public class OutcomingPopupMessager extends PopupMessager
    private String amountInsufficientOnDateErrorMessage;
    private String amountInsufficientErrorMessage;
 
-   @Autowired
-   public OutcomingPopupMessager(MessageByLocaleService mbls)
+   protected void localize()
    {
-      super(mbls);
-      outcomingInfoLabel = mbls.getMessage("message.popup.inform.outcoming.label");
-      amountInsufficientOnDateErrorMessage = mbls.getMessage("message.popup.error.amount.insufficient.on.date.text");
-      amountInsufficientErrorMessage = mbls.getMessage("message.popup.error.amount.insufficient.text");
+      super.localize();
+      outcomingInfoLabel = messageByLocaleService.getMessage("message.popup.inform.outcoming.label");
+      amountInsufficientOnDateErrorMessage = messageByLocaleService
+            .getMessage("message.popup.error.amount.insufficient.on.date.text");
+      amountInsufficientErrorMessage = messageByLocaleService
+            .getMessage("message.popup.error.amount.insufficient.text");
    }
 
    public void infoPopup(Product product)

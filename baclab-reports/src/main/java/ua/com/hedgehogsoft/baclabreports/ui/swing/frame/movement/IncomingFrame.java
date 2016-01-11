@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.model.Incoming;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
@@ -46,10 +45,9 @@ public class IncomingFrame extends MovementFrame
    private JButton incomingButton;
    private List<Unit> units;
 
-   @Autowired
-   public IncomingFrame(MessageByLocaleService messageByLocaleService)
+   protected void localize()
    {
-      super(messageByLocaleService);
+      super.localize();
       title = messageByLocaleService.getMessage("frame.incoming.title");
       incomingButtonLabel = messageByLocaleService.getMessage("button.debit.label");
    }

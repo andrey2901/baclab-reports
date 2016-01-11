@@ -2,7 +2,6 @@ package ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup;
 
 import javax.swing.JOptionPane;
 
-import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.Frame;
 
 public abstract class PopupMessager extends Frame
@@ -22,9 +21,8 @@ public abstract class PopupMessager extends Frame
    protected String amountEmptyErrorMessage;
    protected String dateEmptyErrorMessage;
 
-   protected PopupMessager(MessageByLocaleService messageByLocaleService)
+   protected void localize()
    {
-      super(messageByLocaleService);
       productNameLabel = messageByLocaleService.getMessage("message.popup.inform.product.label");
       unitNameLabel = messageByLocaleService.getMessage("message.popup.inform.unit.label");
       priceNameLabel = messageByLocaleService.getMessage("message.popup.inform.price.label");

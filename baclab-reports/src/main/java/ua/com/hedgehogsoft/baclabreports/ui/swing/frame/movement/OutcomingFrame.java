@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.model.Outcoming;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
@@ -43,10 +42,9 @@ public class OutcomingFrame extends MovementFrame
    private JButton outcomingButton;
    private JComboBox<String> unitComboBox;
 
-   @Autowired
-   public OutcomingFrame(MessageByLocaleService messageByLocaleService)
+   protected void localize()
    {
-      super(messageByLocaleService);
+      super.localize();
       title = messageByLocaleService.getMessage("frame.outcoming.title");
       outcomingButtonLabel = messageByLocaleService.getMessage("button.credit.label");
    }
