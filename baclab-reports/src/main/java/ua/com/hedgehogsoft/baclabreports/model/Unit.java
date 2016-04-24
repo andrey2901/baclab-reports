@@ -8,9 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import ua.com.hedgehogsoft.baclabreports.cache.CacheableByName;
+
 @Entity
 @Table(name = "UNITS", uniqueConstraints = {@UniqueConstraint(columnNames = "UNIT")})
-public class Unit implements ModelEntity<Long>
+public class Unit implements ModelEntity<Long>, CacheableByName
 {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +33,7 @@ public class Unit implements ModelEntity<Long>
       this.id = id;
    }
 
+   @Override
    public String getName()
    {
       return name;

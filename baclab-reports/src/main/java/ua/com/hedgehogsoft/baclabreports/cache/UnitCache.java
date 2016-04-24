@@ -7,7 +7,7 @@ import ua.com.hedgehogsoft.baclabreports.model.Unit;
 import ua.com.hedgehogsoft.baclabreports.persistence.UnitRepository;
 
 @Component
-public class UnitCache extends Cache<Unit> implements CashableByName<Unit>
+public class UnitCache extends ResolvedByNameCache<Unit>
 {
    protected @Autowired UnitRepository unitRepository;
 
@@ -15,18 +15,5 @@ public class UnitCache extends Cache<Unit> implements CashableByName<Unit>
    protected void init()
    {
       addAll(unitRepository.findAll());
-   }
-
-   @Override
-   public Unit findByName(String name)
-   {
-      for (int i = 0; i < size(); i++)
-      {
-         if (get(i).getName().equals(name))
-         {
-            return get(i);
-         }
-      }
-      return null;
    }
 }

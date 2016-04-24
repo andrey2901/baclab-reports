@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.cache.UnitCache;
 import ua.com.hedgehogsoft.baclabreports.model.Incoming;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
@@ -39,6 +40,7 @@ public class IncomingFrame extends MovementFrame
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired IncomingPopupMessager incomingPopupMessager;
    private @Autowired UnitCache unitsCache;
+   private @Autowired SourceCache sourcesCache;
    private String incomingButtonLabel;
    private JButton incomingButton;
    private JButton closeButton;
@@ -79,7 +81,7 @@ public class IncomingFrame extends MovementFrame
                product.setName((String) nameComboBox.getSelectedItem());
                product.setPrice(Double.valueOf(((String) costComboBox.getSelectedItem()).replace(",", ".")));
                product.setAmount(Double.valueOf(amountTextField.getText().replace(",", ".")));
-               product.setSource(sourceRepository.findByName((String) sourceComboBox.getSelectedItem()));
+               product.setSource(sourcesCache.findByName((String) sourceComboBox.getSelectedItem()));
                product.setUnit(unitsCache.findByName((String) unitComboBox.getSelectedItem()));
                Product existedProduct = productRepository.getProductByNameAndPriceAndSourceAndUnit(product.getName(),
                      product.getPrice(), product.getSource().getId(), product.getUnit().getId());
@@ -155,7 +157,7 @@ public class IncomingFrame extends MovementFrame
       amountTextField = new JTextField();
       incomingPanel.add(amountTextField, position(1, 3));
       sourceComboBox = new JComboBox<String>();
-      for (Source source : sourceRepository.findAll())
+      for (Source source : sourcesCache.getAll())
       {
          sourceComboBox.addItem(source.getName());
       }

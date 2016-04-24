@@ -15,12 +15,14 @@ import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import ua.com.hedgehogsoft.baclabreports.cache.CacheableByName;
+
 @Entity
 @Table(name = "PRODUCTS", uniqueConstraints = {@UniqueConstraint(columnNames = "NAME"),
                                                @UniqueConstraint(columnNames = "PRICE"),
                                                @UniqueConstraint(columnNames = "SOURCE_ID"),
                                                @UniqueConstraint(columnNames = "UNIT_ID")})
-public class Product implements ModelEntity<Long>
+public class Product implements ModelEntity<Long>, CacheableByName
 {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,6 +90,7 @@ public class Product implements ModelEntity<Long>
       this.id = id;
    }
 
+   @Override
    public String getName()
    {
       return name;

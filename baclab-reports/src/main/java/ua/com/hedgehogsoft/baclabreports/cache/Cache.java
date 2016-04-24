@@ -6,12 +6,10 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import ua.com.hedgehogsoft.baclabreports.model.ModelEntity;
-
-public abstract class Cache<T extends ModelEntity<Long>>
+public abstract class Cache<T extends Cacheable>
 {
    protected List<T> cache = new ArrayList<>();
-   
+
    @PostConstruct
    protected abstract void init();
 
@@ -44,6 +42,11 @@ public abstract class Cache<T extends ModelEntity<Long>>
    public boolean contains(T entity)
    {
       return cache.contains(entity);
+   }
+
+   public boolean remove(T entity)
+   {
+      return cache.remove(entity);
    }
 
    public int size()
