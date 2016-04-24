@@ -199,9 +199,8 @@ public class IncomingFrame extends MovementFrame
              * The next part of code resort unit combo box in order to be units
              * for this product at first and all others lately.
              */
-            List<Unit> persistedUnits = unitRepository.findAll();
             List<String> unitNames = new ArrayList<>();
-            for (Unit unit : persistedUnits)
+            for (Unit unit : unitsCache.getAll())
             {
                unitNames.add(unit.getName());
             }
