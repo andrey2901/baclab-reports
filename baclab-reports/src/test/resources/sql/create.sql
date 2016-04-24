@@ -6,7 +6,8 @@ CREATE TABLE units
 	UNIQUE (unit)
 );
 
-INSERT INTO units(unit) VALUES ('амп'), ('флак'), ('шт'), ('гр'), ('кг'), ('набір'), ('уп'), ('кор'), ('пар');
+--INSERT INTO units(unit) VALUES ('амп'), ('флак'), ('шт'), ('гр'), ('кг'), ('набір'), ('уп'), ('кор'), ('пар');
+INSERT INTO units(unit) VALUES ('amp'), ('flak'), ('pcs'), ('gr'), ('kg'), ('nabor'), ('upak'), ('kor'), ('par');
 
 CREATE TABLE sources
 (
@@ -16,7 +17,8 @@ CREATE TABLE sources
 	UNIQUE (source)
 );
 
-INSERT INTO sources(source) VALUES ('Реактиви, поживні середовища'), ('Меценат'), ('Від провізора'), ('Від дезінфектора');
+--INSERT INTO sources(source) VALUES ('Реактиви, поживні середовища'), ('Меценат'), ('Від провізора'), ('Від дезінфектора');
+INSERT INTO sources(source) VALUES ('Reaktyvy, pozhyvni seredovyscha'), ('Mecenat'), ('Vid provizora'), ('Vid dezinfektora');
 
 CREATE TABLE products
 (

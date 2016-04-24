@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ua.com.hedgehogsoft.baclabreports.cache.UnitCache;
 import ua.com.hedgehogsoft.baclabreports.model.Incoming;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
@@ -37,10 +38,10 @@ public class IncomingFrame extends MovementFrame
    private static final Logger logger = Logger.getLogger(IncomingFrame.class);
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired IncomingPopupMessager incomingPopupMessager;
+   private @Autowired UnitCache unitsCache;
    private String incomingButtonLabel;
    private JButton incomingButton;
    private JButton closeButton;
-   private List<Unit> units;
 
    protected void localize()
    {
@@ -52,7 +53,6 @@ public class IncomingFrame extends MovementFrame
    public void init()
    {
       datePickerImpl = datePicker.getDatePicker();
-      units = (List<Unit>) unitRepository.findAll();
       frame = new JFrame(title);
       frame.addWindowListener(new WindowAdapter()
       {
@@ -71,22 +71,16 @@ public class IncomingFrame extends MovementFrame
          {
             if (checkInputData(incomingPopupMessager))
             {
-               if (!checkUnitByName((String) unitComboBox.getSelectedItem()))
+               if (isNewUnitName((String) unitComboBox.getSelectedItem()))
                {
-                  Unit unit = new Unit();
-                  unit.setName((String) unitComboBox.getSelectedItem());
-                  unit = unitRepository.save(unit);
-                  if (unit.getId() != null)
-                  {
-                     units.add(unit);
-                  }
+                  addNewUnit((String) unitComboBox.getSelectedItem());
                }
                Product product = new Product();
                product.setName((String) nameComboBox.getSelectedItem());
                product.setPrice(Double.valueOf(((String) costComboBox.getSelectedItem()).replace(",", ".")));
                product.setAmount(Double.valueOf(amountTextField.getText().replace(",", ".")));
                product.setSource(sourceRepository.findByName((String) sourceComboBox.getSelectedItem()));
-               product.setUnit(unitRepository.findByName((String) unitComboBox.getSelectedItem()));
+               product.setUnit(unitsCache.findByName((String) unitComboBox.getSelectedItem()));
                Product existedProduct = productRepository.getProductByNameAndPriceAndSourceAndUnit(product.getName(),
                      product.getPrice(), product.getSource().getId(), product.getUnit().getId());
                boolean wasUpdated = false;
@@ -148,7 +142,7 @@ public class IncomingFrame extends MovementFrame
       unitComboBox = new JComboBox<String>();
       unitComboBox.setEditable(true);
       incomingPanel.add(unitComboBox, position(1, 1));
-      for (Unit unit : units)
+      for (Unit unit : unitsCache.getAll())
       {
          unitComboBox.addItem(unit.getName());
       }
@@ -231,15 +225,25 @@ public class IncomingFrame extends MovementFrame
       logger.info("IncomingsFrame was started.");
    }
 
-   private boolean checkUnitByName(String name)
+   private boolean isNewUnitName(String name)
    {
-      for (Unit unit : units)
+      Unit unit = unitsCache.findByName(name);
+      if (unit != null)
       {
-         if (unit.getName().equals(name))
-            return true;
+         return false;
       }
-
-      return false;
+      return true;
+   }
+   
+   private void addNewUnit(String unitName)
+   {
+      Unit unit = new Unit();
+      unit.setName(unitName);
+      unit = unitRepository.save(unit);
+      if (unit.getId() != null)
+      {
+         unitsCache.add(unit);
+      }
    }
 
    @Override
