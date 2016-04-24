@@ -21,6 +21,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
+import ua.com.hedgehogsoft.baclabreports.cache.UnitCache;
 import ua.com.hedgehogsoft.baclabreports.model.Outcoming;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
@@ -37,6 +39,8 @@ public class OutcomingFrame extends MovementFrame
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired OutcomingRepository outcomingRepository;
    private @Autowired OutcomingPopupMessager outcomingPopupMessager;
+   private @Autowired UnitCache unitsCache;
+   private @Autowired SourceCache sourcesCache;
    private String outcomingButtonLabel;
    private JButton outcomingButton;
    private JButton closeButton;
@@ -51,9 +55,7 @@ public class OutcomingFrame extends MovementFrame
    public void init()
    {
       datePickerImpl = datePicker.getDatePicker();
-
       frame = new JFrame(title);
-
       frame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
@@ -61,13 +63,9 @@ public class OutcomingFrame extends MovementFrame
             close();
          }
       });
-
       closeButton = new JButton(closeButtonLabel);
-
       closeButton.addActionListener(l -> close());
-
       outcomingButton = new JButton(outcomingButtonLabel);
-
       outcomingButton.addActionListener(new ActionListener()
       {
          @Override
@@ -76,17 +74,11 @@ public class OutcomingFrame extends MovementFrame
             if (checkInputData(outcomingPopupMessager))
             {
                Product product = new Product();
-
                product.setName((String) nameComboBox.getSelectedItem());
-
                product.setPrice(Double.valueOf(((String) costComboBox.getSelectedItem()).replace(",", ".")));
-
                product.setAmount(Double.valueOf(amountTextField.getText().replace(",", ".")));
-
-               product.setSource(sourceRepository.findByName((String) sourceComboBox.getSelectedItem()));
-
-               product.setUnit(unitRepository.findByName((String) unitComboBox.getSelectedItem()));
-
+               product.setSource(sourcesCache.findByName((String) sourceComboBox.getSelectedItem()));
+               product.setUnit(unitsCache.findByName((String) unitComboBox.getSelectedItem()));
                Product existedProduct = productRepository.getProductByNameAndPriceAndSourceAndUnit(product.getName(),
                      product.getPrice(), product.getSource().getId(), product.getUnit().getId());
 
@@ -109,13 +101,9 @@ public class OutcomingFrame extends MovementFrame
                         if (outcoming != null)
                         {
                            ProductStoreTableModel model = (ProductStoreTableModel) productStorageTable.getModel();
-
                            model.updateProduct(existedProduct);
-
                            logger.info("Outcomings were performed.");
-
                            outcomingPopupMessager.infoPopup(product);
-
                            close();
                         }
                      }
@@ -135,52 +123,30 @@ public class OutcomingFrame extends MovementFrame
       });
 
       JPanel buttonsPanel = new JPanel();
-
       buttonsPanel.add(outcomingButton);
-
       buttonsPanel.add(closeButton);
-
       JPanel outcomingPanel = new JPanel(new GridBagLayout());
-
       sourceComboBox = new JComboBox<String>();
-
       for (Source source : sourceRepository.findAll())
       {
          sourceComboBox.addItem(source.getName());
       }
-
       outcomingPanel.add(new JLabel(sourceNameLabel), position(0, 0));
-
       outcomingPanel.add(sourceComboBox, position(1, 0));
-
       outcomingPanel.add(new JLabel(productNameLabel), position(0, 1));
-
       nameComboBox = new JComboBox<String>();
-
       outcomingPanel.add(nameComboBox, position(1, 1));
-
       outcomingPanel.add(new JLabel(unitNameLabel), position(0, 2));
-
       unitComboBox = new JComboBox<String>();
-
       outcomingPanel.add(unitComboBox, position(1, 2));
-
       outcomingPanel.add(new JLabel(priceNameLabel), position(0, 3));
-
       costComboBox = new JComboBox<String>();
-
       outcomingPanel.add(costComboBox, position(1, 3));
-
       outcomingPanel.add(new JLabel(amountNameLabel), position(0, 4));
-
       amountTextField = new JTextField();
-
       outcomingPanel.add(amountTextField, position(1, 4));
-
       outcomingPanel.add(new JLabel(dateNameLabel), position(0, 5));
-
       outcomingPanel.add(datePickerImpl, position(1, 5));
-
       costComboBox.addActionListener(new ActionListener()
       {
          @Override
@@ -189,13 +155,9 @@ public class OutcomingFrame extends MovementFrame
             if (costComboBox.getItemCount() != 0)
             {
                String productName = (String) nameComboBox.getSelectedItem();
-
                String sourceName = (String) sourceComboBox.getSelectedItem();
-
                String unitName = (String) unitComboBox.getSelectedItem();
-
                String price = (String) costComboBox.getSelectedItem();
-
                amountTextField
                      .setText(Double.toString(productRepository.getAmountByProductNameAndSourceNameAndUnitNameAndPrice(
                            productName, sourceName, unitName, Double.parseDouble(price))));
@@ -209,16 +171,11 @@ public class OutcomingFrame extends MovementFrame
          public void actionPerformed(ActionEvent e)
          {
             costComboBox.removeAllItems();
-
             String productName = (String) nameComboBox.getSelectedItem();
-
             String sourceName = (String) sourceComboBox.getSelectedItem();
-
             String unitName = (String) unitComboBox.getSelectedItem();
-
             List<Double> prices = productRepository.getUniquePricesByProductNameAndSourceNameAndUnitName(productName,
                   sourceName, unitName);
-
             if (!prices.isEmpty())
             {
                for (Double price : prices)
@@ -254,11 +211,8 @@ public class OutcomingFrame extends MovementFrame
          public void actionPerformed(ActionEvent e)
          {
             nameComboBox.removeAllItems();
-
             String sourceName = (String) sourceComboBox.getSelectedItem();
-
             List<String> productNames = productRepository.getUniqueProductNamesBySource(sourceName);
-
             if (!productNames.isEmpty())
             {
                for (String name : productNames)
@@ -270,21 +224,13 @@ public class OutcomingFrame extends MovementFrame
       });
 
       sourceComboBox.setSelectedIndex(0);
-
       frame.add(outcomingPanel, BorderLayout.CENTER);
-
       frame.add(buttonsPanel, BorderLayout.SOUTH);
-
       frame.setSize(700, 225);
-
       frame.setMinimumSize(new Dimension(375, 225));
-
       frame.setResizable(true);
-
       frame.setLocationRelativeTo(null);
-
       frame.setVisible(true);
-
       logger.info("OutcomingsFrame was started.");
    }
 
@@ -301,37 +247,25 @@ public class OutcomingFrame extends MovementFrame
       cal.set(Calendar.MILLISECOND, 0);
 
       Date today = cal.getTime();
-
       DateLabelFormatter formatter = new DateLabelFormatter();
-
       Date destinationDate = (Date) formatter.stringToValue(date);
-
       while (destinationDate.before(today))
       {
          long productID = existedProduct.getId();
-
          double incomingsSum = incomingRepository.getIncomingsSumFromDate(productID, destinationDate);
-
          double outcomingsSum = outcomingRepository.getOutcomingsSumFromDate(productID, destinationDate);
-
          double remainsAmount = existedProduct.getAmount() + outcomingsSum - incomingsSum;
-
          double incomingsSumOnDate = incomingRepository.getIncomingsSumOnDate(productID, destinationDate);
-
          double outcomingsSumOnDate = outcomingRepository.getOutcomingsSumOnDate(productID, destinationDate);
-
          remainsAmount = remainsAmount + incomingsSumOnDate - outcomingsSumOnDate;
-
          if (remainsAmount < outcomingAmount)
          {
             return false;
          }
-
          cal.setTime(destinationDate);
          cal.add(Calendar.DATE, 1);
          destinationDate = cal.getTime();
       }
-
       return true;
    }
 
