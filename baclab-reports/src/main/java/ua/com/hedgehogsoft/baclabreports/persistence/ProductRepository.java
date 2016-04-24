@@ -22,6 +22,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>
    @Query("SELECT DISTINCT p.unit.name FROM Product p WHERE p.name = ?1 ORDER BY p.unit.name ASC")
    List<String> getUniqueUnitNamesByProductName(String productName);
 
+   @Query("SELECT DISTINCT p.source.name FROM Product p WHERE p.name = ?1 ORDER BY p.source.name ASC")
+   List<String> getUniqueSourceNamesByProductName(String productName);
+
    @Query("SELECT DISTINCT p.unit.name FROM Product p WHERE p.name = ?1 AND p.source.name = ?2 ORDER BY p.unit.name ASC")
    List<String> getUniqueUnitNamesByProductNameAndSourceName(String productName, String sourceName);
 

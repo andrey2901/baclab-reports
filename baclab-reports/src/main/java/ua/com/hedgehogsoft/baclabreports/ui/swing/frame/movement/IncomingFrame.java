@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ua.com.hedgehogsoft.baclabreports.cache.CacheableByName;
+import ua.com.hedgehogsoft.baclabreports.cache.ResolvedByNameCache;
 import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.cache.UnitCache;
 import ua.com.hedgehogsoft.baclabreports.model.Incoming;
@@ -195,25 +197,9 @@ public class IncomingFrame extends MovementFrame
          {
             String productName = (String) nameComboBox.getSelectedItem();
             List<String> unitNamesForProduct = productRepository.getUniqueUnitNamesByProductName(productName);
-            /*
-             * The next part of code resort unit combo box in order to be units
-             * for this product at first and all others lately.
-             */
-            List<String> unitNames = new ArrayList<>();
-            for (Unit unit : unitsCache.getAll())
-            {
-               unitNames.add(unit.getName());
-            }
-            unitNames.removeAll(unitNamesForProduct);
-            unitComboBox.removeAllItems();
-            for (String unit : unitNamesForProduct)
-            {
-               unitComboBox.addItem(unit);
-            }
-            for (String unit : unitNames)
-            {
-               unitComboBox.addItem(unit);
-            }
+            resortNamesForProductInComboBox(unitComboBox, unitNamesForProduct, unitsCache);
+            List<String> sourceNamesForProduct = productRepository.getUniqueSourceNamesByProductName(productName);
+            resortNamesForProductInComboBox(sourceComboBox, sourceNamesForProduct, sourcesCache);
          }
       });
       frame.add(incomingPanel, BorderLayout.CENTER);
@@ -235,7 +221,7 @@ public class IncomingFrame extends MovementFrame
       }
       return true;
    }
-   
+
    private void addNewUnit(String unitName)
    {
       Unit unit = new Unit();
@@ -244,6 +230,27 @@ public class IncomingFrame extends MovementFrame
       if (unit.getId() != null)
       {
          unitsCache.add(unit);
+      }
+   }
+
+   private <T extends CacheableByName> void resortNamesForProductInComboBox(JComboBox<String> comboBox,
+                                                                            List<String> namesForProduct,
+                                                                            ResolvedByNameCache<T> cache)
+   {
+      List<String> names = new ArrayList<>();
+      for (CacheableByName cacheable : cache.getAll())
+      {
+         names.add(cacheable.getName());
+      }
+      names.removeAll(namesForProduct);
+      comboBox.removeAllItems();
+      for (String name : namesForProduct)
+      {
+         comboBox.addItem(name);
+      }
+      for (String name : names)
+      {
+         comboBox.addItem(name);
       }
    }
 
