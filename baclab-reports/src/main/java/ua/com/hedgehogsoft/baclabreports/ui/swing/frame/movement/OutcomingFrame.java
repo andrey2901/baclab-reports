@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JButton;
@@ -28,6 +27,7 @@ import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
 import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
+import ua.com.hedgehogsoft.baclabreports.service.PastObserver;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup.OutcomingPopupMessager;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
@@ -84,7 +84,8 @@ public class OutcomingFrame extends MovementFrame
 
                if (existedProduct.getAmount() >= product.getAmount())
                {
-                  if (isReversible(existedProduct, product.getAmount(),
+                  PastObserver past = new PastObserver(incomingRepository, outcomingRepository);
+                  if (past.isReversible(existedProduct, product.getAmount(),
                         datePickerImpl.getJFormattedTextField().getText()))
                   {
                      existedProduct.setAmount(existedProduct.getAmount() - product.getAmount());
@@ -127,7 +128,7 @@ public class OutcomingFrame extends MovementFrame
       buttonsPanel.add(closeButton);
       JPanel outcomingPanel = new JPanel(new GridBagLayout());
       sourceComboBox = new JComboBox<String>();
-      for (Source source : sourceRepository.findAll())
+      for (Source source : sourcesCache.getAll())
       {
          sourceComboBox.addItem(source.getName());
       }
@@ -232,41 +233,6 @@ public class OutcomingFrame extends MovementFrame
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
       logger.info("OutcomingsFrame was started.");
-   }
-
-   /*
-    * Check ability to insert an outcoming in the past (f.e. today is 24.05.2015
-    * and the date of outcoming is 20.03.2015)
-    */
-   private boolean isReversible(Product existedProduct, double outcomingAmount, String date)
-   {
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.HOUR_OF_DAY, 0);
-      cal.set(Calendar.MINUTE, 0);
-      cal.set(Calendar.SECOND, 0);
-      cal.set(Calendar.MILLISECOND, 0);
-
-      Date today = cal.getTime();
-      DateLabelFormatter formatter = new DateLabelFormatter();
-      Date destinationDate = (Date) formatter.stringToValue(date);
-      while (destinationDate.before(today))
-      {
-         long productID = existedProduct.getId();
-         double incomingsSum = incomingRepository.getIncomingsSumFromDate(productID, destinationDate);
-         double outcomingsSum = outcomingRepository.getOutcomingsSumFromDate(productID, destinationDate);
-         double remainsAmount = existedProduct.getAmount() + outcomingsSum - incomingsSum;
-         double incomingsSumOnDate = incomingRepository.getIncomingsSumOnDate(productID, destinationDate);
-         double outcomingsSumOnDate = outcomingRepository.getOutcomingsSumOnDate(productID, destinationDate);
-         remainsAmount = remainsAmount + incomingsSumOnDate - outcomingsSumOnDate;
-         if (remainsAmount < outcomingAmount)
-         {
-            return false;
-         }
-         cal.setTime(destinationDate);
-         cal.add(Calendar.DATE, 1);
-         destinationDate = cal.getTime();
-      }
-      return true;
    }
 
    @Override

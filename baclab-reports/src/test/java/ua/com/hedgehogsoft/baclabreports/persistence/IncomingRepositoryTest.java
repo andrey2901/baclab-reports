@@ -19,6 +19,6 @@ public class IncomingRepositoryTest extends DefaultTest
    {
       DateLabelFormatter formatter = new DateLabelFormatter();
       Date date = (Date) formatter.stringToValue("31.12.2015");
-      assertEquals(40.0, incomingRepository.getIncomingsSumFromDate(1, date), 0.0);
+      assertEquals(40.0, incomingRepository.getIncomingsSum(1, date, new Date()), 0.0);
    }
 }
