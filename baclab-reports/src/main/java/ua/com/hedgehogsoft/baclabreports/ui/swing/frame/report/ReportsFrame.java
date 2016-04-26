@@ -10,9 +10,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.Frame;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.remains.RemainsReportFrame;
 
 @Component
 public class ReportsFrame extends Frame
@@ -32,6 +34,8 @@ public class ReportsFrame extends Frame
    private JButton incomingsReportButton;
    private JButton outcomingsReportButton;
    private JButton closeButton;
+
+   private @Autowired RemainsReportFrame remainsReportFrame;
 
    @Override
    protected void localize()
@@ -62,7 +66,7 @@ public class ReportsFrame extends Frame
 
       remainsReportButton = new JButton(remainsReportButtonLabel);
 
-      remainsReportButton.addActionListener(null);
+      remainsReportButton.addActionListener(l -> remainsReportFrame.init());
 
       actReportButton = new JButton(actReportButtonLabel);
 

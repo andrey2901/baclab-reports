@@ -49,4 +49,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>
    @Transactional(readOnly = false)
    @Query("UPDATE Product p SET p.amount = :amount WHERE p.id = :productId")
    int updateAmount(@Param("productId") long productId, @Param("amount") double amount);
+
+   @Query("SELECT DISTINCT p.id FROM Product p WHERE p.source.name = ?1")
+   List<Long> getProductIdsBySource(String source);
+
+   @Query("SELECT p FROM Product p WHERE p.id = ?1")
+   Product getProductById(Long id);
 }
