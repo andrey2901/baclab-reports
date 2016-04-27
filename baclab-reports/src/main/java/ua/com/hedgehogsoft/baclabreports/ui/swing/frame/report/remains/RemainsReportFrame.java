@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -32,6 +33,8 @@ public class RemainsReportFrame extends ReportFrame
 {
    private JButton printButton;
    private JButton closeButton;
+   private String popupErrorLabel;
+   private String dateEmptyErrorMessage;
    private @Autowired RemainsTable table;
    private @Autowired DatePicker datePicker;
    private @Autowired SourceCache sourcesCache;
@@ -41,6 +44,8 @@ public class RemainsReportFrame extends ReportFrame
    protected void localize()
    {
       super.localize();
+      popupErrorLabel = messageByLocaleService.getMessage("message.popup.error.label");
+      dateEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.date.empty.text");
    }
 
    @Override
@@ -57,7 +62,21 @@ public class RemainsReportFrame extends ReportFrame
       {
          sourceComboBox.addItem(source.getName());
       }
-      new SourceAndDatePopup(sourceComboBox, datePickerImpl);
+
+      do
+      {
+         new SourceAndDatePopup(sourceComboBox, datePickerImpl);
+         if (datePickerImpl.getJFormattedTextField().getText() == null
+               || datePickerImpl.getJFormattedTextField().getText().isEmpty())
+         {
+            JOptionPane.showMessageDialog(null, dateEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         }
+         else
+         {
+            break;
+         }
+      }
+      while (true);
 
       frame = new JFrame("БакЗвіт - залишки");
       frame.addWindowListener(new WindowAdapter()
