@@ -26,6 +26,7 @@ import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
+import ua.com.hedgehogsoft.baclabreports.service.RemainsCounter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.RemainsStoreTableModel;
 
@@ -57,18 +58,13 @@ public class RemainsTable extends AbstractTable
       Date today = cal.getTime();
       DateLabelFormatter formatter = new DateLabelFormatter();
       Date destinationDate = (Date) formatter.stringToValue(date);
+      RemainsCounter remains = new RemainsCounter(productRepository, incomingRepository, outcomingRepository);
       for (long id : ids)
       {
-         double incomingSum = incomingRepository.getIncomingsSum(id, destinationDate, today);
-         double outcomingSum = outcomingRepository.getOutcomingsSum(id, destinationDate, today);
-         Product product = productRepository.getProductById(id);
-         if (product != null)
+         Product product = remains.getRemainOfProductOnDate(id, destinationDate, today);
+         if (product.getAmount() != 0.0)
          {
-            product.setAmount(product.getAmount() + outcomingSum - incomingSum);
-            if (product.getAmount() != 0.0)
-            {
-               products.add(product);
-            }
+            products.add(product);
          }
       }
       RemainsStoreTableModel model = new RemainsStoreTableModel(products.size(), sequentialHeaderName,
