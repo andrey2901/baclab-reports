@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.Frame;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.actreport.ActReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.remains.RemainsReportFrame;
 
 @Component
@@ -36,6 +37,7 @@ public class ReportsFrame extends Frame
    private JButton closeButton;
 
    private @Autowired RemainsReportFrame remainsReportFrame;
+   private @Autowired ActReportFrame actReportFrame;
 
    @Override
    protected void localize()
@@ -70,7 +72,7 @@ public class ReportsFrame extends Frame
 
       actReportButton = new JButton(actReportButtonLabel);
 
-      actReportButton.addActionListener(null);
+      actReportButton.addActionListener(l -> actReportFrame.init());
 
       finalReportButton = new JButton(generalReportButtonLabel);
 

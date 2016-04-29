@@ -84,7 +84,6 @@ public class RemainsReportFrame extends ReportFrame
          public void windowClosing(WindowEvent we)
          {
             logger.info("RemainsReportFrame was closed.");
-
             frame.dispose();
          }
       });
