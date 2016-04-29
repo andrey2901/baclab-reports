@@ -85,7 +85,7 @@ public class OutcomingFrame extends MovementFrame
                if (existedProduct.getAmount() >= product.getAmount())
                {
                   PastObserver past = new PastObserver(incomingRepository, outcomingRepository);
-                  if (past.isReversible(existedProduct, product.getAmount(),
+                  if (past.isRemovable(existedProduct, product.getAmount(),
                         datePickerImpl.getJFormattedTextField().getText()))
                   {
                      existedProduct.setAmount(existedProduct.getAmount() - product.getAmount());

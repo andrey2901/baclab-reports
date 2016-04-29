@@ -23,7 +23,7 @@ public class PastObserver
       this.outcomingRepository = outcomingRepository;
    }
 
-   public boolean isReversible(Product existedProduct, double outcomingAmount, String date)
+   public boolean isRemovable(Product existedProduct, double outcomingAmount, String date)
    {
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.HOUR_OF_DAY, 0);
