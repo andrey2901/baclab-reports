@@ -80,7 +80,7 @@ public class FinalReportFrame extends ReportFrame
       JPanel buttonsPanel = new JPanel();
       buttonsPanel.add(printButton);
       buttonsPanel.add(closeButton);
-      JScrollPane scrollPane = new JScrollPane(table.init());
+      JScrollPane scrollPane = new JScrollPane(table.init(dateFrom, dateTo));
       frame.add(scrollPane, BorderLayout.CENTER);
       frame.add(titlePanel, BorderLayout.NORTH);
       frame.add(buttonsPanel, BorderLayout.SOUTH);

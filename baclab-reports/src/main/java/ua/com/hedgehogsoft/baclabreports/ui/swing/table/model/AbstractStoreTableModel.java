@@ -17,6 +17,12 @@ public abstract class AbstractStoreTableModel extends AbstractTableModel
    protected String amountHeaderName = null;
    protected String summationHeaderName = null;
 
+   protected AbstractStoreTableModel(int rowsSize, String... columnNames)
+   {
+      rows = new ArrayList<>(rowsSize);
+      this.columnNames = columnNames;
+   }
+
    protected AbstractStoreTableModel(int rowsSize,
                                      String sequentialHeaderName,
                                      String productHeaderName,

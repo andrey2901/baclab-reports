@@ -1,24 +1,41 @@
 package ua.com.hedgehogsoft.baclabreports.ui.swing.table;
 
 import java.awt.Component;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
+import ua.com.hedgehogsoft.baclabreports.model.Product;
+import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
+import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
+import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
+import ua.com.hedgehogsoft.baclabreports.service.RemainsCounter;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.FinalReportTableModel;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.MultiLineHeaderRenderer;
 
 @org.springframework.stereotype.Component
 public class FinalReportTable extends AbstractTable
 {
    private static final long serialVersionUID = 1L;
+   private @Autowired ProductRepository productRepository;
+   private @Autowired IncomingRepository incomingRepository;
+   private @Autowired OutcomingRepository outcomingRepository;
 
    @Autowired
    public FinalReportTable(MessageByLocaleService messageByLocaleService)
@@ -26,8 +43,52 @@ public class FinalReportTable extends AbstractTable
       super(messageByLocaleService);
    }
 
-   public JTable init()
+   public JTable init(String dateFrom, String dateTo)
    {
+      String[] columnNames = {"№ з/п",
+                              "Найменування лікарських засобів та медичних виробів",
+                              "Одиниця виміру",
+                              "Залишок на\nпочаток періоду",
+                              "Надходження",
+                              "Використання",
+                              "Залишок на\nкінець періоду",
+                              "Група"};
+      List<Product> products = new ArrayList<Product>();
+      List<Long> ids = productRepository.getProductIds();
+      FinalReportTableModel model = new FinalReportTableModel(products.size(), columnNames);
+      RemainsCounter remains = new RemainsCounter(productRepository, incomingRepository, outcomingRepository);
+      DateLabelFormatter formatter = new DateLabelFormatter();
+      Date beginPeriod = (Date) formatter.stringToValue(dateFrom);
+      Date endPeriod = (Date) formatter.stringToValue(dateTo);
+
+      int i = 0;
+
+      for (long id : ids)
+      {
+         Product product = remains.getRemainOfProductOnDate(id, beginPeriod, new Date());
+         double remainOnBeginPeriod = product.getAmount();
+         product = remains.getRemainOfProductOnDate(id, endPeriod, new Date());
+         double remainOnEndPeriod = product.getAmount();
+
+         model.addRow(
+               new Object[]
+         {++i,
+          product.getName(),
+          product.getUnit().getName(),
+          remainOnBeginPeriod < 0.0 ? 0.0 : remainOnBeginPeriod,
+          0,
+          0,
+          remainOnEndPeriod < 0.0 ? 0.0 : remainOnEndPeriod,
+          product.getSource().getName()});
+      }
+
+      setModel(model);
+      setPreferredScrollableViewportSize(new Dimension(500, 70));
+      setFillsViewportHeight(true);
+      setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+      RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+      setRowSorter(sorter);
+      initColumnSizes();
       return this;
    }
 
