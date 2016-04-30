@@ -21,7 +21,7 @@ public class PastObserverTest extends DefaultTest
    @Test
    public void reversible()
    {
-      String date = "05.01.2016";
+      String date = "05.01.2015";
       PastObserver past = new PastObserver(incomingRepository, outcomingRepository);
       Product existedProduct = productRepository.findOne(3L);
       assertTrue(past.isRemovable(existedProduct, 2.5, date));

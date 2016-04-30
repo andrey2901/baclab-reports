@@ -3,7 +3,6 @@ package ua.com.hedgehogsoft.baclabreports.ui.swing.table;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -48,18 +47,12 @@ public class RemainsTable extends AbstractTable
    {
       List<Long> ids = productRepository.getProductIdsBySource(source);
       List<Product> products = new ArrayList<Product>();
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.HOUR_OF_DAY, 0);
-      cal.set(Calendar.MINUTE, 0);
-      cal.set(Calendar.SECOND, 0);
-      cal.set(Calendar.MILLISECOND, 0);
-      Date today = cal.getTime();
       DateLabelFormatter formatter = new DateLabelFormatter();
       Date destinationDate = (Date) formatter.stringToValue(date);
       RemainsCounter remains = new RemainsCounter(productRepository, incomingRepository, outcomingRepository);
       for (long id : ids)
       {
-         Product product = remains.getRemainOfProductOnDate(id, destinationDate, today);
+         Product product = remains.getRemainOfProductOnDate(id, destinationDate);
          if (product.getAmount() != 0.0)
          {
             products.add(product);

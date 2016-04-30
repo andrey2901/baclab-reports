@@ -29,23 +29,23 @@ public class ActReportCounterTest extends DefaultTest
       String source = "Mecenat";
       ActReportCounter actReportCounter = new ActReportCounter(em, sourcesCache, unitsCache);
 
-      products = actReportCounter.count("2016-01-01", "2016-01-31", source);
+      products = actReportCounter.count("2015-01-01", "2015-01-31", source);
       assertTrue(products.isEmpty());
 
-      products = actReportCounter.count("2016-03-01", "2016-03-31", source);
+      products = actReportCounter.count("2015-03-01", "2015-03-31", source);
       assertEquals(1, products.size());
       assertEquals(24.5, products.get(0).getAmount(), 0.0);
 
-      products = actReportCounter.count("2016-04-01", "2016-04-30", source);
+      products = actReportCounter.count("2015-04-01", "2015-04-30", source);
       assertEquals(2, products.size());
       assertEquals(21.5, products.get(0).getAmount(), 0.0);
       assertEquals(19.0, products.get(1).getAmount(), 0.0);
 
-      products = actReportCounter.count("2016-05-01", "2016-05-31", source);
+      products = actReportCounter.count("2015-05-01", "2015-05-31", source);
       assertEquals(1, products.size());
       assertEquals(14.1, products.get(0).getAmount(), 0.0);
 
-      products = actReportCounter.count("2016-06-01", "2016-06-30", source);
+      products = actReportCounter.count("2015-06-01", "2015-06-30", source);
       assertTrue(products.isEmpty());
    }
 }

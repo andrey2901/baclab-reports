@@ -65,21 +65,25 @@ public class FinalReportTable extends AbstractTable
 
       for (long id : ids)
       {
-         Product product = remains.getRemainOfProductOnDate(id, beginPeriod, new Date());
+         Product product = remains.getRemainOfProductOnDate(id, beginPeriod);
          double remainOnBeginPeriod = product.getAmount();
-         product = remains.getRemainOfProductOnDate(id, endPeriod, new Date());
+         product = remains.getRemainOfProductOnDate(id, endPeriod);
          double remainOnEndPeriod = product.getAmount();
+         double incomingsFromPeriod = incomingRepository.getIncomingsSumFromPeriod(id, beginPeriod, endPeriod);
+         double outcomingsFromPeriod = outcomingRepository.getOutcomingsSumFromPeriod(id, beginPeriod, endPeriod);
 
-         model.addRow(
-               new Object[]
-         {++i,
-          product.getName(),
-          product.getUnit().getName(),
-          remainOnBeginPeriod < 0.0 ? 0.0 : remainOnBeginPeriod,
-          0,
-          0,
-          remainOnEndPeriod < 0.0 ? 0.0 : remainOnEndPeriod,
-          product.getSource().getName()});
+         if (!(remainOnBeginPeriod == 0.0 && remainOnEndPeriod == 0.0 && incomingsFromPeriod == 0.0
+               && outcomingsFromPeriod == 0.0))
+         {
+            model.addRow(new Object[] {++i,
+                                       product.getName(),
+                                       product.getUnit().getName(),
+                                       remainOnBeginPeriod,
+                                       incomingsFromPeriod,
+                                       outcomingsFromPeriod,
+                                       remainOnEndPeriod,
+                                       product.getSource().getName()});
+         }
       }
 
       setModel(model);

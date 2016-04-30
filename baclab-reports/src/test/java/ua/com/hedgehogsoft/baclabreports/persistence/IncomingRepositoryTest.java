@@ -18,7 +18,7 @@ public class IncomingRepositoryTest extends DefaultTest
    public void getIncomingsSumFromDate()
    {
       DateLabelFormatter formatter = new DateLabelFormatter();
-      Date date = (Date) formatter.stringToValue("31.12.2015");
+      Date date = (Date) formatter.stringToValue("31.12.2014");
       assertEquals(40.0, incomingRepository.getIncomingsSum(1, date, new Date()), 0.0);
    }
 }

@@ -1,8 +1,6 @@
 package ua.com.hedgehogsoft.baclabreports.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import java.util.Date;
 
 import org.junit.Test;
@@ -25,31 +23,18 @@ public class RemainsCounterTest extends DefaultTest
    public void getRemains()
    {
       DateLabelFormatter formatter = new DateLabelFormatter();
-      Date today = (Date) formatter.stringToValue("10.01.2016");
+      Date date = (Date) formatter.stringToValue("03.01.2015");
 
-      Date date = (Date) formatter.stringToValue("03.01.2016");
       RemainsCounter remains = new RemainsCounter(productRepository, incomingRepository, outcomingRepository);
-      Product product = remains.getRemainOfProductOnDate(3, date, new Date());
+      Product product = remains.getRemainOfProductOnDate(3, date);
       assertEquals(15, product.getAmount(), 0.0);
 
-      date = (Date) formatter.stringToValue("03.01.2016");
-      product = remains.getRemainOfProductOnDate(3, date, today);
-      assertNotEquals(15, product.getAmount(), 0.0);
-
-      date = (Date) formatter.stringToValue("07.01.2016");
-      product = remains.getRemainOfProductOnDate(3, date, new Date());
+      date = (Date) formatter.stringToValue("07.01.2015");
+      product = remains.getRemainOfProductOnDate(3, date);
       assertEquals(11.5, product.getAmount(), 0.0);
 
-      date = (Date) formatter.stringToValue("07.01.2016");
-      product = remains.getRemainOfProductOnDate(3, date, today);
-      assertNotEquals(11.5, product.getAmount(), 0.0);
-
-      date = (Date) formatter.stringToValue("09.01.2016");
-      product = remains.getRemainOfProductOnDate(3, date, new Date());
+      date = (Date) formatter.stringToValue("09.01.2015");
+      product = remains.getRemainOfProductOnDate(3, date);
       assertEquals(7.5, product.getAmount(), 0.0);
-
-      date = (Date) formatter.stringToValue("09.01.2016");
-      product = remains.getRemainOfProductOnDate(3, date, today);
-      assertNotEquals(7.5, product.getAmount(), 0.0);
    }
 }
