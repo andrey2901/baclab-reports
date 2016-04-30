@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,7 +19,12 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ua.com.hedgehogsoft.baclabreports.service.DateRange;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.MonthCheckBox;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.YearCheckBox;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.FinalReportPopup;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.FinalReportTable;
 
 @Component
@@ -37,8 +43,13 @@ public class FinalReportFrame extends ReportFrame
 
    public void init()
    {
-      String dateFrom = null;
-      String dateTo = null;
+      JComboBox<String> monthComboBox = new MonthCheckBox();
+      JComboBox<Integer> yearComboBox = new YearCheckBox();
+      new FinalReportPopup(monthComboBox, yearComboBox);
+      DateRange ranger = new DateRange(monthComboBox.getSelectedIndex(), (int) yearComboBox.getSelectedItem());
+      DateLabelFormatter formatter = new DateLabelFormatter();
+      String dateFrom = formatter.dateToString(ranger.from());
+      String dateTo = formatter.dateToString(ranger.to());
       frame = new JFrame("БакЗвіт - загальний звіт");
       frame.addWindowListener(new WindowAdapter()
       {

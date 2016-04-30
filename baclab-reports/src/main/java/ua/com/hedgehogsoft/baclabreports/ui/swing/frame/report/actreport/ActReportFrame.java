@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
 import ua.com.hedgehogsoft.baclabreports.service.DateRange;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.MonthCheckBox;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.YearCheckBox;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.ActReportPopup;
@@ -50,23 +52,8 @@ public class ActReportFrame extends ReportFrame
 
    public void init()
    {
-      JComboBox<String> monthComboBox = new JComboBox<String>(new String[] {"Січень",
-                                                                            "Лютий",
-                                                                            "Березень",
-                                                                            "Квітень",
-                                                                            "Травень",
-                                                                            "Червень",
-                                                                            "Липень",
-                                                                            "Серпень",
-                                                                            "Вересень",
-                                                                            "Жовтень",
-                                                                            "Листопад",
-                                                                            "Грудень"});
-      JComboBox<Integer> yearComboBox = new JComboBox<Integer>();
-      for (int i = 2015; i < 2031; i++)
-      {
-         yearComboBox.addItem(i);
-      }
+      JComboBox<String> monthComboBox = new MonthCheckBox();
+      JComboBox<Integer> yearComboBox = new YearCheckBox();
       JComboBox<String> sourceComboBox = new JComboBox<String>();
       for (Source source : sourcesCache.getAll())
       {
