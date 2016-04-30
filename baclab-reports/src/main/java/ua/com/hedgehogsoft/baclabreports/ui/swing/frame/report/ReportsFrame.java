@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.Frame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.actreport.ActReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.finalreport.FinalReportFrame;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.movement.IncomingsReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.remains.RemainsReportFrame;
 
 @Component
@@ -40,6 +41,7 @@ public class ReportsFrame extends Frame
    private @Autowired RemainsReportFrame remainsReportFrame;
    private @Autowired ActReportFrame actReportFrame;
    private @Autowired FinalReportFrame finalReportFrame;
+   private @Autowired IncomingsReportFrame incomingsReportFrame;
 
    @Override
    protected void localize()
@@ -63,55 +65,30 @@ public class ReportsFrame extends Frame
             close();
          }
       });
-
       closeButton = new JButton(closeButtonLabel);
-
       closeButton.addActionListener(l -> close());
-
       remainsReportButton = new JButton(remainsReportButtonLabel);
-
       remainsReportButton.addActionListener(l -> remainsReportFrame.init());
-
       actReportButton = new JButton(actReportButtonLabel);
-
       actReportButton.addActionListener(l -> actReportFrame.init());
-
       finalReportButton = new JButton(generalReportButtonLabel);
-
       finalReportButton.addActionListener(l -> finalReportFrame.init());
-
       incomingsReportButton = new JButton(incomingsReportButtonLabel);
-
-      incomingsReportButton.addActionListener(null);
-
+      incomingsReportButton.addActionListener(l -> incomingsReportFrame.init());
       outcomingsReportButton = new JButton(outcomingsReportButtonLabel);
-
       outcomingsReportButton.addActionListener(null);
-
       JPanel buttonsPanel = new JPanel(new GridLayout(2, 3));
-
       buttonsPanel.add(remainsReportButton);
-
       buttonsPanel.add(actReportButton);
-
       buttonsPanel.add(finalReportButton);
-
       buttonsPanel.add(incomingsReportButton);
-
       buttonsPanel.add(outcomingsReportButton);
-
       buttonsPanel.add(closeButton);
-
       frame.add(buttonsPanel, BorderLayout.CENTER);
-
       frame.pack();
-
       frame.setResizable(false);
-
       frame.setLocationRelativeTo(null);
-
       frame.setVisible(true);
-
       logger.info("ReportsFrame was started.");
    }
 
