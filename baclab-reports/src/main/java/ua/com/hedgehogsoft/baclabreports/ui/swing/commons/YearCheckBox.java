@@ -1,5 +1,7 @@
 package ua.com.hedgehogsoft.baclabreports.ui.swing.commons;
 
+import java.util.Calendar;
+
 import javax.swing.JComboBox;
 
 public class YearCheckBox extends JComboBox<Integer>
@@ -8,9 +10,10 @@ public class YearCheckBox extends JComboBox<Integer>
 
    public YearCheckBox()
    {
-      for (int i = 2015; i < 2031; i++)
+      for (int i = 2010; i < 2031; i++)
       {
          super.addItem(i);
       }
+      setSelectedIndex(Calendar.getInstance().get(Calendar.YEAR) - 2010);
    }
 }

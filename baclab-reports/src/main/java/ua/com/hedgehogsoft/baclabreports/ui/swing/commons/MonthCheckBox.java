@@ -1,5 +1,6 @@
 package ua.com.hedgehogsoft.baclabreports.ui.swing.commons;
 
+import java.util.Calendar;
 import javax.swing.JComboBox;
 
 public class MonthCheckBox extends JComboBox<String>
@@ -20,5 +21,7 @@ public class MonthCheckBox extends JComboBox<String>
                           "Жовтень",
                           "Листопад",
                           "Грудень"});
+
+      setSelectedIndex(Calendar.getInstance().get(Calendar.MONTH));
    }
 }
