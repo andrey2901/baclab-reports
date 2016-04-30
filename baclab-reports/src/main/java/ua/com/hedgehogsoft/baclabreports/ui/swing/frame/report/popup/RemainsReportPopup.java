@@ -9,9 +9,9 @@ import javax.swing.JPanel;
 
 import org.jdatepicker.impl.JDatePickerImpl;
 
-public class SourceAndDatePopup
+public class RemainsReportPopup
 {
-   public SourceAndDatePopup(JComboBox<String> sourceComboBox, JDatePickerImpl datePickerImpl)
+   public RemainsReportPopup(JComboBox<String> sourceComboBox, JDatePickerImpl datePickerImpl)
    {
       JPanel panel = new JPanel(new GridLayout(2, 2));
       panel.add(new JLabel("Група:"));

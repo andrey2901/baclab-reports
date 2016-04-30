@@ -24,7 +24,7 @@ import ua.com.hedgehogsoft.baclabreports.model.Source;
 import ua.com.hedgehogsoft.baclabreports.service.DateRange;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.SourceAndDateYearPopup;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.ActReportPopup;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ActReportTable;
 
 @Component
@@ -72,7 +72,7 @@ public class ActReportFrame extends ReportFrame
       {
          sourceComboBox.addItem(source.getName());
       }
-      new SourceAndDateYearPopup(monthComboBox, yearComboBox, sourceComboBox);
+      new ActReportPopup(monthComboBox, yearComboBox, sourceComboBox);
       DateRange ranger = new DateRange(monthComboBox.getSelectedIndex(), (int) yearComboBox.getSelectedItem());
       DateLabelFormatter formatter = new DateLabelFormatter();
       String dateFrom = formatter.dateToString(ranger.from());

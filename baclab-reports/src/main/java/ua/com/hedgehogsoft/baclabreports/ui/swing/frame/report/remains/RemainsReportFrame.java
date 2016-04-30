@@ -25,7 +25,7 @@ import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.SourceAndDatePopup;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.RemainsReportPopup;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.RemainsTable;
 
 @Component
@@ -65,7 +65,7 @@ public class RemainsReportFrame extends ReportFrame
 
       do
       {
-         new SourceAndDatePopup(sourceComboBox, datePickerImpl);
+         new RemainsReportPopup(sourceComboBox, datePickerImpl);
          if (datePickerImpl.getJFormattedTextField().getText() == null
                || datePickerImpl.getJFormattedTextField().getText().isEmpty())
          {

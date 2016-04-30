@@ -7,9 +7,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class SourceAndDateYearPopup
+public class ActReportPopup
 {
-   public SourceAndDateYearPopup(JComboBox<String> monthComboBox,
+   public ActReportPopup(JComboBox<String> monthComboBox,
                                  JComboBox<Integer> yearComboBox,
                                  JComboBox<String> sourceComboBox)
    {
