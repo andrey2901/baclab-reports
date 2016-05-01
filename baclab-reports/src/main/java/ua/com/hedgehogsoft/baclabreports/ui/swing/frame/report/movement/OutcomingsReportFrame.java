@@ -19,34 +19,31 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ua.com.hedgehogsoft.baclabreports.model.Incoming;
+import ua.com.hedgehogsoft.baclabreports.model.Outcoming;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
-import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
-import ua.com.hedgehogsoft.baclabreports.service.PastObserver;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.MovementsReportPopup;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.table.IncomingsReportTable;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.table.OutcomingsReportTable;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.MovementsReportTableModel;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
 
 @Component
-public class IncomingsReportFrame extends ReportFrame
+public class OutcomingsReportFrame extends ReportFrame
 {
    private JButton printButton;
    private JButton deleteButton;
    private JButton closeButton;
-   private @Autowired IncomingsReportTable table;
+   private @Autowired OutcomingsReportTable table;
    private @Autowired ProductStorageTable productStorageTable;
    private @Autowired DatePicker datePicker;
-   private @Autowired IncomingRepository incomingRepository;
    private @Autowired OutcomingRepository outcomingRepository;
    private @Autowired ProductRepository productRepository;
-   private static final Logger logger = Logger.getLogger(IncomingsReportFrame.class);
+   private static final Logger logger = Logger.getLogger(OutcomingsReportFrame.class);
 
    @Override
    protected void localize()
@@ -64,13 +61,13 @@ public class IncomingsReportFrame extends ReportFrame
       }
       while (!checkInputData(datePickerFrom, datePickerTo));
 
-      frame = new JFrame("БакЗвіт - надходження");
+      frame = new JFrame("БакЗвіт - списання");
       frame.pack();
       frame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            logger.info("IncomingsReportFrame was closed.");
+            logger.info("OutcomingsReportFrame was closed.");
             frame.dispose();
          }
       });
@@ -80,7 +77,7 @@ public class IncomingsReportFrame extends ReportFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            logger.info("IncomingsReportFrame was closed.");
+            logger.info("OutcomingsReportFrame was closed.");
             frame.dispose();
          }
       });
@@ -92,76 +89,37 @@ public class IncomingsReportFrame extends ReportFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            Incoming incoming = incomingRepository
+            Outcoming outcoming = outcomingRepository
                   .getById((long) table.getValueAt(table.getSelectedRow(), table.getIndexColumn()));
-            Product existedProduct = incoming.getProduct();
-            DateLabelFormatter formatter = new DateLabelFormatter();
-            PastObserver past = new PastObserver(incomingRepository, outcomingRepository);
-            if (past.isRemovable(existedProduct, incoming.getAmount(), formatter.dateToString(incoming.getDate())))
-            {
-               existedProduct.setAmount(existedProduct.getAmount() - incoming.getProduct().getAmount());
-               productRepository.updateAmount(existedProduct.getId(), existedProduct.getAmount());
-               incomingRepository.delete(incoming.getId());
-               MovementsReportTableModel model = (MovementsReportTableModel) table.getModel();
-               model.removeRow(table.getSelectedRow());
-               ((ProductStoreTableModel) productStorageTable.getModel()).updateProduct(existedProduct);
+            Product existedProduct = outcoming.getProduct();
+            existedProduct.setAmount(existedProduct.getAmount() + outcoming.getAmount());
+            productRepository.updateAmount(existedProduct.getId(), existedProduct.getAmount());
+            outcomingRepository.delete(outcoming.getId());
+            MovementsReportTableModel model = (MovementsReportTableModel) table.getModel();
+            model.removeRow(table.getSelectedRow());
+            ((ProductStoreTableModel) productStorageTable.getModel()).updateProduct(existedProduct);
 
-               // for (int i = 0; i < productStorageTable.getColumnCount(); i++)
-               // {
-               // if (productStorageTable.getColumnName(i).equals("№ з/п"))
-               // {
-               // for (int k = 0; k < productStorageTable.getRowCount(); k++)
-               // {
-               // if (((int) productStorageTable.getValueAt(k, i)) ==
-               // existedProduct.getId())
-               // {
-               // for (int z = 0; z < productStorageTable.getColumnCount(); z++)
-               // {
-               // if (productStorageTable.getColumnName(z).equals("Кількість,
-               // од."))
-               // {
-               // ((ProductStoreTableModel) productStorageTable.getModel())
-               // .updateProduct(existedProduct);
-               // break;
-               // }
-               // }
-               // break;
-               // }
-               // }
-               // break;
-               // }
-               // }
+            JPanel panel = new JPanel(new GridLayout(7, 2));
+            panel.add(new JLabel("Дата: "));
+            panel.add(new JLabel(new DateLabelFormatter().dateToString(outcoming.getDate())));
+            panel.add(new JLabel("Найменування: "));
+            panel.add(new JLabel(outcoming.getProduct().getName()));
+            panel.add(new JLabel("Кількість, од.: "));
+            panel.add(new JLabel(Double.toString(outcoming.getAmount())));
+            panel.add(new JLabel("Одиниця виміру: "));
+            panel.add(new JLabel(outcoming.getProduct().getUnit().getName()));
+            panel.add(new JLabel("Ціна, грн./од.: "));
+            panel.add(new JLabel(Double.toString(outcoming.getProduct().getPrice())));
+            panel.add(new JLabel("Група: "));
+            panel.add(new JLabel(outcoming.getProduct().getSource().getName()));
+            panel.add(new JLabel("Сума, грн.: "));
+            panel.add(new JLabel(Double.toString(outcoming.getAmount() * outcoming.getProduct().getPrice())));
 
-               JPanel panel = new JPanel(new GridLayout(7, 2));
-               panel.add(new JLabel("Дата: "));
-               panel.add(new JLabel(new DateLabelFormatter().dateToString(incoming.getDate())));
-               panel.add(new JLabel("Найменування: "));
-               panel.add(new JLabel(incoming.getProduct().getName()));
-               panel.add(new JLabel("Кількість, од.: "));
-               panel.add(new JLabel(Double.toString(incoming.getAmount())));
-               panel.add(new JLabel("Одиниця виміру: "));
-               panel.add(new JLabel(incoming.getProduct().getUnit().getName()));
-               panel.add(new JLabel("Ціна, грн./од.: "));
-               panel.add(new JLabel(Double.toString(incoming.getProduct().getPrice())));
-               panel.add(new JLabel("Група: "));
-               panel.add(new JLabel(incoming.getProduct().getSource().getName()));
-               panel.add(new JLabel("Сума, грн.: "));
-               panel.add(new JLabel(Double.toString(incoming.getAmount() * incoming.getProduct().getPrice())));
+            JOptionPane.showMessageDialog(null, panel, "Видалено", JOptionPane.INFORMATION_MESSAGE);
 
-               JOptionPane.showMessageDialog(null, panel, "Видалено", JOptionPane.INFORMATION_MESSAGE);
-
-               frame.dispose();
-
-            }
-            else
-            {
-               JOptionPane.showMessageDialog(null,
-                     "Ви не можете видалити вказане надходження,"
-                           + "\nтак как у більш пізні строки Ви отримаєте від'ємний залишок.",
-                     "Помилка", JOptionPane.ERROR_MESSAGE);
-            }
-
+            frame.dispose();
          }
+
       });
 
       String from = datePickerFrom.getJFormattedTextField().getText();
@@ -183,7 +141,7 @@ public class IncomingsReportFrame extends ReportFrame
       frame.setResizable(true);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
-      logger.info("IncomingsReport was started.");
+      logger.info("OutcomingsReportFrame was started.");
    }
 
    @Override

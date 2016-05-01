@@ -9,23 +9,24 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
-import ua.com.hedgehogsoft.baclabreports.model.Incoming;
+import ua.com.hedgehogsoft.baclabreports.model.Outcoming;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
-import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
+import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.MovementsReportTableModel;
 
 @org.springframework.stereotype.Component
-public class IncomingsReportTable extends AbstractTable
+public class OutcomingsReportTable extends AbstractTable
 {
    private static final long serialVersionUID = 1L;
-   private @Autowired IncomingRepository incomingRepository;
+   private @Autowired OutcomingRepository outcomingRepository;
 
    @Autowired
-   public IncomingsReportTable(MessageByLocaleService messageByLocaleService)
+   public OutcomingsReportTable(MessageByLocaleService messageByLocaleService)
    {
       super(messageByLocaleService);
    }
@@ -33,31 +34,31 @@ public class IncomingsReportTable extends AbstractTable
    public JTable init(String from, String to)
    {
       DateLabelFormatter formatter = new DateLabelFormatter();
-      List<Incoming> incomings = incomingRepository.getIncomingsFromPeriod((Date) formatter.stringToValue(from),
+      List<Outcoming> outcomings = outcomingRepository.getOutcomingsFromPeriod((Date) formatter.stringToValue(from),
             (Date) formatter.stringToValue(to));
       String[] columnNames = {sequentialHeaderName,
                               productHeaderName,
                               unitHeaderName,
-                              "Дата надходження",
+                              "Дата списання",
                               priceHeaderName,
                               amountHeaderName,
                               summationHeaderName,
                               sourceHeaderName};
-      MovementsReportTableModel model = new MovementsReportTableModel(incomings.size(), columnNames);
+      MovementsReportTableModel model = new MovementsReportTableModel(outcomings.size(), columnNames);
       model.setIndexColumnName(sequentialHeaderName);
-      if (!incomings.isEmpty())
+      if (!outcomings.isEmpty())
       {
-         for (int i = 0; i < incomings.size(); i++)
+         for (int i = 0; i < outcomings.size(); i++)
          {
-            Product product = incomings.get(i).getProduct();
+            Product product = outcomings.get(i).getProduct();
 
-            model.addRow(new Object[] {incomings.get(i).getId(),
+            model.addRow(new Object[] {outcomings.get(i).getId(),
                                        product.getName(),
                                        product.getUnit().getName(),
-                                       formatter.dateToString(incomings.get(i).getDate()),
+                                       formatter.dateToString(outcomings.get(i).getDate()),
                                        product.getPrice(),
-                                       incomings.get(i).getAmount(),
-                                       incomings.get(i).getAmount() * product.getPrice(),
+                                       outcomings.get(i).getAmount(),
+                                       outcomings.get(i).getAmount() * product.getPrice(),
                                        product.getSource().getName()});
          }
       }

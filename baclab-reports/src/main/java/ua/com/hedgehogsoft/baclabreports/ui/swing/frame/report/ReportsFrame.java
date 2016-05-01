@@ -17,6 +17,7 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.Frame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.actreport.ActReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.finalreport.FinalReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.movement.IncomingsReportFrame;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.movement.OutcomingsReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.remains.RemainsReportFrame;
 
 @Component
@@ -42,6 +43,7 @@ public class ReportsFrame extends Frame
    private @Autowired ActReportFrame actReportFrame;
    private @Autowired FinalReportFrame finalReportFrame;
    private @Autowired IncomingsReportFrame incomingsReportFrame;
+   private @Autowired OutcomingsReportFrame outcomingsReportFrame;
 
    @Override
    protected void localize()
@@ -76,7 +78,7 @@ public class ReportsFrame extends Frame
       incomingsReportButton = new JButton(incomingsReportButtonLabel);
       incomingsReportButton.addActionListener(l -> incomingsReportFrame.init());
       outcomingsReportButton = new JButton(outcomingsReportButtonLabel);
-      outcomingsReportButton.addActionListener(null);
+      outcomingsReportButton.addActionListener(l -> outcomingsReportFrame.init());
       JPanel buttonsPanel = new JPanel(new GridLayout(2, 3));
       buttonsPanel.add(remainsReportButton);
       buttonsPanel.add(actReportButton);

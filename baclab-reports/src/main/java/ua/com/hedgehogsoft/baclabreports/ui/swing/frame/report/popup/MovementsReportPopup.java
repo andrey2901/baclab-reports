@@ -8,9 +8,9 @@ import javax.swing.JPanel;
 
 import org.jdatepicker.impl.JDatePickerImpl;
 
-public class IncomingsReportPopup
+public class MovementsReportPopup
 {
-   public IncomingsReportPopup(JDatePickerImpl periodBegin, JDatePickerImpl periodEnd)
+   public MovementsReportPopup(JDatePickerImpl periodBegin, JDatePickerImpl periodEnd)
    {
       JPanel panel = new JPanel(new GridLayout(2, 2));
       panel.add(new JLabel("Початок періоду:"));
