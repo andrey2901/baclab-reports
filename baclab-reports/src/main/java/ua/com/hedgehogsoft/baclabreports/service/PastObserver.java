@@ -23,8 +23,16 @@ public class PastObserver
       this.outcomingRepository = outcomingRepository;
    }
 
-   public boolean isRemovable(Product existedProduct, double outcomingAmount, String date)
+   public boolean isRemovable(Product existedProduct, double amount, String date)
    {
+      /*
+       * Amount for today after deleting the incoming.
+       */
+      if (existedProduct.getAmount() - amount < 0)
+      {
+         return false;
+      }
+
       Calendar cal = Calendar.getInstance();
       cal.set(Calendar.HOUR_OF_DAY, 0);
       cal.set(Calendar.MINUTE, 0);
@@ -40,7 +48,7 @@ public class PastObserver
       while (destinationDate.before(today))
       {
          double remainsAmount = getRemainsAmount(productID, existedProduct.getAmount(), destinationDate, today);
-         if (remainsAmount < outcomingAmount)
+         if (remainsAmount < amount)
          {
             return false;
          }

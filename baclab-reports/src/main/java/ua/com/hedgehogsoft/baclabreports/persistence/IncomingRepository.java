@@ -18,4 +18,7 @@ public interface IncomingRepository extends JpaRepository<Incoming, Long>
 
    @Query("SELECT i FROM Incoming i WHERE i.date BETWEEN ?1 AND ?2")
    List<Incoming> getIncomingsFromPeriod(Date from, Date to);
+
+   @Query("SELECT i FROM Incoming i WHERE i.id = ?1")
+   Incoming getById(long incomingId);
 }

@@ -7,12 +7,8 @@ import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowSorter;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
@@ -48,6 +44,7 @@ public class IncomingsReportTable extends AbstractTable
                               "Сума, грн.",
                               "Група"};
       IncomingsReportTableModel model = new IncomingsReportTableModel(incomings.size(), columnNames);
+      model.setIndexColumnName("№ з/п");
       if (!incomings.isEmpty())
       {
          for (int i = 0; i < incomings.size(); i++)
@@ -59,8 +56,8 @@ public class IncomingsReportTable extends AbstractTable
                                        product.getUnit().getName(),
                                        formatter.dateToString(incomings.get(i).getDate()),
                                        product.getPrice(),
-                                       product.getAmount(),
-                                       product.getTotalPrice(),
+                                       incomings.get(i).getAmount(),
+                                       incomings.get(i).getAmount() * product.getPrice(),
                                        product.getSource().getName()});
          }
       }
@@ -68,8 +65,8 @@ public class IncomingsReportTable extends AbstractTable
       setPreferredScrollableViewportSize(new Dimension(500, 70));
       setFillsViewportHeight(true);
       setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
-      setRowSorter(sorter);
+      // RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+      // setRowSorter(sorter);
       initColumnSizes();
       return this;
    }
@@ -92,5 +89,11 @@ public class IncomingsReportTable extends AbstractTable
          cellWidth = comp.getPreferredSize().width;
          column.setPreferredWidth(Math.max(headerWidth, cellWidth));
       }
+   }
+
+   public int getIndexColumn()
+   {
+      IncomingsReportTableModel model = (IncomingsReportTableModel) getModel();
+      return model.findColumn(model.getIndexColumnName());
    }
 }

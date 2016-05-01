@@ -19,11 +19,20 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ua.com.hedgehogsoft.baclabreports.model.Incoming;
+import ua.com.hedgehogsoft.baclabreports.model.Product;
+import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
+import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
+import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
+import ua.com.hedgehogsoft.baclabreports.service.PastObserver;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.IncomingsReportPopup;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.IncomingsReportTable;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.IncomingsReportTableModel;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
 
 @Component
 public class IncomingsReportFrame extends ReportFrame
@@ -32,7 +41,11 @@ public class IncomingsReportFrame extends ReportFrame
    private JButton deleteButton;
    private JButton closeButton;
    private @Autowired IncomingsReportTable table;
+   private @Autowired ProductStorageTable productStorageTable;
    private @Autowired DatePicker datePicker;
+   private @Autowired IncomingRepository incomingRepository;
+   private @Autowired OutcomingRepository outcomingRepository;
+   private @Autowired ProductRepository productRepository;
    private static final Logger logger = Logger.getLogger(IncomingsReportFrame.class);
 
    @Override
@@ -79,73 +92,74 @@ public class IncomingsReportFrame extends ReportFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-
-            /*Incoming incoming = new Connection().getIncomingById((int) table.getValueAt(table.getSelectedRow(), 0));
-
-            Product existedProduct = new Connection().getProductById(incoming.getProduct().getId());
-
-            if (isReversible(existedProduct, incoming.getProduct().getAmount(), incoming.getDate()))
+            Incoming incoming = incomingRepository
+                  .getById((long) table.getValueAt(table.getSelectedRow(), table.getIndexColumn()));
+            Product existedProduct = incoming.getProduct();
+            DateLabelFormatter formatter = new DateLabelFormatter();
+            PastObserver past = new PastObserver(incomingRepository, outcomingRepository);
+            if (past.isRemovable(existedProduct, incoming.getAmount(), formatter.dateToString(incoming.getDate())))
             {
                existedProduct.setAmount(existedProduct.getAmount() - incoming.getProduct().getAmount());
+               productRepository.updateAmount(existedProduct.getId(), existedProduct.getAmount());
+               incomingRepository.delete(incoming.getId());
+               IncomingsReportTableModel model = (IncomingsReportTableModel) table.getModel();
+               model.removeRow(table.getSelectedRow());
 
-               if (new Connection().updateProduct(existedProduct))
+               for (int i = 0; i < productStorageTable.getRowCount(); i++)
                {
-                  if (new Connection().deleteIncomingById(incoming.getId()))
+                  if (((long) productStorageTable.getValueAt(i, 0)) == existedProduct.getId())
                   {
-                     DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-                     model.removeRow(table.getSelectedRow());
-
-                     for (int i = 0; i < mainFrame.getTable().getColumnCount(); i++)
-                     {
-                        if (mainFrame.getTable().getColumnName(i).equals("№ з/п"))
-                        {
-                           for (int k = 0; k < mainFrame.getTable().getRowCount(); k++)
-                           {
-                              if (((int) mainFrame.getTable().getValueAt(k, i)) == existedProduct.getId())
-                              {
-                                 for (int z = 0; z < mainFrame.getTable().getColumnCount(); z++)
-                                 {
-                                    if (mainFrame.getTable().getColumnName(z).equals("Кількість, од."))
-                                    {
-                                       ((ProductStoreTableModel) mainFrame.getTable().getModel())
-                                             .updateAmount(existedProduct);
-
-                                       break;
-                                    }
-                                 }
-                                 break;
-                              }
-                           }
-                           break;
-                        }
-                     }
-
-                     Sources sources = new Sources(new Connection().getSources());
-
-                     Units units = new Units(new Connection().getUnits());
-
-                     JPanel panel = new JPanel(new GridLayout(7, 2));
-                     panel.add(new JLabel("Дата: "));
-                     panel.add(new JLabel(new DateLabelFormatter().dateToString(incoming.getDate())));
-                     panel.add(new JLabel("Найменування: "));
-                     panel.add(new JLabel(incoming.getProduct().getName()));
-                     panel.add(new JLabel("Кількість, од.: "));
-                     panel.add(new JLabel(Double.toString(incoming.getProduct().getAmount())));
-                     panel.add(new JLabel("Одиниця виміру: "));
-                     panel.add(new JLabel(units.valueOf(incoming.getProduct().getUnit()).getName()));
-                     panel.add(new JLabel("Ціна, грн./од.: "));
-                     panel.add(new JLabel(Double.toString(incoming.getProduct().getPrice())));
-                     panel.add(new JLabel("Група: "));
-                     panel.add(new JLabel(sources.valueOf(incoming.getProduct().getSource()).getName()));
-                     panel.add(new JLabel("Сума, грн.: "));
-                     panel.add(new JLabel(Double.toString(incoming.getProduct().getTotalPrice())));
-
-                     JOptionPane.showMessageDialog(null, panel, "Видалено", JOptionPane.INFORMATION_MESSAGE);
-
-                     close(reportsFrame);
+                     ((ProductStoreTableModel) productStorageTable.getModel()).updateProduct(existedProduct);
+                     break;
                   }
                }
+
+               // for (int i = 0; i < productStorageTable.getColumnCount(); i++)
+               // {
+               // if (productStorageTable.getColumnName(i).equals("№ з/п"))
+               // {
+               // for (int k = 0; k < productStorageTable.getRowCount(); k++)
+               // {
+               // if (((int) productStorageTable.getValueAt(k, i)) ==
+               // existedProduct.getId())
+               // {
+               // for (int z = 0; z < productStorageTable.getColumnCount(); z++)
+               // {
+               // if (productStorageTable.getColumnName(z).equals("Кількість,
+               // од."))
+               // {
+               // ((ProductStoreTableModel) productStorageTable.getModel())
+               // .updateProduct(existedProduct);
+               // break;
+               // }
+               // }
+               // break;
+               // }
+               // }
+               // break;
+               // }
+               // }
+
+               JPanel panel = new JPanel(new GridLayout(7, 2));
+               panel.add(new JLabel("Дата: "));
+               panel.add(new JLabel(new DateLabelFormatter().dateToString(incoming.getDate())));
+               panel.add(new JLabel("Найменування: "));
+               panel.add(new JLabel(incoming.getProduct().getName()));
+               panel.add(new JLabel("Кількість, од.: "));
+               panel.add(new JLabel(Double.toString(incoming.getAmount())));
+               panel.add(new JLabel("Одиниця виміру: "));
+               panel.add(new JLabel(incoming.getProduct().getUnit().getName()));
+               panel.add(new JLabel("Ціна, грн./од.: "));
+               panel.add(new JLabel(Double.toString(incoming.getProduct().getPrice())));
+               panel.add(new JLabel("Група: "));
+               panel.add(new JLabel(incoming.getProduct().getSource().getName()));
+               panel.add(new JLabel("Сума, грн.: "));
+               panel.add(new JLabel(Double.toString(incoming.getAmount() * incoming.getProduct().getPrice())));
+
+               JOptionPane.showMessageDialog(null, panel, "Видалено", JOptionPane.INFORMATION_MESSAGE);
+
+               frame.dispose();
+
             }
             else
             {
@@ -153,7 +167,7 @@ public class IncomingsReportFrame extends ReportFrame
                      "Ви не можете видалити вказане надходження,"
                            + "\nтак как у більш пізні строки Ви отримаєте від'ємний залишок.",
                      "Помилка", JOptionPane.ERROR_MESSAGE);
-            }*/
+            }
 
          }
       });
