@@ -104,15 +104,7 @@ public class IncomingsReportFrame extends ReportFrame
                incomingRepository.delete(incoming.getId());
                IncomingsReportTableModel model = (IncomingsReportTableModel) table.getModel();
                model.removeRow(table.getSelectedRow());
-
-               for (int i = 0; i < productStorageTable.getRowCount(); i++)
-               {
-                  if (((long) productStorageTable.getValueAt(i, 0)) == existedProduct.getId())
-                  {
-                     ((ProductStoreTableModel) productStorageTable.getModel()).updateProduct(existedProduct);
-                     break;
-                  }
-               }
+               ((ProductStoreTableModel) productStorageTable.getModel()).updateProduct(existedProduct);
 
                // for (int i = 0; i < productStorageTable.getColumnCount(); i++)
                // {

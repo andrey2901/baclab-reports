@@ -22,17 +22,11 @@ public class MultiLineHeaderRenderer extends JList implements TableCellRenderer
    public MultiLineHeaderRenderer()
    {
       setOpaque(true);
-
       setForeground(UIManager.getColor("TableHeader.foreground"));
-
       setBackground(UIManager.getColor("TableHeader.background"));
-
       setBorder(UIManager.getBorder("TableHeader.cellBorder"));
-
       ListCellRenderer renderer = getCellRenderer();
-
       ((JLabel) renderer).setHorizontalAlignment(JLabel.CENTER);
-
       setCellRenderer(renderer);
    }
 
@@ -45,15 +39,10 @@ public class MultiLineHeaderRenderer extends JList implements TableCellRenderer
                                                   int column)
    {
       setFont(table.getFont());
-
       String str = (value == null) ? "" : value.toString();
-
       BufferedReader br = new BufferedReader(new StringReader(str));
-
       String line;
-
       Vector v = new Vector();
-
       try
       {
          while ((line = br.readLine()) != null)
@@ -66,7 +55,6 @@ public class MultiLineHeaderRenderer extends JList implements TableCellRenderer
          ex.printStackTrace();
       }
       setListData(v);
-
       return this;
    }
 }

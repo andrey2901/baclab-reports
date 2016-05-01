@@ -35,16 +35,16 @@ public class IncomingsReportTable extends AbstractTable
       DateLabelFormatter formatter = new DateLabelFormatter();
       List<Incoming> incomings = incomingRepository.getIncomingsFromPeriod((Date) formatter.stringToValue(from),
             (Date) formatter.stringToValue(to));
-      String[] columnNames = {"№ з/п",
-                              "Найменування предметів закупівель",
-                              "Одиниця виміру",
+      String[] columnNames = {sequentialHeaderName,
+                              productHeaderName,
+                              unitHeaderName,
                               "Дата надходження",
-                              "Ціна, грн./од.",
-                              "Кількість, од.",
-                              "Сума, грн.",
-                              "Група"};
+                              priceHeaderName,
+                              amountHeaderName,
+                              summationHeaderName,
+                              sourceHeaderName};
       IncomingsReportTableModel model = new IncomingsReportTableModel(incomings.size(), columnNames);
-      model.setIndexColumnName("№ з/п");
+      model.setIndexColumnName(sequentialHeaderName);
       if (!incomings.isEmpty())
       {
          for (int i = 0; i < incomings.size(); i++)

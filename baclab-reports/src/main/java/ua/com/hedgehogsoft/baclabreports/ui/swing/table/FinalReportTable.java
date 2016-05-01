@@ -45,14 +45,14 @@ public class FinalReportTable extends AbstractTable
 
    public JTable init(String dateFrom, String dateTo)
    {
-      String[] columnNames = {"№ з/п",
-                              "Найменування лікарських засобів та медичних виробів",
-                              "Одиниця виміру",
+      String[] columnNames = {sequentialHeaderName,
+                              productHeaderName,
+                              unitHeaderName,
                               "Залишок на\nпочаток періоду",
                               "Надходження",
                               "Використання",
                               "Залишок на\nкінець періоду",
-                              "Група"};
+                              sourceHeaderName};
       List<Product> products = new ArrayList<Product>();
       List<Long> ids = productRepository.getProductIds();
       FinalReportTableModel model = new FinalReportTableModel(products.size(), columnNames);
