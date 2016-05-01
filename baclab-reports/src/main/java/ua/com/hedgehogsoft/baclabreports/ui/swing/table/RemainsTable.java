@@ -18,7 +18,6 @@ import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ua.com.hedgehogsoft.baclabreports.cache.UnitCache;
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
@@ -32,7 +31,6 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.RemainsStoreTableM
 public class RemainsTable extends AbstractTable
 {
    private static final long serialVersionUID = 1L;
-   private @Autowired UnitCache unitsCache;
    private @Autowired ProductRepository productRepository;
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired OutcomingRepository outcomingRepository;
@@ -68,7 +66,7 @@ public class RemainsTable extends AbstractTable
 
             model.addRow(new Object[] {i + 1,
                                        product.getName(),
-                                       unitsCache.findByName(product.getUnit().getName()).getName(),
+                                       product.getUnit().getName(),
                                        product.getPrice(),
                                        product.getAmount(),
                                        product.getTotalPrice()});
