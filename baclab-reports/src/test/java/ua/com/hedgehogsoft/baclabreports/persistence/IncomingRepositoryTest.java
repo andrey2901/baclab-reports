@@ -15,10 +15,10 @@ public class IncomingRepositoryTest extends DefaultTest
    private @Autowired IncomingRepository incomingRepository;
 
    @Test
-   public void getIncomingsSumFromDate()
+   public void getIncomingsSumFromPeriod()
    {
       DateLabelFormatter formatter = new DateLabelFormatter();
       Date date = (Date) formatter.stringToValue("31.12.2014");
-      assertEquals(40.0, incomingRepository.getIncomingsSum(1, date, new Date()), 0.0);
+      assertEquals(40.0, incomingRepository.getIncomingsSumFromPeriod(1, date, new Date()), 0.0);
    }
 }

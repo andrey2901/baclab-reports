@@ -27,6 +27,7 @@ import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
 import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
+import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
 import ua.com.hedgehogsoft.baclabreports.service.PastObserver;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.movement.popup.OutcomingPopupMessager;
@@ -36,6 +37,7 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableM
 public class OutcomingFrame extends MovementFrame
 {
    private static final Logger logger = Logger.getLogger(OutcomingFrame.class);
+   private @Autowired ProductRepository productRepository;
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired OutcomingRepository outcomingRepository;
    private @Autowired OutcomingPopupMessager outcomingPopupMessager;
@@ -84,7 +86,7 @@ public class OutcomingFrame extends MovementFrame
 
                if (existedProduct.getAmount() >= product.getAmount())
                {
-                  PastObserver past = new PastObserver(incomingRepository, outcomingRepository);
+                  PastObserver past = new PastObserver(productRepository, incomingRepository, outcomingRepository);
                   if (past.isRemovable(existedProduct, product.getAmount(),
                         datePickerImpl.getJFormattedTextField().getText()))
                   {

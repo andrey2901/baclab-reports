@@ -31,8 +31,8 @@ public class RemainsCounter
       cal.set(Calendar.SECOND, 0);
       cal.set(Calendar.MILLISECOND, 0);
       Date today = cal.getTime();
-      double incomingSum = incomingRepository.getIncomingsSum(productId, destinationDate, today);
-      double outcomingSum = outcomingRepository.getOutcomingsSum(productId, destinationDate, today);
+      double incomingSum = incomingRepository.getIncomingsSumFromPeriod(productId, destinationDate, today);
+      double outcomingSum = outcomingRepository.getOutcomingsSumFromPeriod(productId, destinationDate, today);
       Product product = productRepository.getProductById(productId);
       product.setAmount(product.getAmount() + outcomingSum - incomingSum);
       return product;

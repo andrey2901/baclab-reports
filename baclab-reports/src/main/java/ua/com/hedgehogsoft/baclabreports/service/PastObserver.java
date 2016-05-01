@@ -6,6 +6,7 @@ import java.util.Date;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
+import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 
 /**
@@ -14,11 +15,15 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
  */
 public class PastObserver
 {
+   private ProductRepository productRepository;
    private IncomingRepository incomingRepository;
    private OutcomingRepository outcomingRepository;
 
-   public PastObserver(IncomingRepository incomingRepository, OutcomingRepository outcomingRepository)
+   public PastObserver(ProductRepository productRepository,
+                       IncomingRepository incomingRepository,
+                       OutcomingRepository outcomingRepository)
    {
+      this.productRepository = productRepository;
       this.incomingRepository = incomingRepository;
       this.outcomingRepository = outcomingRepository;
    }
@@ -42,12 +47,13 @@ public class PastObserver
       Date today = cal.getTime();
       DateLabelFormatter formatter = new DateLabelFormatter();
       Date destinationDate = (Date) formatter.stringToValue(date);
+      RemainsCounter remainsCounter = new RemainsCounter(productRepository, incomingRepository, outcomingRepository);
 
       long productID = existedProduct.getId();
 
       while (destinationDate.before(today))
       {
-         double remainsAmount = getRemainsAmount(productID, existedProduct.getAmount(), destinationDate, today);
+         double remainsAmount = remainsCounter.getRemainOfProductOnDate(productID, destinationDate).getAmount();
          if (remainsAmount < amount)
          {
             return false;
@@ -57,12 +63,5 @@ public class PastObserver
          destinationDate = cal.getTime();
       }
       return true;
-   }
-
-   private double getRemainsAmount(long productID, double remainsForToday, Date destinationDate, Date today)
-   {
-      double incomingsSum = incomingRepository.getIncomingsSum(productID, destinationDate, today);
-      double outcomingsSum = outcomingRepository.getOutcomingsSum(productID, destinationDate, today);
-      return remainsForToday + outcomingsSum - incomingsSum;
    }
 }

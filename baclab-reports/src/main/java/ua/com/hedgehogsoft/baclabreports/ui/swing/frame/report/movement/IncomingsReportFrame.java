@@ -96,7 +96,7 @@ public class IncomingsReportFrame extends ReportFrame
                   .getById((long) table.getValueAt(table.getSelectedRow(), table.getIndexColumn()));
             Product existedProduct = incoming.getProduct();
             DateLabelFormatter formatter = new DateLabelFormatter();
-            PastObserver past = new PastObserver(incomingRepository, outcomingRepository);
+            PastObserver past = new PastObserver(productRepository, incomingRepository, outcomingRepository);
             if (past.isRemovable(existedProduct, incoming.getAmount(), formatter.dateToString(incoming.getDate())))
             {
                existedProduct.setAmount(existedProduct.getAmount() - incoming.getProduct().getAmount());
