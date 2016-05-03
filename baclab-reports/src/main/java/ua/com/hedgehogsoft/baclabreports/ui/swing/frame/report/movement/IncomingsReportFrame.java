@@ -24,6 +24,7 @@ import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.OutcomingRepository;
 import ua.com.hedgehogsoft.baclabreports.persistence.ProductRepository;
+import ua.com.hedgehogsoft.baclabreports.print.pdf.IncomingsReportPrinter;
 import ua.com.hedgehogsoft.baclabreports.service.PastObserver;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
@@ -46,6 +47,7 @@ public class IncomingsReportFrame extends ReportFrame
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired OutcomingRepository outcomingRepository;
    private @Autowired ProductRepository productRepository;
+   private @Autowired IncomingsReportPrinter printer;
    private static final Logger logger = Logger.getLogger(IncomingsReportFrame.class);
 
    @Override
@@ -63,6 +65,9 @@ public class IncomingsReportFrame extends ReportFrame
          new MovementsReportPopup(datePickerFrom, datePickerTo);
       }
       while (!checkInputData(datePickerFrom, datePickerTo));
+
+      String from = datePickerFrom.getJFormattedTextField().getText();
+      String to = datePickerTo.getJFormattedTextField().getText();
 
       frame = new JFrame("БакЗвіт - надходження");
       frame.pack();
@@ -85,7 +90,7 @@ public class IncomingsReportFrame extends ReportFrame
          }
       });
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(null);
+      printButton.addActionListener(l -> printer.print(table, from, to));
       deleteButton = new JButton("Видалити");
       deleteButton.addActionListener(new ActionListener()
       {
@@ -164,8 +169,6 @@ public class IncomingsReportFrame extends ReportFrame
          }
       });
 
-      String from = datePickerFrom.getJFormattedTextField().getText();
-      String to = datePickerTo.getJFormattedTextField().getText();
       JPanel datePanel = new JPanel(new GridLayout(2, 2));
       datePanel.add(new JLabel("Початок періоду:"));
       datePanel.add(new JLabel(from));
