@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
+import ua.com.hedgehogsoft.baclabreports.print.pdf.RemainsReportPrinter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.RemainsReportPopup;
@@ -38,6 +39,7 @@ public class RemainsReportFrame extends ReportFrame
    private @Autowired RemainsTable table;
    private @Autowired DatePicker datePicker;
    private @Autowired SourceCache sourcesCache;
+   private @Autowired RemainsReportPrinter printer;
    private static final Logger logger = Logger.getLogger(RemainsReportFrame.class);
 
    @Override
@@ -99,7 +101,8 @@ public class RemainsReportFrame extends ReportFrame
       });
 
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(null);
+      printButton.addActionListener(l -> printer.print(table, datePickerImpl.getJFormattedTextField().getText(),
+            (String) sourceComboBox.getSelectedItem()));
       JPanel titlePanel = new JPanel(new GridLayout(5, 1));
       titlePanel.add(new JLabel("Залишок", SwingConstants.CENTER));
       titlePanel.add(new JLabel("поживних середовищ і хімреактивів, лабораторного скла ", SwingConstants.CENTER));
