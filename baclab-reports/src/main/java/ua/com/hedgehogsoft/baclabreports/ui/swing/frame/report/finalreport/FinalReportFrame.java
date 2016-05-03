@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ua.com.hedgehogsoft.baclabreports.print.pdf.FinalReportPrinter;
 import ua.com.hedgehogsoft.baclabreports.service.DateRange;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.MonthCheckBox;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.YearCheckBox;
@@ -33,6 +34,7 @@ public class FinalReportFrame extends ReportFrame
    private JButton printButton;
    private JButton closeButton;
    private @Autowired FinalReportTable table;
+   private @Autowired FinalReportPrinter printer;
    private static final Logger logger = Logger.getLogger(FinalReportFrame.class);
 
    @Override
@@ -71,7 +73,7 @@ public class FinalReportFrame extends ReportFrame
          }
       });
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(null);
+      printButton.addActionListener(l -> printer.print(table, dateFrom, dateTo));
       JPanel titlePanel = new JPanel(new GridLayout(4, 1));
       titlePanel.add(new JLabel("Звіт", SwingConstants.CENTER));
       titlePanel.add(new JLabel("про надходження і відпуск (використання)", SwingConstants.CENTER));
