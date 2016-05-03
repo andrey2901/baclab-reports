@@ -3,14 +3,12 @@ package ua.com.hedgehogsoft.baclabreports.print.pdf;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JTable;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.RowSorter.SortKey;
 import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -146,34 +144,20 @@ public class FinalReportPrinter
          cell.setHorizontalAlignment(Element.ALIGN_CENTER);
          pdfTable.addCell(cell);
 
-         RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
-
-         table.setRowSorter(sorter);
-
-         ArrayList<SortKey> list = new ArrayList<SortKey>();
-
-         list.add(new RowSorter.SortKey(7, SortOrder.DESCENDING));
-
-         ((TableRowSorter<TableModel>) sorter).setSortKeys(list);
-
-         ((TableRowSorter<TableModel>) sorter).sort();
-
-         String group = (String) model.getValueAt(0, 7);
-         cell = new PdfPCell(new Phrase(group, font));
-         cell.setColspan(7);
-         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-         pdfTable.addCell(cell);
+         Map<String, List<PdfPCell>> groupedCells = new HashMap<>();
 
          for (int row = 0; row < model.getRowCount(); row++)
          {
-            if (!group.equals((String) model.getValueAt(row, 7)))
+            String group = (String) model.getValueAt(row, 7);
+            if (!groupedCells.containsKey(group))
             {
-               cell = new PdfPCell(new Phrase((String) model.getValueAt(row, 7), font));
+               cell = new PdfPCell(new Phrase(group, font));
                cell.setColspan(7);
                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-               pdfTable.addCell(cell);
-               group = (String) model.getValueAt(row, 7);
+               groupedCells.put(group, new ArrayList<>());
+               groupedCells.get(group).add(cell);
             }
+            List<PdfPCell> cells = groupedCells.get(group);
             for (int column = 0; column < model.getColumnCount(); column++)
             {
                switch (column)
@@ -182,13 +166,13 @@ public class FinalReportPrinter
                      cell = new PdfPCell(new Phrase(Integer.toString((int) model.getValueAt(row, column)), font));
                      cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                      cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                     pdfTable.addCell(cell);
+                     cells.add(cell);
                      break;
                   case 1:
                   case 2:
                      cell = new PdfPCell(new Phrase((String) model.getValueAt(row, column), font));
                      cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                     pdfTable.addCell(cell);
+                     cells.add(cell);
                      break;
                   case 3:
                   case 4:
@@ -197,9 +181,16 @@ public class FinalReportPrinter
                      cell = new PdfPCell(
                            new Phrase((String) Double.toString((double) model.getValueAt(row, column)), font));
                      cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                     pdfTable.addCell(cell);
+                     cells.add(cell);
                      break;
                }
+            }
+         }
+         for (String group : groupedCells.keySet())
+         {
+            for (PdfPCell printCell : groupedCells.get(group))
+            {
+               pdfTable.addCell(printCell);
             }
          }
          document.add(pdfTable);
