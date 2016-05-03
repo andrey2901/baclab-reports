@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
+import ua.com.hedgehogsoft.baclabreports.print.pdf.ActReportPrinter;
 import ua.com.hedgehogsoft.baclabreports.service.DateRange;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.MonthCheckBox;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.YearCheckBox;
@@ -36,6 +37,7 @@ public class ActReportFrame extends ReportFrame
    private JButton closeButton;
    private @Autowired ActReportTable table;
    private @Autowired SourceCache sourcesCache;
+   private @Autowired ActReportPrinter printer;
    private static final Logger logger = Logger.getLogger(ActReportFrame.class);
 
    @Override
@@ -85,7 +87,8 @@ public class ActReportFrame extends ReportFrame
          }
       });
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(null);
+      printButton
+            .addActionListener(l -> printer.print(table, dateFrom, dateTo, (String) sourceComboBox.getSelectedItem()));
       JPanel titlePanel = new JPanel(new GridLayout(5, 1));
       titlePanel.add(new JLabel("Акт", SwingConstants.CENTER));
       titlePanel
