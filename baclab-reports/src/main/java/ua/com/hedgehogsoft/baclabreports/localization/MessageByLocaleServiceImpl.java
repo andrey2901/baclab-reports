@@ -11,11 +11,21 @@ import org.springframework.stereotype.Component;
 public class MessageByLocaleServiceImpl implements MessageByLocaleService
 {
    private @Autowired MessageSource messageSource;
+   private Locale locale;
+
+   public MessageByLocaleServiceImpl()
+   {
+      String baclabLocale = System.getProperty("baclab.locale");
+      if (baclabLocale == null || baclabLocale.isEmpty())
+         LocaleContextHolder.setLocale(Locale.getDefault());
+      else
+         LocaleContextHolder.setLocale(new Locale(baclabLocale.toLowerCase(), baclabLocale.toUpperCase()));
+      locale = LocaleContextHolder.getLocale();
+   }
 
    @Override
    public String getMessage(String code)
    {
-      Locale locale = LocaleContextHolder.getLocale();
       return messageSource.getMessage(code, null, locale);
    }
 }
