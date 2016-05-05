@@ -17,6 +17,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
@@ -27,6 +28,7 @@ import ua.com.hedgehogsoft.baclabreports.service.RemainsCounter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.RemainsStoreTableModel;
 
+@Scope("prototype")
 @org.springframework.stereotype.Component
 public class RemainsTable extends AbstractTable
 {
