@@ -19,6 +19,8 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import ua.com.hedgehogsoft.baclabreports.model.SourceType;
+
 @Component
 public class RemainsReportPrinter
 {
@@ -69,9 +71,13 @@ public class RemainsReportPrinter
          paragraph2.setSpacingAfter(1);
          paragraph2.setSpacingBefore(1);
          paragraph2.setAlignment(Element.ALIGN_CENTER);
-         Chunk chunk2 = new Chunk("поживних середовищ і хімреактивів, лабораторного скла\n"
-               + "по Централізованій баклабораторії Лівобережжя КЗ \"Дніпропетровьска міська клінічна лікарня №9\" ДОР\""
-               + "\n\"" + source + "\"");
+         String str = "поживних середовищ і хімреактивів, лабораторного скла\n"
+               + "по Централізованій баклабораторії Лівобережжя КЗ \"Дніпропетровьска міська клінічна лікарня №9\" ДОР\"";
+         if (SourceType.getType(source) != SourceType.BUDGET)
+         {
+            str += "\n\"" + source + "\"";
+         }
+         Chunk chunk2 = new Chunk(str);
          paragraph2.add(chunk2);
 
          Paragraph paragraph3 = new Paragraph();

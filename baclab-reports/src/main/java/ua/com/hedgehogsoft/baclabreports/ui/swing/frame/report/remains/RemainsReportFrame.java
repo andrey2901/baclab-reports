@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
+import ua.com.hedgehogsoft.baclabreports.model.SourceType;
 import ua.com.hedgehogsoft.baclabreports.print.pdf.RemainsReportPrinter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
@@ -80,6 +81,8 @@ public class RemainsReportFrame extends ReportFrame
       }
       while (true);
 
+      String source = (String) sourceComboBox.getSelectedItem();
+      String date = datePickerImpl.getJFormattedTextField().getText();
       frame = new JFrame("БакЗвіт - залишки");
       frame.addWindowListener(new WindowAdapter()
       {
@@ -101,21 +104,22 @@ public class RemainsReportFrame extends ReportFrame
       });
 
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(l -> printer.print(table, datePickerImpl.getJFormattedTextField().getText(),
-            (String) sourceComboBox.getSelectedItem()));
+      printButton.addActionListener(l -> printer.print(table, date, source));
       JPanel titlePanel = new JPanel(new GridLayout(5, 1));
       titlePanel.add(new JLabel("Залишок", SwingConstants.CENTER));
       titlePanel.add(new JLabel("поживних середовищ і хімреактивів, лабораторного скла ", SwingConstants.CENTER));
       titlePanel.add(new JLabel(
             "по Централізованій баклабораторії Лівобережжя КЗ \"Дніпропетровьска міська клінічна лікарня №9\" ДОР\"",
             SwingConstants.CENTER));
-      titlePanel.add(new JLabel("на " + datePickerImpl.getJFormattedTextField().getText(), SwingConstants.CENTER));
-      titlePanel.add(new JLabel("\"" + (String) sourceComboBox.getSelectedItem() + "\"", SwingConstants.CENTER));
+      titlePanel.add(new JLabel("на " + date, SwingConstants.CENTER));
+      if (SourceType.getType(source) != SourceType.BUDGET)
+      {
+         titlePanel.add(new JLabel("\"" + source + "\"", SwingConstants.CENTER));
+      }
       JPanel buttonsPanel = new JPanel();
       buttonsPanel.add(printButton);
       buttonsPanel.add(closeButton);
-      JScrollPane scrollPane = new JScrollPane(
-            table.init(datePickerImpl.getJFormattedTextField().getText(), (String) sourceComboBox.getSelectedItem()));
+      JScrollPane scrollPane = new JScrollPane(table.init(date, source));
       frame.add(scrollPane, BorderLayout.CENTER);
       frame.add(titlePanel, BorderLayout.NORTH);
       frame.add(buttonsPanel, BorderLayout.SOUTH);

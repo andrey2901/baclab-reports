@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.model.Source;
+import ua.com.hedgehogsoft.baclabreports.model.SourceType;
 import ua.com.hedgehogsoft.baclabreports.print.pdf.ActReportPrinter;
 import ua.com.hedgehogsoft.baclabreports.service.DateRange;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.MonthCheckBox;
@@ -66,6 +67,7 @@ public class ActReportFrame extends ReportFrame
       DateLabelFormatter formatter = new DateLabelFormatter();
       String dateFrom = formatter.dateToString(ranger.from());
       String dateTo = formatter.dateToString(ranger.to());
+      String source = (String) sourceComboBox.getSelectedItem();
 
       frame = new JFrame("БакЗвіт - акт списання");
       frame.addWindowListener(new WindowAdapter()
@@ -87,8 +89,7 @@ public class ActReportFrame extends ReportFrame
          }
       });
       printButton = new JButton("Друкувати");
-      printButton
-            .addActionListener(l -> printer.print(table, dateFrom, dateTo, (String) sourceComboBox.getSelectedItem()));
+      printButton.addActionListener(l -> printer.print(table, dateFrom, dateTo, source));
       JPanel titlePanel = new JPanel(new GridLayout(5, 1));
       titlePanel.add(new JLabel("Акт", SwingConstants.CENTER));
       titlePanel
@@ -97,11 +98,14 @@ public class ActReportFrame extends ReportFrame
             "використаних Централізованою баклабораторією Лівобережжя КЗ \"Дніпропетровьска міська клінічна лікарня №9\" ДОР\"",
             SwingConstants.CENTER));
       titlePanel.add(new JLabel("з " + dateFrom + " до " + dateTo, SwingConstants.CENTER));
-      titlePanel.add(new JLabel("\"" + (String) sourceComboBox.getSelectedItem() + "\"", SwingConstants.CENTER));
+      if (SourceType.getType(source) != SourceType.BUDGET)
+      {
+         titlePanel.add(new JLabel("\"" + source + "\"", SwingConstants.CENTER));
+      }
       JPanel buttonsPanel = new JPanel();
       buttonsPanel.add(printButton);
       buttonsPanel.add(closeButton);
-      JScrollPane scrollPane = new JScrollPane(table.init(dateFrom, dateTo, (String) sourceComboBox.getSelectedItem()));
+      JScrollPane scrollPane = new JScrollPane(table.init(dateFrom, dateTo, source));
       frame.add(scrollPane, BorderLayout.CENTER);
       frame.add(titlePanel, BorderLayout.NORTH);
       frame.add(buttonsPanel, BorderLayout.SOUTH);
