@@ -23,15 +23,6 @@ public class RemainsController
    @RequestMapping("/baclab/remains")
    public String getRemains(@RequestParam String source)
    {
-      source = source.replaceAll("\"", "");
-      if (source.isEmpty())
-      {
-         source = SourceType.BUDGET.toString();
-      }
-      else
-      {
-         source = source.substring(0, 1).toUpperCase() + source.substring(1).toLowerCase();
-      }
       String date = new DateLabelFormatter().dateToString(new Date());
       String remains = "<h2 align=\"center\">Залишок</h2>";
       remains += "<h3 align=\"center\">поживних середовищ і хімреактивів, лабораторного скла</h3>";
