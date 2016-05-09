@@ -18,6 +18,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
@@ -29,6 +30,7 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.FinalReportTableModel;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.MultiLineHeaderRenderer;
 
+@Scope("prototype")
 @org.springframework.stereotype.Component
 public class FinalReportTable extends AbstractTable
 {
@@ -65,12 +67,11 @@ public class FinalReportTable extends AbstractTable
 
       for (long id : ids)
       {
-         Product product = remains.getRemainOfProductOnDate(id, beginPeriod);
-         double remainOnBeginPeriod = product.getAmount();
-         product = remains.getRemainOfProductOnDate(id, endPeriod);
-         double remainOnEndPeriod = product.getAmount();
+         double remainOnBeginPeriod = remains.getRemainOfProductOnDate(id, beginPeriod);
+         double remainOnEndPeriod = remains.getRemainOfProductOnDate(id, endPeriod);
          double incomingsFromPeriod = incomingRepository.getIncomingsSumFromPeriod(id, beginPeriod, endPeriod);
          double outcomingsFromPeriod = outcomingRepository.getOutcomingsSumFromPeriod(id, beginPeriod, endPeriod);
+         Product product = productRepository.getProductById(id);
 
          if (!(remainOnBeginPeriod == 0.0 && remainOnEndPeriod == 0.0 && incomingsFromPeriod == 0.0
                && outcomingsFromPeriod == 0.0))

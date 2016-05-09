@@ -53,7 +53,7 @@ public class PastObserver
 
       while (destinationDate.before(today))
       {
-         double remainsAmount = remainsCounter.getRemainOfProductOnDate(productID, destinationDate).getAmount();
+         double remainsAmount = remainsCounter.getRemainOfProductOnDate(productID, destinationDate);
          if (remainsAmount < amount)
          {
             return false;

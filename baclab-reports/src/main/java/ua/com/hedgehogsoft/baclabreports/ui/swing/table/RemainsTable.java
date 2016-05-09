@@ -52,10 +52,10 @@ public class RemainsTable extends AbstractTable
       RemainsCounter remains = new RemainsCounter(productRepository, incomingRepository, outcomingRepository);
       for (long id : ids)
       {
-         Product product = remains.getRemainOfProductOnDate(id, destinationDate);
-         if (product.getAmount() != 0.0)
+         double remainOnDate = remains.getRemainOfProductOnDate(id, destinationDate);
+         if (remainOnDate != 0.0)
          {
-            products.add(product);
+            products.add(productRepository.getProductById(id));
          }
       }
       RemainsStoreTableModel model = new RemainsStoreTableModel(products.size(), sequentialHeaderName,
