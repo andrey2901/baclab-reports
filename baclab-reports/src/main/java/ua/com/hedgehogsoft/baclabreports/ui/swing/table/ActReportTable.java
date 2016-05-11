@@ -17,6 +17,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.cache.UnitCache;
@@ -25,6 +26,7 @@ import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.service.ActReportCounter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.RemainsStoreTableModel;
 
+@Scope("prototype")
 @org.springframework.stereotype.Component
 public class ActReportTable extends AbstractTable
 {
