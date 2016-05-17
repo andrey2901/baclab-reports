@@ -14,5 +14,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @TestPropertySource(locations = "classpath:test_application.properties")
 public abstract class DefaultTest
 {
-
+   public DefaultTest()
+   {
+      System.setProperty("java.awt.headless", "false");
+   }
 }

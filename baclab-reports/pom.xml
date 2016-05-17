@@ -167,5 +167,12 @@
 			<artifactId>itextpdf</artifactId>
 			<version>${itextpdf.version}</version>
 		</dependency>
+
+		<!--jpedal -->
+		<dependency>
+			<groupId>org.jpedal</groupId>
+			<artifactId>OpenViewerFX</artifactId>
+			<version>7.00b29</version>
+		</dependency>
 	</dependencies>
 </project>
