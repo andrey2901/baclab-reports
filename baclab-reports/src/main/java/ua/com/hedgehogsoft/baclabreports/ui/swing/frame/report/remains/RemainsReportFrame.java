@@ -29,6 +29,7 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.RemainsReportPopup;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.RemainsTable;
+import ua.com.hedgehogsoft.baclabreports.viewer.pdf.Viewer;
 
 @Component
 public class RemainsReportFrame extends ReportFrame
@@ -41,6 +42,7 @@ public class RemainsReportFrame extends ReportFrame
    private @Autowired DatePicker datePicker;
    private @Autowired SourceCache sourcesCache;
    private @Autowired RemainsReportPrinter printer;
+   private @Autowired Viewer viewer;
    private static final Logger logger = Logger.getLogger(RemainsReportFrame.class);
 
    @Override
@@ -104,7 +106,7 @@ public class RemainsReportFrame extends ReportFrame
       });
 
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(l -> printer.print(table, date, source));
+      printButton.addActionListener(l -> viewer.view(printer.print(table, date, source)));
       JPanel titlePanel = new JPanel(new GridLayout(5, 1));
       titlePanel.add(new JLabel("Залишок", SwingConstants.CENTER));
       titlePanel.add(new JLabel("поживних середовищ і хімреактивів, лабораторного скла ", SwingConstants.CENTER));

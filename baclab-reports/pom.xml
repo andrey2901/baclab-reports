@@ -168,11 +168,11 @@
 			<version>${itextpdf.version}</version>
 		</dependency>
 
-		<!--jpedal -->
+		<!--PDFBox -->
 		<dependency>
-			<groupId>org.jpedal</groupId>
-			<artifactId>OpenViewerFX</artifactId>
-			<version>7.00b29</version>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.1</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -30,6 +30,7 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.ActReportPopup;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ActReportTable;
+import ua.com.hedgehogsoft.baclabreports.viewer.pdf.Viewer;
 
 @Component
 public class ActReportFrame extends ReportFrame
@@ -39,6 +40,7 @@ public class ActReportFrame extends ReportFrame
    private @Autowired ActReportTable table;
    private @Autowired SourceCache sourcesCache;
    private @Autowired ActReportPrinter printer;
+   private @Autowired Viewer viewer;
    private static final Logger logger = Logger.getLogger(ActReportFrame.class);
 
    @Override
@@ -89,7 +91,7 @@ public class ActReportFrame extends ReportFrame
          }
       });
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(l -> printer.print(table, dateFrom, dateTo, source));
+      printButton.addActionListener(l -> viewer.view(printer.print(table, dateFrom, dateTo, source)));
       JPanel titlePanel = new JPanel(new GridLayout(5, 1));
       titlePanel.add(new JLabel("Акт", SwingConstants.CENTER));
       titlePanel

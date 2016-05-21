@@ -1,5 +1,6 @@
 package ua.com.hedgehogsoft.baclabreports.print.pdf;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,8 +30,9 @@ public class FinalReportPrinter
 {
    private static final Logger logger = Logger.getLogger(FinalReportPrinter.class);
 
-   public void print(JTable table, String dateFrom, String dateTo)
+   public File print(JTable table, String dateFrom, String dateTo)
    {
+      File file = null;
       try
       {
          BaseFont bf = null;
@@ -48,8 +50,8 @@ public class FinalReportPrinter
 
          Document document = new Document(PageSize.A4, 0, 0, 0, 0);
 
-         PdfWriter.getInstance(document, new FileOutputStream(
-               System.getProperty("report.folder") + "/Загальний_звіт_" + dateFrom + "_" + dateTo + ".pdf"));
+         file = new File(System.getProperty("report.folder") + "/Загальний_звіт_" + dateFrom + "_" + dateTo + ".pdf");
+         PdfWriter.getInstance(document, new FileOutputStream(file));
 
          document.open();
 
@@ -255,5 +257,6 @@ public class FinalReportPrinter
       {
          logger.error("Загальний_звіт_" + dateFrom + "_" + dateTo + ".pdf wasn't printed.", e);
       }
+      return file;
    }
 }

@@ -27,6 +27,7 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.FinalReportPopup;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.FinalReportTable;
+import ua.com.hedgehogsoft.baclabreports.viewer.pdf.Viewer;
 
 @Component
 public class FinalReportFrame extends ReportFrame
@@ -35,6 +36,7 @@ public class FinalReportFrame extends ReportFrame
    private JButton closeButton;
    private @Autowired FinalReportTable table;
    private @Autowired FinalReportPrinter printer;
+   private @Autowired Viewer viewer;
    private static final Logger logger = Logger.getLogger(FinalReportFrame.class);
 
    @Override
@@ -73,7 +75,7 @@ public class FinalReportFrame extends ReportFrame
          }
       });
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(l -> printer.print(table, dateFrom, dateTo));
+      printButton.addActionListener(l -> viewer.view(printer.print(table, dateFrom, dateTo)));
       JPanel titlePanel = new JPanel(new GridLayout(4, 1));
       titlePanel.add(new JLabel("Звіт", SwingConstants.CENTER));
       titlePanel.add(new JLabel("про надходження і відпуск (використання)", SwingConstants.CENTER));

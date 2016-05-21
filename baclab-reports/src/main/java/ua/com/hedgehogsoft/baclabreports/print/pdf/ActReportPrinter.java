@@ -1,5 +1,6 @@
 package ua.com.hedgehogsoft.baclabreports.print.pdf;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.swing.JTable;
@@ -26,8 +27,9 @@ public class ActReportPrinter
 {
    private static final Logger logger = Logger.getLogger(ActReportPrinter.class);
 
-   public void print(JTable table, String dateFrom, String dateTo, String source)
+   public File print(JTable table, String dateFrom, String dateTo, String source)
    {
+      File file = null;
       try
       {
          BaseFont bf = null;
@@ -45,8 +47,9 @@ public class ActReportPrinter
 
          Document document = new Document(PageSize.A4, 0, 0, 0, 0);
 
-         PdfWriter.getInstance(document, new FileOutputStream(System.getProperty("report.folder") + "/Акт_списання_"
-               + source + "_" + dateFrom + "_" + dateTo + ".pdf"));
+         file = new File(System.getProperty("report.folder") + "/Акт_списання_" + source + "_" + dateFrom + "_" + dateTo
+               + ".pdf");
+         PdfWriter.getInstance(document, new FileOutputStream(file));
 
          document.open();
 
@@ -239,5 +242,6 @@ public class ActReportPrinter
       {
          logger.error("Акт_списання_" + source + "_" + dateFrom + "_" + dateTo + ".pdf wasn't printed.", e);
       }
+      return file;
    }
 }

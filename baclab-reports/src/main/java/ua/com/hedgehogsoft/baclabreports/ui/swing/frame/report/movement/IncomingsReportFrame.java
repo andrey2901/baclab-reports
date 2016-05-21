@@ -34,6 +34,7 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.table.IncomingsReportTable;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ProductStorageTable;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.MovementsReportTableModel;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.ProductStoreTableModel;
+import ua.com.hedgehogsoft.baclabreports.viewer.pdf.Viewer;
 
 @Component
 public class IncomingsReportFrame extends ReportFrame
@@ -48,6 +49,7 @@ public class IncomingsReportFrame extends ReportFrame
    private @Autowired OutcomingRepository outcomingRepository;
    private @Autowired ProductRepository productRepository;
    private @Autowired IncomingsReportPrinter printer;
+   private @Autowired Viewer viewer;
    private static final Logger logger = Logger.getLogger(IncomingsReportFrame.class);
 
    @Override
@@ -90,7 +92,7 @@ public class IncomingsReportFrame extends ReportFrame
          }
       });
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(l -> printer.print(table, from, to));
+      printButton.addActionListener(l -> viewer.view(printer.print(table, from, to)));
       deleteButton = new JButton("Видалити");
       deleteButton.addActionListener(new ActionListener()
       {
