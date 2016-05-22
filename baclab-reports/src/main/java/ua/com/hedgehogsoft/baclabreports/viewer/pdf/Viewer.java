@@ -6,6 +6,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,19 +33,21 @@ public class Viewer
    private JButton printButton;
    private JButton closeButton;
    private JButton openButton;
+   private JButton saveAsButton;
    private JButton zoomInButton;
    private JButton zoomOutButton;
    private List<JLabel> pages;
    private float scaleIndex = 1.5f;
    private float zoomIndex = 0.2f;
-   private int bottomMargin = 20;
+   private int topMargin = 7;
+   private int bottomMargin = 7;
    private File pdf;
    private static final Logger logger = Logger.getLogger(Viewer.class);
 
    public void view(File file)
    {
       pdf = file;
-      JFrame frame = new JFrame("Viewer");
+      JFrame frame = new JFrame("Viewer: " + pdf.getAbsolutePath());
       frame.setLayout(new BorderLayout());
       frame.addWindowListener(new WindowAdapter()
       {
@@ -118,6 +122,22 @@ public class Viewer
             new Viewer().view(selectedFile);
          }
       });
+      saveAsButton = new JButton("Зберегти як ...");
+      saveAsButton.addActionListener(l ->
+      {
+         JFileChooser chooser = new JFileChooser();
+         chooser.setCurrentDirectory(new File(System.getProperty("report.folder")));
+         chooser.showSaveDialog(saveAsButton.getParent());
+         try
+         {
+            Files.copy(pdf.toPath(), chooser.getSelectedFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
+         }
+         catch (Exception e)
+         {
+            logger.error("Can't copy file [" + pdf.getAbsolutePath() + "] to ["
+                  + chooser.getSelectedFile().getAbsolutePath() + "]", e);
+         }
+      });
       zoomInButton = new JButton("Збiльшити");
       zoomInButton.addActionListener(l ->
       {
@@ -158,6 +178,7 @@ public class Viewer
       });
       JPanel zoomPanel = new JPanel();
       zoomPanel.add(openButton);
+      zoomPanel.add(saveAsButton);
       zoomPanel.add(zoomInButton);
       zoomPanel.add(zoomOutButton);
       JPanel buttonsPanel = new JPanel();
@@ -185,12 +206,13 @@ public class Viewer
          JPanel docPanel = new JPanel();
          docPanel.setLayout(new GridLayout(numberOfPages, 1));
          scroll = new JScrollPane(docPanel);
+         scroll.getVerticalScrollBar().setUnitIncrement(12);
          pages = new ArrayList<>();
          for (int i = 0; i < numberOfPages; i++)
          {
             ImageIcon image = new ImageIcon(render.renderImage(i, scaleIndex));
             JLabel page = new JLabel(image, JLabel.CENTER);
-            page.setBorder(BorderFactory.createEmptyBorder(0, 0, bottomMargin, 0));
+            page.setBorder(BorderFactory.createEmptyBorder(topMargin, 0, bottomMargin, 0));
             pages.add(page);
             docPanel.add(page);
          }
