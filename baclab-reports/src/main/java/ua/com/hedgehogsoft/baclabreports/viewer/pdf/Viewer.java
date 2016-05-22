@@ -19,7 +19,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.filechooser.FileFilter;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -72,49 +71,7 @@ public class Viewer
       {
          JFileChooser chooser = new JFileChooser();
          chooser.setCurrentDirectory(new File(System.getProperty("report.folder")));
-         chooser.setFileFilter(new FileFilter()
-         {
-            @Override
-            public String getDescription()
-            {
-               return "PDF files";
-            }
-
-            @Override
-            public boolean accept(File f)
-            {
-               if (f.isDirectory())
-               {
-                  return true;
-               }
-               String extension = getExtension(f);
-               if (extension != null)
-               {
-                  switch (extension)
-                  {
-                     case "pdf":
-                        return true;
-                     default:
-                        return false;
-                  }
-               }
-               return false;
-            }
-
-            private String getExtension(File f)
-            {
-               String ext = null;
-               String s = f.getName();
-               int i = s.lastIndexOf('.');
-
-               if (i > 0 && i < s.length() - 1)
-               {
-                  ext = s.substring(i + 1).toLowerCase();
-               }
-               return ext;
-            }
-
-         });
+         chooser.setFileFilter(new PdfFileFilter());
          chooser.showOpenDialog(openButton.getParent());
          File selectedFile = chooser.getSelectedFile();
          if (selectedFile != null)
@@ -127,15 +84,26 @@ public class Viewer
       {
          JFileChooser chooser = new JFileChooser();
          chooser.setCurrentDirectory(new File(System.getProperty("report.folder")));
+         chooser.setFileFilter(new PdfFileFilter());
          chooser.showSaveDialog(saveAsButton.getParent());
          try
          {
-            Files.copy(pdf.toPath(), chooser.getSelectedFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
+            File selectedFile = chooser.getSelectedFile();
+            if (selectedFile != null)
+            {
+               Files.copy(pdf.toPath(), selectedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+               if (chooser.getFileFilter() instanceof PdfFileFilter
+                     && !selectedFile.getName().toLowerCase().endsWith(".pdf"))
+               {
+                  Files.move(selectedFile.toPath(),
+                        selectedFile.toPath().resolveSibling(selectedFile.getName() + ".pdf"),
+                        StandardCopyOption.REPLACE_EXISTING);
+               }
+            }
          }
          catch (Exception e)
          {
-            logger.error("Can't copy file [" + pdf.getAbsolutePath() + "] to ["
-                  + chooser.getSelectedFile().getAbsolutePath() + "]", e);
+            logger.error("Can't copy file", e);
          }
       });
       zoomInButton = new JButton("Збiльшити");
