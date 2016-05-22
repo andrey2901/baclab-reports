@@ -67,7 +67,7 @@ public class Viewer
       openButton.addActionListener(l ->
       {
          JFileChooser chooser = new JFileChooser();
-
+         chooser.setCurrentDirectory(new File(System.getProperty("report.folder")));
          chooser.setFileFilter(new FileFilter()
          {
             @Override
@@ -115,7 +115,7 @@ public class Viewer
          File selectedFile = chooser.getSelectedFile();
          if (selectedFile != null)
          {
-
+            new Viewer().view(selectedFile);
          }
       });
       zoomInButton = new JButton("Збiльшити");
