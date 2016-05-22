@@ -36,7 +36,7 @@ public abstract class ReportPrinter
          font = new Font(bf);
          font.setSize(14);
          fileName = resolveFileName(args);
-         file = new File(fileName);
+         file = new File(System.getProperty("report.folder") + System.getProperty("file.separator") + fileName);
          Document document = new Document(PageSize.A4, 0, 0, 0, 0);
          PdfWriter.getInstance(document, new FileOutputStream(file));
          document.open();
