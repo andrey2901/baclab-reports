@@ -2,9 +2,13 @@ package ua.com.hedgehogsoft.baclabreports.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
+
 import ua.com.hedgehogsoft.baclabreports.cache.SourceCache;
 import ua.com.hedgehogsoft.baclabreports.cache.UnitCache;
 import ua.com.hedgehogsoft.baclabreports.model.Product;
@@ -23,14 +27,15 @@ public class ActReportCounter
       this.unitsCache = unitsCache;
    }
 
-   public List<Product> count(String dateFrom, String dateTo, String source)
+   public List<Product> count(Date dateFrom, Date dateTo, String source)
    {
       List<Product> products = new ArrayList<Product>();
+      Query query = em.createNativeQuery(Queries.OUTCOMINGS_SUMS_WITH_PRODUCT_BY_DATES);
+      query.setParameter(1, sourcesCache.findByName(source).getId());
+      query.setParameter(2, dateFrom, TemporalType.DATE);
+      query.setParameter(3, dateTo, TemporalType.DATE);
       @SuppressWarnings("unchecked")
-      List<List<Object>> results = em
-            .createNativeQuery(
-                  Queries.getOutcomingSumsWithProductByDates(dateFrom, dateTo, sourcesCache.findByName(source).getId()))
-            .getResultList();
+      List<List<Object>> results = query.getResultList();
       for (Object result : results)
       {
          Object[] rslt = (Object[]) result;

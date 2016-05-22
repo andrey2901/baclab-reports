@@ -107,7 +107,7 @@ public class ActReportFrame extends ReportFrame
       JPanel buttonsPanel = new JPanel();
       buttonsPanel.add(printButton);
       buttonsPanel.add(closeButton);
-      JScrollPane scrollPane = new JScrollPane(table.init(dateFrom, dateTo, source));
+      JScrollPane scrollPane = new JScrollPane(table.init(ranger.from(), ranger.to(), source));
       frame.add(scrollPane, BorderLayout.CENTER);
       frame.add(titlePanel, BorderLayout.NORTH);
       frame.add(buttonsPanel, BorderLayout.SOUTH);

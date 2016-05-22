@@ -2,6 +2,7 @@ package ua.com.hedgehogsoft.baclabreports.ui.swing.table;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -41,7 +42,7 @@ public class ActReportTable extends AbstractTable
       super(messageByLocaleService);
    }
 
-   public JTable init(String dateFrom, String dateTo, String source)
+   public JTable init(Date dateFrom, Date dateTo, String source)
    {
       ActReportCounter actReportCounter = new ActReportCounter(em, sourcesCache, unitsCache);
       List<Product> products = actReportCounter.count(dateFrom, dateTo, source);
