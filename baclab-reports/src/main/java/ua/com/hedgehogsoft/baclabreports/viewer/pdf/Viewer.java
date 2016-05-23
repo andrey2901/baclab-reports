@@ -25,6 +25,8 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import ua.com.hedgehogsoft.baclabreports.printer.Printer;
+
 @Scope("prototype")
 @Component
 public class Viewer
@@ -58,7 +60,10 @@ public class Viewer
       });
 
       printButton = new JButton("Друкувати");
-      printButton.addActionListener(null);
+      printButton.addActionListener(l ->
+      {
+         new Printer().print(pdf);
+      });
       closeButton = new JButton("Закрити");
       closeButton.addActionListener(l ->
       {
