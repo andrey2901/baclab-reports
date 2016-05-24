@@ -37,12 +37,19 @@ public class FinalReportFrame extends ReportFrame
    private @Autowired FinalReportTable table;
    private @Autowired FinalReportPrinter printer;
    private @Autowired Viewer viewer;
+   private String titleText1;
+   private String titleText2;
+   private String titleText3;
    private static final Logger logger = Logger.getLogger(FinalReportFrame.class);
 
    @Override
    protected void localize()
    {
       super.localize();
+      title = messageByLocaleService.getMessage("frame.report.final.title");
+      titleText1 = messageByLocaleService.getMessage("frame.report.final.title.text.1");
+      titleText2 = messageByLocaleService.getMessage("frame.report.final.title.text.2");
+      titleText3 = messageByLocaleService.getMessage("frame.report.final.title.text.3");
    }
 
    public void init()
@@ -54,33 +61,32 @@ public class FinalReportFrame extends ReportFrame
       DateLabelFormatter formatter = new DateLabelFormatter();
       String dateFrom = formatter.dateToString(ranger.from());
       String dateTo = formatter.dateToString(ranger.to());
-      frame = new JFrame("БакЗвіт - загальний звіт");
+      frame = new JFrame(title);
       frame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            logger.info("FinalReportFrame was closed.");
             frame.dispose();
          }
       });
 
-      closeButton = new JButton("Закрити");
+      closeButton = new JButton(closeButtonLabel);
       closeButton.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
             frame.dispose();
-            logger.info("FinalReportFrame was closed.");
          }
       });
-      printButton = new JButton("Друкувати");
+      printButton = new JButton(printButtonLabel);
       printButton.addActionListener(l -> viewer.view(printer.print(table, dateFrom, dateTo)));
       JPanel titlePanel = new JPanel(new GridLayout(4, 1));
-      titlePanel.add(new JLabel("Звіт", SwingConstants.CENTER));
-      titlePanel.add(new JLabel("про надходження і відпуск (використання)", SwingConstants.CENTER));
-      titlePanel.add(new JLabel("лікарських засобів та медичних виробів", SwingConstants.CENTER));
-      titlePanel.add(new JLabel("з " + dateFrom + " до " + dateTo, SwingConstants.CENTER));
+      titlePanel.add(new JLabel(titleText1, SwingConstants.CENTER));
+      titlePanel.add(new JLabel(titleText2, SwingConstants.CENTER));
+      titlePanel.add(new JLabel(titleText3, SwingConstants.CENTER));
+      titlePanel
+            .add(new JLabel(dateLabelFrom + " " + dateFrom + " " + dateLabelTo + " " + dateTo, SwingConstants.CENTER));
       JPanel buttonsPanel = new JPanel();
       buttonsPanel.add(printButton);
       buttonsPanel.add(closeButton);
@@ -93,7 +99,6 @@ public class FinalReportFrame extends ReportFrame
       frame.setResizable(true);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
-      logger.info("FinalReportFrame was started.");
    }
 
    @Override

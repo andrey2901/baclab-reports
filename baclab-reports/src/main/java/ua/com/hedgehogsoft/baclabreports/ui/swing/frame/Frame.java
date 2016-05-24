@@ -17,7 +17,6 @@ public abstract class Frame
    public void close()
    {
       frame.dispose();
-      getLogger().info("close()");
    }
 
    @PostConstruct
