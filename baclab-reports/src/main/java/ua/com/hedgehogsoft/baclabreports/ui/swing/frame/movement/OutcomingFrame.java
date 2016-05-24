@@ -234,7 +234,6 @@ public class OutcomingFrame extends MovementFrame
       frame.setResizable(true);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
-      logger.info("OutcomingsFrame was started.");
    }
 
    @Override

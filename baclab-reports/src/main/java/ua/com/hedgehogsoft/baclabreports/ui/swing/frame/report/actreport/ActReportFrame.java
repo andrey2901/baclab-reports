@@ -41,12 +41,19 @@ public class ActReportFrame extends ReportFrame
    private @Autowired SourceCache sourcesCache;
    private @Autowired ActReportPrinter printer;
    private @Autowired Viewer viewer;
+   private String titleText1;
+   private String titleText2;
+   private String titleText3;
    private static final Logger logger = Logger.getLogger(ActReportFrame.class);
 
    @Override
    protected void localize()
    {
       super.localize();
+      title = messageByLocaleService.getMessage("frame.outcoming.title");
+      titleText1 = messageByLocaleService.getMessage("frame.report.act.title.text.1");
+      titleText2 = messageByLocaleService.getMessage("frame.report.act.title.text.2");
+      titleText3 = messageByLocaleService.getMessage("frame.report.act.title.text.3");
    }
 
    @Override
@@ -71,35 +78,31 @@ public class ActReportFrame extends ReportFrame
       String dateTo = formatter.dateToString(ranger.to());
       String source = (String) sourceComboBox.getSelectedItem();
 
-      frame = new JFrame("БакЗвіт - акт списання");
+      frame = new JFrame(title);
       frame.addWindowListener(new WindowAdapter()
       {
          public void windowClosing(WindowEvent we)
          {
-            logger.info("ActReportFrame was closed.");
             frame.dispose();
          }
       });
-      closeButton = new JButton("Закрити");
+      closeButton = new JButton(closeButtonLabel);
       closeButton.addActionListener(new ActionListener()
       {
          @Override
          public void actionPerformed(ActionEvent e)
          {
             frame.dispose();
-            logger.info("ActReportFrame was closed.");
          }
       });
-      printButton = new JButton("Друкувати");
+      printButton = new JButton(printButtonLabel);
       printButton.addActionListener(l -> viewer.view(printer.print(table, dateFrom, dateTo, source)));
       JPanel titlePanel = new JPanel(new GridLayout(5, 1));
-      titlePanel.add(new JLabel("Акт", SwingConstants.CENTER));
+      titlePanel.add(new JLabel(titleText1, SwingConstants.CENTER));
+      titlePanel.add(new JLabel(titleText2, SwingConstants.CENTER));
+      titlePanel.add(new JLabel(titleText3, SwingConstants.CENTER));
       titlePanel
-            .add(new JLabel("списання поживних середовищ і хімреактивів, лабораторного скла,", SwingConstants.CENTER));
-      titlePanel.add(new JLabel(
-            "використаних Централізованою баклабораторією Лівобережжя КЗ \"Дніпропетровьска міська клінічна лікарня №9\" ДОР\"",
-            SwingConstants.CENTER));
-      titlePanel.add(new JLabel("з " + dateFrom + " до " + dateTo, SwingConstants.CENTER));
+            .add(new JLabel(dateLabelFrom + " " + dateFrom + " " + dateLabelTo + " " + dateTo, SwingConstants.CENTER));
       if (SourceType.getType(source) != SourceType.BUDGET)
       {
          titlePanel.add(new JLabel("\"" + source + "\"", SwingConstants.CENTER));
@@ -116,6 +119,5 @@ public class ActReportFrame extends ReportFrame
       frame.setResizable(true);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
-      logger.info("ActReportFrame was started.");
    }
 }

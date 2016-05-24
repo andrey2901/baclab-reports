@@ -209,7 +209,6 @@ public class IncomingFrame extends MovementFrame
       frame.setResizable(true);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
-      logger.info("IncomingsFrame was started.");
    }
 
    private boolean isNewUnitName(String name)

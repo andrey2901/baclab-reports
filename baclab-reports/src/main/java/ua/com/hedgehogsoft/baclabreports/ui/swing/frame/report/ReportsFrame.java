@@ -91,7 +91,6 @@ public class ReportsFrame extends Frame
       frame.setResizable(false);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
-      logger.info("ReportsFrame was started.");
    }
 
    @Override
