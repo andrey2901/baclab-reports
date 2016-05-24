@@ -10,6 +10,8 @@ import java.io.IOException;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.PageRanges;
+
+import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 import org.apache.pdfbox.printing.PDFPrintable;
@@ -20,19 +22,17 @@ import org.springframework.stereotype.Component;
 @Component
 public final class Printer
 {
+   private static final Logger logger = Logger.getLogger(Printer.class);
+
    public void print(File file)
    {
       try (PDDocument document = PDDocument.load(file))
       {
          printWithDialog(document);
       }
-      catch (IOException e)
+      catch (IOException | PrinterException e)
       {
-         e.printStackTrace();
-      }
-      catch (PrinterException e)
-      {
-         e.printStackTrace();
+         logger.error("Can't print a file [" + file.getName() + "] on printer", e);
       }
    }
 

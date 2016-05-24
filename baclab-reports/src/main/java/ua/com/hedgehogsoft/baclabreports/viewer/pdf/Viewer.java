@@ -55,7 +55,6 @@ public class Viewer
          public void windowClosing(WindowEvent we)
          {
             frame.dispose();
-            logger.info("Viewer was closed.");
          }
       });
 
@@ -68,7 +67,6 @@ public class Viewer
       closeButton.addActionListener(l ->
       {
          frame.dispose();
-         logger.info("Viewer was closed.");
 
       });
       openButton = new JButton("Вiдкрити ...");
@@ -108,7 +106,7 @@ public class Viewer
          }
          catch (Exception e)
          {
-            logger.error("Can't copy file", e);
+            logger.error("Can't copy file[" + pdf.getAbsolutePath() + "]", e);
          }
       });
       zoomInButton = new JButton("Збiльшити");
@@ -127,7 +125,7 @@ public class Viewer
          }
          catch (IOException e)
          {
-            logger.error("Can't load file[" + pdf.getAbsolutePath() + "] to viewer", e);
+            logger.error("Can't load file[" + pdf.getAbsolutePath() + "] to viewer  during zoom in", e);
          }
       });
       zoomOutButton = new JButton("Зменшити");
@@ -146,7 +144,7 @@ public class Viewer
          }
          catch (IOException e)
          {
-            logger.error("Can't load file[" + pdf.getAbsolutePath() + "] to viewer", e);
+            logger.error("Can't load file[" + pdf.getAbsolutePath() + "] to viewer during zoom out", e);
          }
       });
       JPanel zoomPanel = new JPanel();
@@ -166,7 +164,6 @@ public class Viewer
       frame.setResizable(true);
       frame.setLocationRelativeTo(null);
       frame.setVisible(true);
-      logger.info("FinalReportFrame was started.");
    }
 
    public JScrollPane createPanelWithAllPages()
@@ -192,7 +189,7 @@ public class Viewer
       }
       catch (IOException e)
       {
-         logger.error("Can't load file[" + pdf.getAbsolutePath() + "] to viewer", e);
+         logger.error("Can't load file[" + pdf.getAbsolutePath() + "] to viewer during read all pages", e);
       }
 
       return scroll;

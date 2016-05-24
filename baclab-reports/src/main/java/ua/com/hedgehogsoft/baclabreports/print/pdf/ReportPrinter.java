@@ -18,34 +18,27 @@ public abstract class ReportPrinter
 {
    protected Font font;
    protected String fileName;
+   private static final Logger logger = Logger.getLogger(ReportPrinter.class);
 
    public File print(JTable table, String... args)
    {
+      fileName = resolveFileName(args);
       File file = null;
       try
       {
-         BaseFont bf = null;
-         try
-         {
-            bf = BaseFont.createFont(System.getProperty("local.fonts"), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-         }
-         catch (IOException e)
-         {
-            getLogger().error("The font wasn't loaded.", e);
-         }
+         BaseFont bf = BaseFont.createFont(System.getProperty("local.fonts"), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
          font = new Font(bf);
          font.setSize(14);
-         fileName = resolveFileName(args);
          file = new File(System.getProperty("report.folder") + System.getProperty("file.separator") + fileName);
-         Document document = new Document(PageSize.A4, 0, 0, 0, 0);
+         Document document = new Document(PageSize.A4, 0, 0, 30, 30);
          PdfWriter.getInstance(document, new FileOutputStream(file));
          document.open();
          setContent(document, table, args);
          document.close();
       }
-      catch (Exception e)
+      catch (IOException | DocumentException e)
       {
-         getLogger().error(fileName + " wasn't printed.", e);
+         logger.error("Can't print file [" + fileName + "]", e);
       }
       return file;
    }
