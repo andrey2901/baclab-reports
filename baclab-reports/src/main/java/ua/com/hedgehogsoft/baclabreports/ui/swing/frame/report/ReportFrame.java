@@ -8,6 +8,7 @@ public abstract class ReportFrame extends Frame
    protected String printButtonLabel;
    protected String dateLabelTo;
    protected String dateLabelFrom;
+   protected String dateLabelOn;
 
    @Override
    protected void localize()
@@ -16,5 +17,6 @@ public abstract class ReportFrame extends Frame
       printButtonLabel = messageByLocaleService.getMessage("button.print.label");
       dateLabelFrom = messageByLocaleService.getMessage("date.label.from");
       dateLabelTo = messageByLocaleService.getMessage("date.label.to");
+      dateLabelOn = messageByLocaleService.getMessage("date.label.on");
    }
 }
