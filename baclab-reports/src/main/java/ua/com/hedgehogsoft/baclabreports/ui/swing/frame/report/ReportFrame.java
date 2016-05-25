@@ -6,9 +6,12 @@ public abstract class ReportFrame extends Frame
 {
    protected String closeButtonLabel;
    protected String printButtonLabel;
+   protected String deleteButtonLabel;
    protected String dateLabelTo;
    protected String dateLabelFrom;
    protected String dateLabelOn;
+   protected String dateRangeLabelBegin;
+   protected String dateRangeLabelEnd;
 
    @Override
    protected void localize()
@@ -18,5 +21,8 @@ public abstract class ReportFrame extends Frame
       dateLabelFrom = messageByLocaleService.getMessage("date.label.from");
       dateLabelTo = messageByLocaleService.getMessage("date.label.to");
       dateLabelOn = messageByLocaleService.getMessage("date.label.on");
+      deleteButtonLabel = messageByLocaleService.getMessage("button.delete.label");
+      dateRangeLabelBegin = messageByLocaleService.getMessage("date.range.label.begin");
+      dateRangeLabelEnd = messageByLocaleService.getMessage("date.range.label.end");
    }
 }
