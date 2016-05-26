@@ -3,6 +3,7 @@ package ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup;
 import java.awt.GridLayout;
 import java.util.Date;
 
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -12,6 +13,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.model.Incoming;
+import ua.com.hedgehogsoft.baclabreports.model.Outcoming;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 
@@ -32,6 +34,9 @@ public class ReportPopup extends ReportFrame
    private String dateRangeErrorPopupLabelBegin;
    private String dateRangeErrorPopupLabelEnd;
    private String dateRangeErrorPopupLabelChange;
+   private String dateMonthLabel;
+   private String dateYearLabel;
+   private String sourceLabel;
    private static final Logger logger = Logger.getLogger(ReportPopup.class);
 
    @Override
@@ -53,6 +58,9 @@ public class ReportPopup extends ReportFrame
       dateRangeErrorPopupLabelBegin = messageByLocaleService.getMessage("message.popup.error.date.range.begin");
       dateRangeErrorPopupLabelEnd = messageByLocaleService.getMessage("message.popup.error.date.range.end");
       dateRangeErrorPopupLabelChange = messageByLocaleService.getMessage("message.popup.error.date.range.change");
+      dateMonthLabel = messageByLocaleService.getMessage("message.popup.info.date.month");
+      dateYearLabel = messageByLocaleService.getMessage("message.popup.info.date.year");
+      sourceLabel = messageByLocaleService.getMessage("message.popup.info.date.source");
    }
 
    public void deleteIncomingPopup(Incoming incoming)
@@ -75,6 +83,26 @@ public class ReportPopup extends ReportFrame
       JOptionPane.showMessageDialog(null, panel, removedLabel, JOptionPane.INFORMATION_MESSAGE);
    }
 
+   public void deleteOutcomingPopup(Outcoming outcoming)
+   {
+      JPanel panel = new JPanel(new GridLayout(7, 2));
+      panel.add(new JLabel(dateNameLabel));
+      panel.add(new JLabel(new DateLabelFormatter().dateToString(outcoming.getDate())));
+      panel.add(new JLabel(productNameLabel));
+      panel.add(new JLabel(outcoming.getProduct().getName()));
+      panel.add(new JLabel(amountNameLabel));
+      panel.add(new JLabel(Double.toString(outcoming.getAmount())));
+      panel.add(new JLabel(unitNameLabel));
+      panel.add(new JLabel(outcoming.getProduct().getUnit().getName()));
+      panel.add(new JLabel(priceNameLabel));
+      panel.add(new JLabel(Double.toString(outcoming.getProduct().getPrice())));
+      panel.add(new JLabel(sourceNameLabel));
+      panel.add(new JLabel(outcoming.getProduct().getSource().getName()));
+      panel.add(new JLabel(totalPriceLabel));
+      panel.add(new JLabel(Double.toString(outcoming.getAmount() * outcoming.getProduct().getPrice())));
+      JOptionPane.showMessageDialog(null, panel, removedLabel, JOptionPane.INFORMATION_MESSAGE);
+   }
+
    public void deleteIncomingInsufficientErrorPopup()
    {
       JOptionPane.showMessageDialog(null, removeAmountInsufficientOnDateErrorMessage, popupErrorLabel,
@@ -93,6 +121,20 @@ public class ReportPopup extends ReportFrame
          JOptionPane.showMessageDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.INFORMATION_MESSAGE);
       }
       while (!checkInputData(periodBegin, periodEnd));
+   }
+
+   public void createActReportPopup(JComboBox<String> monthComboBox,
+                                    JComboBox<Integer> yearComboBox,
+                                    JComboBox<String> sourceComboBox)
+   {
+      JPanel panel = new JPanel(new GridLayout(3, 2));
+      panel.add(new JLabel(dateMonthLabel));
+      panel.add(monthComboBox);
+      panel.add(new JLabel(dateYearLabel));
+      panel.add(yearComboBox);
+      panel.add(new JLabel(sourceLabel));
+      panel.add(sourceComboBox);
+      JOptionPane.showMessageDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.INFORMATION_MESSAGE);
    }
 
    private boolean checkInputData(JDatePickerImpl datePickerFrom, JDatePickerImpl datePickerTo)
