@@ -37,6 +37,8 @@ public class ReportPopup extends ReportFrame
    private String dateMonthLabel;
    private String dateYearLabel;
    private String sourceLabel;
+   private String dateRangePopupLabelDate;
+   private String dateLabel;
    private static final Logger logger = Logger.getLogger(ReportPopup.class);
 
    @Override
@@ -55,12 +57,14 @@ public class ReportPopup extends ReportFrame
       removeAmountInsufficientOnDateErrorMessage = messageByLocaleService
             .getMessage("message.popup.error.removed.amount.insufficient.on.date.text");
       dateRangePopupLabelPeriod = messageByLocaleService.getMessage("message.popup.date.range.label.period");
+      dateRangePopupLabelDate = messageByLocaleService.getMessage("message.popup.date.range.label.date");
       dateRangeErrorPopupLabelBegin = messageByLocaleService.getMessage("message.popup.error.date.range.begin");
       dateRangeErrorPopupLabelEnd = messageByLocaleService.getMessage("message.popup.error.date.range.end");
       dateRangeErrorPopupLabelChange = messageByLocaleService.getMessage("message.popup.error.date.range.change");
       dateMonthLabel = messageByLocaleService.getMessage("message.popup.info.date.month");
       dateYearLabel = messageByLocaleService.getMessage("message.popup.info.date.year");
       sourceLabel = messageByLocaleService.getMessage("message.popup.info.date.source");
+      dateLabel = messageByLocaleService.getMessage("message.popup.info.date.label");
    }
 
    public void deleteIncomingPopup(Incoming incoming)
@@ -135,6 +139,26 @@ public class ReportPopup extends ReportFrame
       panel.add(new JLabel(sourceLabel));
       panel.add(sourceComboBox);
       JOptionPane.showMessageDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.INFORMATION_MESSAGE);
+   }
+
+   public void createFinalReportPopup(JComboBox<String> monthComboBox, JComboBox<Integer> yearComboBox)
+   {
+      JPanel panel = new JPanel(new GridLayout(3, 2));
+      panel.add(new JLabel(dateMonthLabel));
+      panel.add(monthComboBox);
+      panel.add(new JLabel(dateYearLabel));
+      panel.add(yearComboBox);
+      JOptionPane.showMessageDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.INFORMATION_MESSAGE);
+   }
+
+   public void createRemainsReportPopup(JComboBox<String> sourceComboBox, JDatePickerImpl datePickerImpl)
+   {
+      JPanel panel = new JPanel(new GridLayout(2, 2));
+      panel.add(new JLabel(sourceLabel));
+      panel.add(sourceComboBox);
+      panel.add(new JLabel(dateLabel));
+      panel.add(datePickerImpl);
+      JOptionPane.showMessageDialog(null, panel, dateRangePopupLabelDate, JOptionPane.INFORMATION_MESSAGE);
    }
 
    private boolean checkInputData(JDatePickerImpl datePickerFrom, JDatePickerImpl datePickerTo)

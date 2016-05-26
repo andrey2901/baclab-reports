@@ -118,7 +118,6 @@ public class IncomingFrame extends MovementFrame
                   Date date = (Date) formatter.stringToValue(datePickerImpl.getJFormattedTextField().getText());
                   incoming.setDate(date);
                   incomingRepository.save(incoming);
-                  logger.info("Incomings were performed.");
                   incomingPopupMessager.infoPopup(product);
                }
                close();

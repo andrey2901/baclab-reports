@@ -28,7 +28,7 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.MonthCheckBox;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.YearCheckBox;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.ActReportPopup;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.ReportPopup;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.ActReportTable;
 import ua.com.hedgehogsoft.baclabreports.viewer.pdf.Viewer;
 
@@ -41,6 +41,7 @@ public class ActReportFrame extends ReportFrame
    private @Autowired SourceCache sourcesCache;
    private @Autowired ActReportPrinter printer;
    private @Autowired Viewer viewer;
+   private @Autowired ReportPopup popup;
    private String titleText1;
    private String titleText2;
    private String titleText3;
@@ -71,7 +72,7 @@ public class ActReportFrame extends ReportFrame
       {
          sourceComboBox.addItem(source.getName());
       }
-      new ActReportPopup(monthComboBox, yearComboBox, sourceComboBox);
+      popup.createActReportPopup(monthComboBox, yearComboBox, sourceComboBox);
       DateRange ranger = new DateRange(monthComboBox.getSelectedIndex(), (int) yearComboBox.getSelectedItem());
       DateLabelFormatter formatter = new DateLabelFormatter();
       String dateFrom = formatter.dateToString(ranger.from());
