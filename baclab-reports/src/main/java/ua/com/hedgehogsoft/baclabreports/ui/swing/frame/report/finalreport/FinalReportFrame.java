@@ -21,8 +21,7 @@ import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.print.pdf.FinalReportPrinter;
 import ua.com.hedgehogsoft.baclabreports.service.DateRange;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.MonthCheckBox;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.YearCheckBox;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.ComboBoxCreator;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.ReportPopup;
@@ -38,6 +37,7 @@ public class FinalReportFrame extends ReportFrame
    private @Autowired FinalReportPrinter printer;
    private @Autowired Viewer viewer;
    private @Autowired ReportPopup popup;
+   private @Autowired ComboBoxCreator comboBoxCreator;
    private String titleText1;
    private String titleText2;
    private String titleText3;
@@ -55,8 +55,8 @@ public class FinalReportFrame extends ReportFrame
 
    public void init()
    {
-      JComboBox<String> monthComboBox = new MonthCheckBox();
-      JComboBox<Integer> yearComboBox = new YearCheckBox();
+      JComboBox<String> monthComboBox = comboBoxCreator.getMonthComboBox();
+      JComboBox<Integer> yearComboBox = comboBoxCreator.getYearComboBox();
       popup.createFinalReportPopup(monthComboBox, yearComboBox);
       DateRange ranger = new DateRange(monthComboBox.getSelectedIndex(), (int) yearComboBox.getSelectedItem());
       DateLabelFormatter formatter = new DateLabelFormatter();

@@ -4,11 +4,11 @@ import java.util.Calendar;
 
 import javax.swing.JComboBox;
 
-public class YearCheckBox extends JComboBox<Integer>
+public class YearComboBox extends JComboBox<Integer>
 {
    private static final long serialVersionUID = 1L;
 
-   public YearCheckBox()
+   public YearComboBox()
    {
       for (int i = 2010; i < 2031; i++)
       {

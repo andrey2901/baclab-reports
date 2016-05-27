@@ -24,8 +24,7 @@ import ua.com.hedgehogsoft.baclabreports.model.Source;
 import ua.com.hedgehogsoft.baclabreports.model.SourceType;
 import ua.com.hedgehogsoft.baclabreports.print.pdf.ActReportPrinter;
 import ua.com.hedgehogsoft.baclabreports.service.DateRange;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.MonthCheckBox;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.YearCheckBox;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.commons.ComboBoxCreator;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.ReportPopup;
@@ -42,6 +41,7 @@ public class ActReportFrame extends ReportFrame
    private @Autowired ActReportPrinter printer;
    private @Autowired Viewer viewer;
    private @Autowired ReportPopup popup;
+   private @Autowired ComboBoxCreator comboBoxCreator;
    private String titleText1;
    private String titleText2;
    private String titleText3;
@@ -65,8 +65,8 @@ public class ActReportFrame extends ReportFrame
 
    public void init()
    {
-      JComboBox<String> monthComboBox = new MonthCheckBox();
-      JComboBox<Integer> yearComboBox = new YearCheckBox();
+      JComboBox<String> monthComboBox = comboBoxCreator.getMonthComboBox();
+      JComboBox<Integer> yearComboBox = comboBoxCreator.getYearComboBox();
       JComboBox<String> sourceComboBox = new JComboBox<String>();
       for (Source source : sourcesCache.getAll())
       {

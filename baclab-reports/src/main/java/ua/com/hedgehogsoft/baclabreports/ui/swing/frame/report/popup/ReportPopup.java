@@ -143,7 +143,7 @@ public class ReportPopup extends ReportFrame
 
    public void createFinalReportPopup(JComboBox<String> monthComboBox, JComboBox<Integer> yearComboBox)
    {
-      JPanel panel = new JPanel(new GridLayout(3, 2));
+      JPanel panel = new JPanel(new GridLayout(2, 2));
       panel.add(new JLabel(dateMonthLabel));
       panel.add(monthComboBox);
       panel.add(new JLabel(dateYearLabel));
