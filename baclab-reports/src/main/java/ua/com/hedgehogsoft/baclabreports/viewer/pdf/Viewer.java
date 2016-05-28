@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,15 +23,23 @@ import javax.swing.JScrollPane;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.printer.Printer;
 
 @Scope("prototype")
 @Component
 public class Viewer
 {
+   private String closeButtonLabel;
+   private String printButtonLabel;
+   private String openButtonLabel;
+   private String saveAsButtonLabel;
+   private String zoomInButtonLabel;
+   private String zoomOutButtonLabel;
    private JButton printButton;
    private JButton closeButton;
    private JButton openButton;
@@ -43,7 +52,19 @@ public class Viewer
    private int topMargin = 7;
    private int bottomMargin = 7;
    private File pdf;
+   private @Autowired MessageByLocaleService messageByLocaleService;
    private static final Logger logger = Logger.getLogger(Viewer.class);
+
+   @PostConstruct
+   protected void localize()
+   {
+      closeButtonLabel = messageByLocaleService.getMessage("button.close.label");
+      printButtonLabel = messageByLocaleService.getMessage("button.print.label");
+      openButtonLabel = messageByLocaleService.getMessage("button.open.label");
+      saveAsButtonLabel = messageByLocaleService.getMessage("button.save.as.label");
+      zoomInButtonLabel = messageByLocaleService.getMessage("button.zoom.in.label");
+      zoomOutButtonLabel = messageByLocaleService.getMessage("button.zoom.out.label");
+   }
 
    public void view(File file)
    {
@@ -58,18 +79,18 @@ public class Viewer
          }
       });
 
-      printButton = new JButton("Друкувати");
+      printButton = new JButton(printButtonLabel);
       printButton.addActionListener(l ->
       {
          new Printer().print(pdf);
       });
-      closeButton = new JButton("Закрити");
+      closeButton = new JButton(closeButtonLabel);
       closeButton.addActionListener(l ->
       {
          frame.dispose();
 
       });
-      openButton = new JButton("Вiдкрити ...");
+      openButton = new JButton(openButtonLabel);
       openButton.addActionListener(l ->
       {
          JFileChooser chooser = new JFileChooser();
@@ -82,7 +103,7 @@ public class Viewer
             new Viewer().view(selectedFile);
          }
       });
-      saveAsButton = new JButton("Зберегти як ...");
+      saveAsButton = new JButton(saveAsButtonLabel);
       saveAsButton.addActionListener(l ->
       {
          JFileChooser chooser = new JFileChooser();
@@ -109,7 +130,7 @@ public class Viewer
             logger.error("Can't copy file[" + pdf.getAbsolutePath() + "]", e);
          }
       });
-      zoomInButton = new JButton("Збiльшити");
+      zoomInButton = new JButton(zoomInButtonLabel);
       zoomInButton.addActionListener(l ->
       {
          try (PDDocument document = PDDocument.load(pdf))
@@ -128,7 +149,7 @@ public class Viewer
             logger.error("Can't load file[" + pdf.getAbsolutePath() + "] to viewer  during zoom in", e);
          }
       });
-      zoomOutButton = new JButton("Зменшити");
+      zoomOutButton = new JButton(zoomOutButtonLabel);
       zoomOutButton.addActionListener(l ->
       {
          try (PDDocument document = PDDocument.load(pdf))
