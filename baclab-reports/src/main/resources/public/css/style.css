@@ -176,7 +176,7 @@
 	box-shadow: 2px 2px 4px #888888;
 }
 
-#main .images .image h5 {
+#main .images .image h5 a {
 	display: inline-block;
 	position: absolute;
 	top: 15px;
@@ -187,6 +187,7 @@
 	margin: 3px 10px 10px -4px;
 	color: #fefefe;
 	background-color: rgba(107, 163, 22, .8);
+	text-decoration: none;
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, .3);
 	box-shadow: 2px 2px 4px #427340;
 }
