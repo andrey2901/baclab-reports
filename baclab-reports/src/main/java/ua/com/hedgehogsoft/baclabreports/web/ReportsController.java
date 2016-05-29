@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ReportsController
 {
-   @RequestMapping("/baclab/reports")
+   @RequestMapping("/reports")
    public String getReports()
    {
       String reports = "<a href=\"/greeting\">Привітання</a><br/><br/>";

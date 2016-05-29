@@ -20,7 +20,7 @@ public class RemainsController
    private @Autowired RemainsTable remainsTable;
    private @Autowired ProductStorageTable productStorageTable;
 
-   @RequestMapping("/baclab/remains")
+   @RequestMapping("/remains")
    public String getRemains(@RequestParam String source)
    {
       String date = new DateLabelFormatter().dateToString(new Date());
@@ -35,7 +35,7 @@ public class RemainsController
       return printTableRemains(remains, remainsTable.init(date, source));
    }
 
-   @RequestMapping("/baclab/remains/now")
+   @RequestMapping("/remains/now")
    public String getRemains()
    {
       String date = new DateLabelFormatter().dateToString(new Date());

@@ -21,7 +21,7 @@ public class FinalReportController
 {
    private @Autowired FinalReportTable table;
 
-   @RequestMapping("/baclab/report/final")
+   @RequestMapping("/report/final")
    public String getFinalReport(@RequestParam String month, @RequestParam String year)
    {
       DateRange ranger = new DateRange(Integer.parseInt(month), Integer.parseInt(year));
