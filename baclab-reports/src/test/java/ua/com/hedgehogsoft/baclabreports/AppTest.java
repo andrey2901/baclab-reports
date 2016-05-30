@@ -12,7 +12,7 @@ import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 public class AppTest extends DefaultTest
 {
    private RestTemplate restTemplate = new TestRestTemplate();
-   private String url = "http://localhost:%s/greeting";
+   private String url = "http://localhost:%s/baclab/greeting";
    private @Value("${server.port}") String port;
    private @Autowired MessageByLocaleService messageByLocaleService;
 
