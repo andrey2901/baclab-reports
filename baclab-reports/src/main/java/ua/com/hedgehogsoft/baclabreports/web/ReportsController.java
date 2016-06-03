@@ -69,17 +69,13 @@ public class ReportsController
       reports += "<title>Лівобережжя</title>";
       reports += "<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\" />";
       reports += "<script src=\"js/site.js\"></script>";
-      reports += "<link rel=\"import\" href=\"header.html\" />";
-      reports += "<link rel=\"import\" href=\"sidebar.html\" />";
-      reports += "<link rel=\"import\" href=\"common_title.html\" />";
-      reports += "<link rel=\"import\" href=\"footer.html\" />";
       reports += "</head>";
       reports += "<body>";
       reports += "<div id=\"wrapper\">";
       reports += "<script type=\"text/javascript\">";
-      reports += "incude('header');";
-      reports += "incude('sidebar');";
-      reports += "incude('common_title');";
+      reports += "importHTML('wrapper', 'header');";
+      reports += "importHTML('wrapper', 'sidebar');";
+      reports += "importHTML('wrapper', 'common_title');";
       reports += "</script>";
       reports += "<div id=\"content_title\">";
       reports += "<h3>Звіти</h3>";
@@ -92,7 +88,7 @@ public class ReportsController
    {
       reports += "</div>";
       reports += "<script type=\"text/javascript\">";
-      reports += "incude('footer');";
+      reports += "importHTML('wrapper', 'footer');";
       reports += "</script>";
       reports += "</div>";
       reports += "</body>";
