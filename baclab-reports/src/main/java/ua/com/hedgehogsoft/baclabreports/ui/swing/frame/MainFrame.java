@@ -1,6 +1,8 @@
 package ua.com.hedgehogsoft.baclabreports.ui.swing.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -33,6 +35,8 @@ public class MainFrame
    private @Autowired IncomingFrame incomingFrame;
    private @Autowired OutcomingFrame outcomingFrame;
    private @Autowired ReportsFrame reportsFrame;
+   private int width = 150;
+   private int height = 25;
 
    @Autowired
    public MainFrame(MessageByLocaleService messageByLocaleService)
@@ -57,19 +61,23 @@ public class MainFrame
          }
       });
       JButton incomingButton = new JButton(incomingButtonLabel);
+      incomingButton.setPreferredSize(new Dimension(width, height));
       incomingButton.addActionListener(l -> incomingFrame.init());
       JButton outcomingButton = new JButton(outcomingButtonLabel);
+      outcomingButton.setPreferredSize(new Dimension(width, height));
       outcomingButton.addActionListener(l -> outcomingFrame.init());
       JButton reportsButton = new JButton(reportsButtonLabel);
+      reportsButton.setPreferredSize(new Dimension(width, height));
       reportsButton.addActionListener(l -> reportsFrame.init());
       JButton exitButton = new JButton(exitButtonLabel);
+      exitButton.setPreferredSize(new Dimension(width, height));
       exitButton.addActionListener(l -> close());
-      JPanel comingButtonPanel = new JPanel();
-      comingButtonPanel.add(incomingButton, BorderLayout.WEST);
-      comingButtonPanel.add(outcomingButton, BorderLayout.EAST);
-      JPanel functionalButtonPanel = new JPanel();
-      functionalButtonPanel.add(reportsButton, BorderLayout.WEST);
-      functionalButtonPanel.add(exitButton, BorderLayout.EAST);
+      JPanel comingButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+      comingButtonPanel.add(incomingButton);
+      comingButtonPanel.add(outcomingButton);
+      JPanel functionalButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+      functionalButtonPanel.add(reportsButton);
+      functionalButtonPanel.add(exitButton);
       JPanel buttonsPanel = new JPanel(new BorderLayout());
       buttonsPanel.add(comingButtonPanel, BorderLayout.NORTH);
       buttonsPanel.add(functionalButtonPanel, BorderLayout.SOUTH);
