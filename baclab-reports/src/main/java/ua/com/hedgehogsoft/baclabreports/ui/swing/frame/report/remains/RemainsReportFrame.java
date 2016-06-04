@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -27,7 +26,7 @@ import ua.com.hedgehogsoft.baclabreports.model.SourceType;
 import ua.com.hedgehogsoft.baclabreports.print.pdf.RemainsReportPrinter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DatePicker;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.ReportFrame;
-import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.RemainsReportPopup;
+import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.popup.ReportPopup;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.RemainsTable;
 import ua.com.hedgehogsoft.baclabreports.viewer.pdf.Viewer;
 
@@ -36,12 +35,11 @@ public class RemainsReportFrame extends ReportFrame
 {
    private JButton printButton;
    private JButton closeButton;
-   private String popupErrorLabel;
-   private String dateEmptyErrorMessage;
    private @Autowired RemainsTable table;
    private @Autowired DatePicker datePicker;
    private @Autowired SourceCache sourcesCache;
    private @Autowired RemainsReportPrinter printer;
+   private @Autowired ReportPopup popup;
    private @Autowired Viewer viewer;
    private String titleText1;
    private String titleText2;
@@ -56,8 +54,8 @@ public class RemainsReportFrame extends ReportFrame
       titleText1 = messageByLocaleService.getMessage("frame.report.remains.title.text.1");
       titleText2 = messageByLocaleService.getMessage("frame.report.remains.title.text.2");
       titleText3 = messageByLocaleService.getMessage("frame.report.remains.title.text.3");
-      popupErrorLabel = messageByLocaleService.getMessage("message.popup.error.label");
-      dateEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.date.empty.text");
+      messageByLocaleService.getMessage("message.popup.error.label");
+      messageByLocaleService.getMessage("message.popup.error.date.empty.text");
    }
 
    @Override
@@ -74,22 +72,8 @@ public class RemainsReportFrame extends ReportFrame
       {
          sourceComboBox.addItem(source.getName());
       }
-
-      do
-      {
-         new RemainsReportPopup(sourceComboBox, datePickerImpl);
-         if (datePickerImpl.getJFormattedTextField().getText() == null
-               || datePickerImpl.getJFormattedTextField().getText().isEmpty())
-         {
-            JOptionPane.showMessageDialog(null, dateEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
-         }
-         else
-         {
-            break;
-         }
-      }
-      while (true);
-
+      if (popup.createRemainsReportPopup(sourceComboBox, datePickerImpl) == -1)
+         return;
       String source = (String) sourceComboBox.getSelectedItem();
       String date = datePickerImpl.getJFormattedTextField().getText();
       frame = new JFrame(title);

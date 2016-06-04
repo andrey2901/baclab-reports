@@ -61,7 +61,8 @@ public class IncomingsReportFrame extends ReportFrame
    {
       JDatePickerImpl datePickerFrom = datePicker.getDatePicker();
       JDatePickerImpl datePickerTo = datePicker.getDatePicker();
-      popup.createMovementsReportPopup(datePickerFrom, datePickerTo);
+      if (popup.createMovementsReportPopup(datePickerFrom, datePickerTo) == -1)
+         return;
       String from = datePickerFrom.getJFormattedTextField().getText();
       String to = datePickerTo.getJFormattedTextField().getText();
 

@@ -7,7 +7,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import org.apache.log4j.Logger;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.springframework.stereotype.Component;
@@ -39,6 +38,7 @@ public class ReportPopup extends ReportFrame
    private String sourceLabel;
    private String dateRangePopupLabelDate;
    private String dateLabel;
+   private String dateEmptyErrorMessage;
    private static final Logger logger = Logger.getLogger(ReportPopup.class);
 
    @Override
@@ -65,6 +65,7 @@ public class ReportPopup extends ReportFrame
       dateYearLabel = messageByLocaleService.getMessage("message.popup.info.date.year");
       sourceLabel = messageByLocaleService.getMessage("message.popup.info.date.source");
       dateLabel = messageByLocaleService.getMessage("message.popup.info.date.label");
+      dateEmptyErrorMessage = messageByLocaleService.getMessage("message.popup.error.date.empty.text");
    }
 
    public void deleteIncomingPopup(Incoming incoming)
@@ -113,23 +114,27 @@ public class ReportPopup extends ReportFrame
             JOptionPane.ERROR_MESSAGE);
    }
 
-   public void createMovementsReportPopup(JDatePickerImpl periodBegin, JDatePickerImpl periodEnd)
+   public int createMovementsReportPopup(JDatePickerImpl periodBegin, JDatePickerImpl periodEnd)
    {
+      int result = 0;
       do
       {
+         String[] options = {"OK"};
          JPanel panel = new JPanel(new GridLayout(2, 2));
          panel.add(new JLabel(dateRangeLabelBegin));
          panel.add(new JLabel(dateRangeLabelEnd));
          panel.add(periodBegin);
          panel.add(periodEnd);
-         JOptionPane.showMessageDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.INFORMATION_MESSAGE);
+         result = JOptionPane.showOptionDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.YES_OPTION,
+               JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
       }
-      while (!checkInputData(periodBegin, periodEnd));
+      while (result != -1 && !(checkInputData(periodBegin, periodEnd) && result == 0));
+      return result;
    }
 
-   public void createActReportPopup(JComboBox<String> monthComboBox,
-                                    JComboBox<Integer> yearComboBox,
-                                    JComboBox<String> sourceComboBox)
+   public int createActReportPopup(JComboBox<String> monthComboBox,
+                                   JComboBox<Integer> yearComboBox,
+                                   JComboBox<String> sourceComboBox)
    {
       JPanel panel = new JPanel(new GridLayout(3, 2));
       panel.add(new JLabel(dateMonthLabel));
@@ -138,27 +143,39 @@ public class ReportPopup extends ReportFrame
       panel.add(yearComboBox);
       panel.add(new JLabel(sourceLabel));
       panel.add(sourceComboBox);
-      JOptionPane.showMessageDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.INFORMATION_MESSAGE);
+      String[] options = {"OK"};
+      return JOptionPane.showOptionDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.YES_OPTION,
+            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
    }
 
-   public void createFinalReportPopup(JComboBox<String> monthComboBox, JComboBox<Integer> yearComboBox)
+   public int createFinalReportPopup(JComboBox<String> monthComboBox, JComboBox<Integer> yearComboBox)
    {
       JPanel panel = new JPanel(new GridLayout(2, 2));
       panel.add(new JLabel(dateMonthLabel));
       panel.add(monthComboBox);
       panel.add(new JLabel(dateYearLabel));
       panel.add(yearComboBox);
-      JOptionPane.showMessageDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.INFORMATION_MESSAGE);
+      String[] options = {"OK"};
+      return JOptionPane.showOptionDialog(null, panel, dateRangePopupLabelPeriod, JOptionPane.YES_OPTION,
+            JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
    }
 
-   public void createRemainsReportPopup(JComboBox<String> sourceComboBox, JDatePickerImpl datePickerImpl)
+   public int createRemainsReportPopup(JComboBox<String> sourceComboBox, JDatePickerImpl datePickerImpl)
    {
-      JPanel panel = new JPanel(new GridLayout(2, 2));
-      panel.add(new JLabel(sourceLabel));
-      panel.add(sourceComboBox);
-      panel.add(new JLabel(dateLabel));
-      panel.add(datePickerImpl);
-      JOptionPane.showMessageDialog(null, panel, dateRangePopupLabelDate, JOptionPane.INFORMATION_MESSAGE);
+      int result = 0;
+      do
+      {
+         String[] options = {"OK"};
+         JPanel panel = new JPanel(new GridLayout(2, 2));
+         panel.add(new JLabel(sourceLabel));
+         panel.add(sourceComboBox);
+         panel.add(new JLabel(dateLabel));
+         panel.add(datePickerImpl);
+         result = JOptionPane.showOptionDialog(null, panel, dateRangePopupLabelDate, JOptionPane.YES_OPTION,
+               JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+      }
+      while (result != -1 && !(checkInputData(datePickerImpl) && result == 0));
+      return result;
    }
 
    private boolean checkInputData(JDatePickerImpl datePickerFrom, JDatePickerImpl datePickerTo)
@@ -196,6 +213,18 @@ public class ReportPopup extends ReportFrame
                   JOptionPane.ERROR_MESSAGE);
             result = false;
          }
+      }
+      return result;
+   }
+
+   private boolean checkInputData(JDatePickerImpl datePicker)
+   {
+      boolean result = true;
+      if (datePicker.getJFormattedTextField().getText() == null
+            || datePicker.getJFormattedTextField().getText().isEmpty())
+      {
+         JOptionPane.showMessageDialog(null, dateEmptyErrorMessage, popupErrorLabel, JOptionPane.ERROR_MESSAGE);
+         result = false;
       }
       return result;
    }

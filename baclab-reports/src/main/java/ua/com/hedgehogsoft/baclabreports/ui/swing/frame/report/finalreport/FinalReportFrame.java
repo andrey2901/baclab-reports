@@ -57,7 +57,8 @@ public class FinalReportFrame extends ReportFrame
    {
       JComboBox<String> monthComboBox = comboBoxCreator.getMonthComboBox();
       JComboBox<Integer> yearComboBox = comboBoxCreator.getYearComboBox();
-      popup.createFinalReportPopup(monthComboBox, yearComboBox);
+      if (popup.createFinalReportPopup(monthComboBox, yearComboBox) == -1)
+         return;
       DateRange ranger = new DateRange(monthComboBox.getSelectedIndex(), (int) yearComboBox.getSelectedItem());
       DateLabelFormatter formatter = new DateLabelFormatter();
       String dateFrom = formatter.dateToString(ranger.from());

@@ -72,7 +72,8 @@ public class ActReportFrame extends ReportFrame
       {
          sourceComboBox.addItem(source.getName());
       }
-      popup.createActReportPopup(monthComboBox, yearComboBox, sourceComboBox);
+      if (popup.createActReportPopup(monthComboBox, yearComboBox, sourceComboBox) == -1)
+         return;
       DateRange ranger = new DateRange(monthComboBox.getSelectedIndex(), (int) yearComboBox.getSelectedItem());
       DateLabelFormatter formatter = new DateLabelFormatter();
       String dateFrom = formatter.dateToString(ranger.from());
