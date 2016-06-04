@@ -40,7 +40,7 @@ public class ProductStorageTable extends AbstractTable
       List<Product> products = (List<Product>) productRepository.findAll();
       ProductStoreTableModel model = new ProductStoreTableModel(products.size(), sequentialHeaderName,
             productHeaderName, unitHeaderName, priceHeaderName, amountHeaderName, summationHeaderName,
-            sourceHeaderName);
+            hiddenIdColumnHeaderName, sourceHeaderName);
 
       if (!products.isEmpty())
       {
@@ -58,6 +58,7 @@ public class ProductStorageTable extends AbstractTable
       RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
       setRowSorter(sorter);
       initColumnSizes();
+      hideHiddenColumn();
       return this;
    }
 
@@ -70,7 +71,7 @@ public class ProductStorageTable extends AbstractTable
 
       AbstractTableModel model = (AbstractTableModel) getModel();
       TableCellRenderer headerRenderer = getTableHeader().getDefaultRenderer();
-      for (int i = 0; i < 7; i++)
+      for (int i = 0; i < 8; i++)
       {
          switch (i)
          {

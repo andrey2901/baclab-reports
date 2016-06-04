@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 import ua.com.hedgehogsoft.baclabreports.model.Incoming;
-import ua.com.hedgehogsoft.baclabreports.model.Product;
 import ua.com.hedgehogsoft.baclabreports.persistence.IncomingRepository;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.date.DateLabelFormatter;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.table.model.MovementsReportTableModel;
@@ -23,11 +22,13 @@ public class IncomingsReportTable extends AbstractTable
 {
    private static final long serialVersionUID = 1L;
    private @Autowired IncomingRepository incomingRepository;
+   private String incomingDateHeaderName;
 
    @Autowired
    public IncomingsReportTable(MessageByLocaleService messageByLocaleService)
    {
       super(messageByLocaleService);
+      incomingDateHeaderName = messageByLocaleService.getMessage("table.report.incomings.header.incoming.date.label");
    }
 
    public JTable init(String from, String to)
@@ -35,30 +36,14 @@ public class IncomingsReportTable extends AbstractTable
       DateLabelFormatter formatter = new DateLabelFormatter();
       List<Incoming> incomings = incomingRepository.getIncomingsFromPeriod((Date) formatter.stringToValue(from),
             (Date) formatter.stringToValue(to));
-      String[] columnNames = {sequentialHeaderName,
-                              productHeaderName,
-                              unitHeaderName,
-                              "Дата надходження",
-                              priceHeaderName,
-                              amountHeaderName,
-                              summationHeaderName,
-                              sourceHeaderName};
-      MovementsReportTableModel model = new MovementsReportTableModel(incomings.size(), columnNames);
-      model.setIndexColumnName(sequentialHeaderName);
+      MovementsReportTableModel model = new MovementsReportTableModel(incomings.size(), sequentialHeaderName,
+            productHeaderName, unitHeaderName, incomingDateHeaderName, priceHeaderName, amountHeaderName,
+            summationHeaderName, hiddenIdColumnHeaderName, sourceHeaderName);
       if (!incomings.isEmpty())
       {
          for (int i = 0; i < incomings.size(); i++)
          {
-            Product product = incomings.get(i).getProduct();
-
-            model.addRow(new Object[] {incomings.get(i).getId(),
-                                       product.getName(),
-                                       product.getUnit().getName(),
-                                       formatter.dateToString(incomings.get(i).getDate()),
-                                       product.getPrice(),
-                                       incomings.get(i).getAmount(),
-                                       incomings.get(i).getAmount() * product.getPrice(),
-                                       product.getSource().getName()});
+            model.addIncoming(incomings.get(i));
          }
       }
       setModel(model);
@@ -68,6 +53,7 @@ public class IncomingsReportTable extends AbstractTable
       // RowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
       // setRowSorter(sorter);
       initColumnSizes();
+      hideHiddenColumn();
       return this;
    }
 
@@ -89,11 +75,5 @@ public class IncomingsReportTable extends AbstractTable
          cellWidth = comp.getPreferredSize().width;
          column.setPreferredWidth(Math.max(headerWidth, cellWidth));
       }
-   }
-
-   public int getIndexColumn()
-   {
-      MovementsReportTableModel model = (MovementsReportTableModel) getModel();
-      return model.findColumn(model.getIndexColumnName());
    }
 }

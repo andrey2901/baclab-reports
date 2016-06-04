@@ -1,7 +1,7 @@
 package ua.com.hedgehogsoft.baclabreports.ui.swing.table;
 
 import javax.swing.JTable;
-
+import javax.swing.table.AbstractTableModel;
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
 
 public abstract class AbstractTable extends JTable
@@ -14,6 +14,7 @@ public abstract class AbstractTable extends JTable
    protected String amountHeaderName;
    protected String summationHeaderName;
    protected String sourceHeaderName;
+   protected String hiddenIdColumnHeaderName = "hiddenIdColumn";
 
    public AbstractTable(MessageByLocaleService messageByLocaleService)
    {
@@ -24,7 +25,14 @@ public abstract class AbstractTable extends JTable
       amountHeaderName = messageByLocaleService.getMessage("table.header.amount.label");
       summationHeaderName = messageByLocaleService.getMessage("table.header.summation.label");
       sourceHeaderName = messageByLocaleService.getMessage("table.header.source.label");
+      this.getTableHeader().setReorderingAllowed(false);
    }
 
    protected abstract void initColumnSizes();
+
+   public void hideHiddenColumn()
+   {
+      getColumnModel().removeColumn(
+            getColumnModel().getColumn(((AbstractTableModel) getModel()).findColumn(hiddenIdColumnHeaderName)));
+   }
 }

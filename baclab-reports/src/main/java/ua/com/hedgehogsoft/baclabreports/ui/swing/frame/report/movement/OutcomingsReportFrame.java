@@ -88,13 +88,12 @@ public class OutcomingsReportFrame extends ReportFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            Outcoming outcoming = outcomingRepository
-                  .getById((long) table.getValueAt(table.getSelectedRow(), table.getIndexColumn()));
+            MovementsReportTableModel model = (MovementsReportTableModel) table.getModel();
+            Outcoming outcoming = outcomingRepository.getById(model.getSelectedId(table.getSelectedRow()));
             Product existedProduct = outcoming.getProduct();
             existedProduct.setAmount(existedProduct.getAmount() + outcoming.getAmount());
             productRepository.updateAmount(existedProduct.getId(), existedProduct.getAmount());
             outcomingRepository.delete(outcoming.getId());
-            MovementsReportTableModel model = (MovementsReportTableModel) table.getModel();
             model.removeRow(table.getSelectedRow());
             ((ProductStoreTableModel) productStorageTable.getModel()).updateProduct(existedProduct);
             popup.deleteOutcomingPopup(outcoming);

@@ -8,42 +8,20 @@ import javax.swing.table.AbstractTableModel;
 public abstract class AbstractStoreTableModel extends AbstractTableModel
 {
    private static final long serialVersionUID = 1L;
-   protected List<Object[]> rows = null;
-   protected String[] columnNames = null;
-   protected String sequentialHeaderName = null;
-   protected String productHeaderName = null;
-   protected String unitHeaderName = null;
-   protected String priceHeaderName = null;
-   protected String amountHeaderName = null;
-   protected String summationHeaderName = null;
+   protected List<Object[]> rows;
+   protected String[] columnNames;
+   protected String sequentialHeaderName;
+   protected String productHeaderName;
+   protected String unitHeaderName;
+   protected String priceHeaderName;
+   protected String amountHeaderName;
+   protected String summationHeaderName;
+   protected String sourceHeaderName;
 
    protected AbstractStoreTableModel(int rowsSize, String... columnNames)
    {
       rows = new ArrayList<>(rowsSize);
       this.columnNames = columnNames;
-   }
-
-   protected AbstractStoreTableModel(int rowsSize,
-                                     String sequentialHeaderName,
-                                     String productHeaderName,
-                                     String unitHeaderName,
-                                     String priceHeaderName,
-                                     String amountHeaderName,
-                                     String summationHeaderName)
-   {
-      rows = new ArrayList<>(rowsSize);
-      this.sequentialHeaderName = sequentialHeaderName;
-      this.productHeaderName = productHeaderName;
-      this.unitHeaderName = unitHeaderName;
-      this.priceHeaderName = priceHeaderName;
-      this.amountHeaderName = amountHeaderName;
-      this.summationHeaderName = summationHeaderName;
-      this.columnNames = new String[] {this.sequentialHeaderName,
-                                       this.productHeaderName,
-                                       this.unitHeaderName,
-                                       this.priceHeaderName,
-                                       this.amountHeaderName,
-                                       this.summationHeaderName};
    }
 
    @Override

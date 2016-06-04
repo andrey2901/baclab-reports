@@ -92,8 +92,8 @@ public class IncomingsReportFrame extends ReportFrame
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            Incoming incoming = incomingRepository
-                  .getById((long) table.getValueAt(table.getSelectedRow(), table.getIndexColumn()));
+            MovementsReportTableModel model = (MovementsReportTableModel) table.getModel();
+            Incoming incoming = incomingRepository.getById(model.getSelectedId(table.getSelectedRow()));
             Product existedProduct = incoming.getProduct();
             DateLabelFormatter formatter = new DateLabelFormatter();
             PastObserver past = new PastObserver(productRepository, incomingRepository, outcomingRepository);
@@ -102,7 +102,6 @@ public class IncomingsReportFrame extends ReportFrame
                existedProduct.setAmount(existedProduct.getAmount() - incoming.getProduct().getAmount());
                productRepository.updateAmount(existedProduct.getId(), existedProduct.getAmount());
                incomingRepository.delete(incoming.getId());
-               MovementsReportTableModel model = (MovementsReportTableModel) table.getModel();
                model.removeRow(table.getSelectedRow());
                ((ProductStoreTableModel) productStorageTable.getModel()).updateProduct(existedProduct);
                popup.deleteIncomingPopup(incoming);

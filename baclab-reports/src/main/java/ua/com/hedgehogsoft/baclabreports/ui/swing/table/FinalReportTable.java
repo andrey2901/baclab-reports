@@ -38,11 +38,21 @@ public class FinalReportTable extends AbstractTable
    private @Autowired ProductRepository productRepository;
    private @Autowired IncomingRepository incomingRepository;
    private @Autowired OutcomingRepository outcomingRepository;
+   private String incomingHeaderName;
+   private String outcomingHeaderName;
+   private String beginRemainsHeaderName;
+   private String endRemainsHeaderName;
 
    @Autowired
    public FinalReportTable(MessageByLocaleService messageByLocaleService)
    {
       super(messageByLocaleService);
+      this.incomingHeaderName = messageByLocaleService.getMessage("table.report.final.header.incoming.label");
+      this.outcomingHeaderName = messageByLocaleService.getMessage("table.report.final.header.outcoming.label");
+      this.beginRemainsHeaderName = messageByLocaleService
+            .getMessage("table.report.final.header.remains.period.begin.label");
+      this.endRemainsHeaderName = messageByLocaleService
+            .getMessage("table.report.final.header.remains.period.end.label");
    }
 
    public JTable init(String dateFrom, String dateTo)
@@ -50,10 +60,10 @@ public class FinalReportTable extends AbstractTable
       String[] columnNames = {sequentialHeaderName,
                               productHeaderName,
                               unitHeaderName,
-                              "Залишок на\nпочаток періоду",
-                              "Надходження",
-                              "Використання",
-                              "Залишок на\nкінець періоду",
+                              beginRemainsHeaderName,
+                              incomingHeaderName,
+                              outcomingHeaderName,
+                              endRemainsHeaderName,
                               sourceHeaderName};
       List<Product> products = new ArrayList<Product>();
       List<Long> ids = productRepository.getProductIds();
