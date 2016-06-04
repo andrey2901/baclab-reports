@@ -2,6 +2,7 @@ package ua.com.hedgehogsoft.baclabreports.viewer.pdf;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,6 +28,7 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import ua.com.hedgehogsoft.baclabreports.localization.MessageByLocaleService;
@@ -55,12 +58,27 @@ public class Viewer
    private File pdf;
    private @Autowired MessageByLocaleService messageByLocaleService;
    private ApplicationContext context;
+   private Image zoomInImage;
+   private Image zoomOutImage;
+   private Image openImage;
+   private Image saveAsImage;
    private static final Logger logger = Logger.getLogger(Viewer.class);
 
    @Autowired
-   public Viewer(ApplicationContext context)
+   public Viewer(ApplicationContext context, ResourceLoader resourceLoader)
    {
       this.context = context;
+      try
+      {
+         zoomInImage = ImageIO.read(resourceLoader.getResource("classpath:images/zoomin.png").getInputStream());
+         zoomOutImage = ImageIO.read(resourceLoader.getResource("classpath:images/zoomout.png").getInputStream());
+         openImage = ImageIO.read(resourceLoader.getResource("classpath:images/open.png").getInputStream());
+         saveAsImage = ImageIO.read(resourceLoader.getResource("classpath:images/save_as.png").getInputStream());
+      }
+      catch (IOException e)
+      {
+         logger.error("Can't load zoom icons", e);
+      }
    }
 
    @PostConstruct
@@ -98,7 +116,9 @@ public class Viewer
          frame.dispose();
 
       });
-      openButton = new JButton(openButtonLabel);
+      openButton = new JButton();
+      openButton.setIcon(new ImageIcon(openImage));
+      openButton.setToolTipText(openButtonLabel);
       openButton.addActionListener(l ->
       {
          JFileChooser chooser = new JFileChooser();
@@ -111,7 +131,9 @@ public class Viewer
             context.getBean(this.getClass()).view(selectedFile);
          }
       });
-      saveAsButton = new JButton(saveAsButtonLabel);
+      saveAsButton = new JButton();
+      saveAsButton.setIcon(new ImageIcon(saveAsImage));
+      saveAsButton.setToolTipText(saveAsButtonLabel);
       saveAsButton.addActionListener(l ->
       {
          JFileChooser chooser = new JFileChooser();
@@ -138,7 +160,9 @@ public class Viewer
             logger.error("Can't copy file[" + pdf.getAbsolutePath() + "]", e);
          }
       });
-      zoomInButton = new JButton(zoomInButtonLabel);
+      zoomInButton = new JButton();
+      zoomInButton.setIcon(new ImageIcon(zoomInImage));
+      zoomInButton.setToolTipText(zoomInButtonLabel);
       zoomInButton.addActionListener(l ->
       {
          try (PDDocument document = PDDocument.load(pdf))
@@ -157,14 +181,17 @@ public class Viewer
             logger.error("Can't load file[" + pdf.getAbsolutePath() + "] to viewer  during zoom in", e);
          }
       });
-      zoomOutButton = new JButton(zoomOutButtonLabel);
+      zoomOutButton = new JButton();
+      zoomOutButton.setIcon(new ImageIcon(zoomOutImage));
+      zoomOutButton.setToolTipText(zoomOutButtonLabel);
       zoomOutButton.addActionListener(l ->
       {
          try (PDDocument document = PDDocument.load(pdf))
          {
             PDFRenderer render = new PDFRenderer(document);
             int numberOfPages = document.getNumberOfPages();
-            scaleIndex -= zoomIndex;
+            if (scaleIndex > zoomIndex)
+               scaleIndex -= zoomIndex;
             for (int i = 0; i < numberOfPages; i++)
             {
                JLabel page = pages.get(i);
