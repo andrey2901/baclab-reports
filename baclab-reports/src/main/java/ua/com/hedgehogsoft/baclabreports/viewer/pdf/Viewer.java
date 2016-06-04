@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +54,14 @@ public class Viewer
    private int bottomMargin = 7;
    private File pdf;
    private @Autowired MessageByLocaleService messageByLocaleService;
+   private ApplicationContext context;
    private static final Logger logger = Logger.getLogger(Viewer.class);
+
+   @Autowired
+   public Viewer(ApplicationContext context)
+   {
+      this.context = context;
+   }
 
    @PostConstruct
    protected void localize()
@@ -100,7 +108,7 @@ public class Viewer
          File selectedFile = chooser.getSelectedFile();
          if (selectedFile != null)
          {
-            new Viewer().view(selectedFile);
+            context.getBean(this.getClass()).view(selectedFile);
          }
       });
       saveAsButton = new JButton(saveAsButtonLabel);

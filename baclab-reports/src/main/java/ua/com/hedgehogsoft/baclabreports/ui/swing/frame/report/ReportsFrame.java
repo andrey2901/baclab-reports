@@ -1,11 +1,14 @@
 package ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -19,6 +22,8 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.finalreport.Final
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.movement.IncomingsReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.movement.OutcomingsReportFrame;
 import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.report.remains.RemainsReportFrame;
+import ua.com.hedgehogsoft.baclabreports.viewer.pdf.PdfFileFilter;
+import ua.com.hedgehogsoft.baclabreports.viewer.pdf.Viewer;
 
 @Component
 public class ReportsFrame extends Frame
@@ -30,6 +35,7 @@ public class ReportsFrame extends Frame
    private String generalReportButtonLabel;
    private String incomingsReportButtonLabel;
    private String outcomingsReportButtonLabel;
+   private String viewerButtonLabel;
    private String closeButtonLabel;
 
    private JButton remainsReportButton;
@@ -37,6 +43,7 @@ public class ReportsFrame extends Frame
    private JButton finalReportButton;
    private JButton incomingsReportButton;
    private JButton outcomingsReportButton;
+   private JButton viewerButton;
    private JButton closeButton;
 
    private @Autowired RemainsReportFrame remainsReportFrame;
@@ -44,6 +51,7 @@ public class ReportsFrame extends Frame
    private @Autowired FinalReportFrame finalReportFrame;
    private @Autowired IncomingsReportFrame incomingsReportFrame;
    private @Autowired OutcomingsReportFrame outcomingsReportFrame;
+   private @Autowired Viewer viewer;
 
    @Override
    protected void localize()
@@ -54,6 +62,7 @@ public class ReportsFrame extends Frame
       generalReportButtonLabel = messageByLocaleService.getMessage("frame.reports.button.general.label");
       incomingsReportButtonLabel = messageByLocaleService.getMessage("frame.reports.button.incoming.label");
       outcomingsReportButtonLabel = messageByLocaleService.getMessage("frame.reports.button.outcoming.label");
+      viewerButtonLabel = messageByLocaleService.getMessage("frame.reports.button.viewer.label");
       closeButtonLabel = messageByLocaleService.getMessage("button.close.label");
    }
 
@@ -79,13 +88,50 @@ public class ReportsFrame extends Frame
       incomingsReportButton.addActionListener(l -> incomingsReportFrame.init());
       outcomingsReportButton = new JButton(outcomingsReportButtonLabel);
       outcomingsReportButton.addActionListener(l -> outcomingsReportFrame.init());
-      JPanel buttonsPanel = new JPanel(new GridLayout(2, 3));
-      buttonsPanel.add(remainsReportButton);
-      buttonsPanel.add(actReportButton);
-      buttonsPanel.add(finalReportButton);
-      buttonsPanel.add(incomingsReportButton);
-      buttonsPanel.add(outcomingsReportButton);
-      buttonsPanel.add(closeButton);
+      viewerButton = new JButton(viewerButtonLabel);
+      viewerButton.addActionListener(l ->
+      {
+         JFileChooser chooser = new JFileChooser();
+         chooser.setCurrentDirectory(new File(System.getProperty("report.folder")));
+         chooser.setFileFilter(new PdfFileFilter());
+         chooser.showOpenDialog(viewerButton.getParent());
+         File selectedFile = chooser.getSelectedFile();
+         if (selectedFile != null)
+         {
+            viewer.view(selectedFile);
+         }
+      });
+      JPanel buttonsPanel = new JPanel(new GridBagLayout());
+      GridBagConstraints c = new GridBagConstraints();
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 0;
+      c.gridy = 0;
+      buttonsPanel.add(remainsReportButton, c);
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 1;
+      c.gridy = 0;
+      buttonsPanel.add(actReportButton, c);
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 2;
+      c.gridy = 0;
+      buttonsPanel.add(finalReportButton, c);
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 0;
+      c.gridy = 1;
+      buttonsPanel.add(incomingsReportButton, c);
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 1;
+      c.gridy = 1;
+      buttonsPanel.add(outcomingsReportButton, c);
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 2;
+      c.gridy = 1;
+      buttonsPanel.add(viewerButton, c);
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridx = 0;
+      c.gridy = 2;
+      c.gridwidth = 3;
+      buttonsPanel.add(closeButton, c);
       frame.add(buttonsPanel, BorderLayout.CENTER);
       frame.pack();
       frame.setResizable(false);
