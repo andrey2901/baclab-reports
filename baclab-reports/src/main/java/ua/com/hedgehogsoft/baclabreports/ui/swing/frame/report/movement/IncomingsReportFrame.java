@@ -36,7 +36,7 @@ import ua.com.hedgehogsoft.baclabreports.viewer.pdf.Viewer;
 @Component
 public class IncomingsReportFrame extends ReportFrame
 {
-   private JButton printButton;
+   private JButton saveButton;
    private JButton deleteButton;
    private JButton closeButton;
    private @Autowired IncomingsReportTable table;
@@ -84,8 +84,8 @@ public class IncomingsReportFrame extends ReportFrame
             frame.dispose();
          }
       });
-      printButton = new JButton(closeButtonLabel);
-      printButton.addActionListener(l -> viewer.view(printer.print(table, from, to)));
+      saveButton = new JButton(saveButtonLabel);
+      saveButton.addActionListener(l -> viewer.view(printer.print(table, from, to)));
       deleteButton = new JButton(deleteButtonLabel);
       deleteButton.addActionListener(new ActionListener()
       {
@@ -122,7 +122,7 @@ public class IncomingsReportFrame extends ReportFrame
       datePanel.add(new JLabel(dateRangeLabelEnd));
       datePanel.add(new JLabel(to));
       JPanel buttonsPanel = new JPanel();
-      buttonsPanel.add(printButton);
+      buttonsPanel.add(saveButton);
       buttonsPanel.add(deleteButton);
       buttonsPanel.add(closeButton);
       JScrollPane scrollPane = new JScrollPane(table.init(from, to));

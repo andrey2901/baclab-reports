@@ -5,7 +5,7 @@ import ua.com.hedgehogsoft.baclabreports.ui.swing.frame.Frame;
 public abstract class ReportFrame extends Frame
 {
    protected String closeButtonLabel;
-   protected String printButtonLabel;
+   protected String saveButtonLabel;
    protected String deleteButtonLabel;
    protected String dateLabelTo;
    protected String dateLabelFrom;
@@ -17,7 +17,7 @@ public abstract class ReportFrame extends Frame
    protected void localize()
    {
       closeButtonLabel = messageByLocaleService.getMessage("button.close.label");
-      printButtonLabel = messageByLocaleService.getMessage("button.print.label");
+      saveButtonLabel = messageByLocaleService.getMessage("button.save.label");
       dateLabelFrom = messageByLocaleService.getMessage("date.label.from");
       dateLabelTo = messageByLocaleService.getMessage("date.label.to");
       dateLabelOn = messageByLocaleService.getMessage("date.label.on");

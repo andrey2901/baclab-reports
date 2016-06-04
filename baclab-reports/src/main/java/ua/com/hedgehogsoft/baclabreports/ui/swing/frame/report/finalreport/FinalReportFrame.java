@@ -31,7 +31,7 @@ import ua.com.hedgehogsoft.baclabreports.viewer.pdf.Viewer;
 @Component
 public class FinalReportFrame extends ReportFrame
 {
-   private JButton printButton;
+   private JButton saveButton;
    private JButton closeButton;
    private @Autowired FinalReportTable table;
    private @Autowired FinalReportPrinter printer;
@@ -81,8 +81,8 @@ public class FinalReportFrame extends ReportFrame
             frame.dispose();
          }
       });
-      printButton = new JButton(printButtonLabel);
-      printButton.addActionListener(l -> viewer.view(printer.print(table, dateFrom, dateTo)));
+      saveButton = new JButton(saveButtonLabel);
+      saveButton.addActionListener(l -> viewer.view(printer.print(table, dateFrom, dateTo)));
       JPanel titlePanel = new JPanel(new GridLayout(4, 1));
       titlePanel.add(new JLabel(titleText1, SwingConstants.CENTER));
       titlePanel.add(new JLabel(titleText2, SwingConstants.CENTER));
@@ -90,7 +90,7 @@ public class FinalReportFrame extends ReportFrame
       titlePanel
             .add(new JLabel(dateLabelFrom + " " + dateFrom + " " + dateLabelTo + " " + dateTo, SwingConstants.CENTER));
       JPanel buttonsPanel = new JPanel();
-      buttonsPanel.add(printButton);
+      buttonsPanel.add(saveButton);
       buttonsPanel.add(closeButton);
       JScrollPane scrollPane = new JScrollPane(table.init(dateFrom, dateTo));
       frame.add(scrollPane, BorderLayout.CENTER);
