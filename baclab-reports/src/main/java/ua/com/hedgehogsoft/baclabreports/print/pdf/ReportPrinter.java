@@ -22,14 +22,26 @@ public abstract class ReportPrinter
 
    public File print(JTable table, String... args)
    {
+      return print(table, false, args);
+   }
+
+   public File print(JTable table, boolean isWeb, String... args)
+   {
       fileName = resolveFileName(args);
       File file = null;
+      if (isWeb)
+      {
+         file = new File(fileName);
+      }
+      else
+      {
+         file = new File(System.getProperty("report.folder") + System.getProperty("file.separator") + fileName);
+      }
       try
       {
          BaseFont bf = BaseFont.createFont(System.getProperty("local.fonts"), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
          font = new Font(bf);
          font.setSize(14);
-         file = new File(System.getProperty("report.folder") + System.getProperty("file.separator") + fileName);
          Document document = new Document(PageSize.A4, 0, 0, 30, 30);
          PdfWriter.getInstance(document, new FileOutputStream(file));
          document.open();
