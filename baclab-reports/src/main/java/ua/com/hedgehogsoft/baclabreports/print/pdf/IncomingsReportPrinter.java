@@ -19,6 +19,8 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
+import ua.com.hedgehogsoft.baclabreports.model.SourceType;
+
 @Component
 public class IncomingsReportPrinter extends ReportPrinter
 {
@@ -87,7 +89,7 @@ public class IncomingsReportPrinter extends ReportPrinter
 
       font.setSize(10);
       TableModel model = table.getModel();
-      PdfPTable pdfTable = new PdfPTable(model.getColumnCount() - 1);
+      PdfPTable pdfTable = new PdfPTable(model.getColumnCount() - 2);
       pdfTable.setWidths(new int[] {2, 21, 4, 6, 4, 4, 4});
       pdfTable.setWidthPercentage(90);
 
@@ -133,7 +135,7 @@ public class IncomingsReportPrinter extends ReportPrinter
 
       for (int row = 0; row < model.getRowCount(); row++)
       {
-         String group = (String) model.getValueAt(row, 7);
+         String group = (String) model.getValueAt(row, 8);
          if (!groupedCells.containsKey(group))
          {
             cell = new PdfPCell(new Phrase(group, font));
@@ -148,9 +150,7 @@ public class IncomingsReportPrinter extends ReportPrinter
             switch (column)
             {
                case 0:
-                  cell = new PdfPCell(new Phrase(Long.toString((long) model.getValueAt(row, column)), font));
-                  cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                  cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                  cell = null;
                   cells.add(cell);
                   break;
                case 1:
@@ -183,13 +183,11 @@ public class IncomingsReportPrinter extends ReportPrinter
          }
       }
 
-      for (String group : groupedCells.keySet())
-      {
-         for (PdfPCell printCell : groupedCells.get(group))
-         {
-            pdfTable.addCell(printCell);
-         }
-      }
+      int counter = 0;
+      counter = orderedPrint(pdfTable, groupedCells, SourceType.BUDGET, counter);
+      counter = orderedPrint(pdfTable, groupedCells, SourceType.MECENAT, counter);
+      counter = orderedPrint(pdfTable, groupedCells, SourceType.DEZINFECTOR, counter);
+      counter = orderedPrint(pdfTable, groupedCells, SourceType.PROVISOR, counter);
 
       cell = new PdfPCell(new Phrase("Всього", font));
       cell.setColspan(6);

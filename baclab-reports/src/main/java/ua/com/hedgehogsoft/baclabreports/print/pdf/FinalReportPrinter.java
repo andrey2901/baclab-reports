@@ -19,6 +19,8 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
+import ua.com.hedgehogsoft.baclabreports.model.SourceType;
+
 @Component
 public class FinalReportPrinter extends ReportPrinter
 {
@@ -154,9 +156,7 @@ public class FinalReportPrinter extends ReportPrinter
             switch (column)
             {
                case 0:
-                  cell = new PdfPCell(new Phrase(Integer.toString((int) model.getValueAt(row, column)), font));
-                  cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                  cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                  cell = null;
                   cells.add(cell);
                   break;
                case 1:
@@ -177,13 +177,11 @@ public class FinalReportPrinter extends ReportPrinter
             }
          }
       }
-      for (String group : groupedCells.keySet())
-      {
-         for (PdfPCell printCell : groupedCells.get(group))
-         {
-            pdfTable.addCell(printCell);
-         }
-      }
+      int counter = 0;
+      counter = orderedPrint(pdfTable, groupedCells, SourceType.BUDGET, counter);
+      counter = orderedPrint(pdfTable, groupedCells, SourceType.MECENAT, counter);
+      //counter = orderedPrint(pdfTable, groupedCells, SourceType.DEZINFECTOR, counter);
+      //counter = orderedPrint(pdfTable, groupedCells, SourceType.PROVISOR, counter);
       document.add(pdfTable);
 
       /*******************************************************************************************/
